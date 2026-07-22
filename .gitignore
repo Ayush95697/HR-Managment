@@ -1,0 +1,88 @@
+## Ignore Visual Studio Temporary Files, Build Results, and Settings
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userprev
+*.userdefaults
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bbin/
+bin/
+obj/
+binPublic/
+
+# MSTest Resolve Assembly Reference cache
+*.prev.hob
+
+# Files built by Visual Studio
+*.obj
+*.pdb
+*.ildb
+*.resources
+*.bytes
+*.dll
+*.exe
+*.cache
+*.rsp
+*.nofile
+*.log
+*.tlog
+*.ipdb
+*.iobj
+
+# SpecFlow Generated Files
+*.feature.cs
+
+# Directory-specific overrides
+.vs/
+.idea/
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# User Secrets / Private Files
+appsettings.Development.json
+secrets.json
+.env
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# Uncomment if necessary:
+# !**/[Pp]ackages/buildMultiTargeting/
+# NuGet Restore Artifacts
+project.lock.json
+project.assets.json
+project.nuget.targets
+
+# Backup Devices
+*~
+*.bak
+*.tmp
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Publish outputs
+publish/
+**/Publish/
+*.Publish.xml
+*.pubxml
+*.pubxml.user
