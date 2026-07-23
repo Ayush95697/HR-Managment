@@ -13,7 +13,7 @@ public class JwtSettings
 {
     public const string SectionName = "JwtSettings";
 
-    public string Secret { get; set; } = "SuperSecretKeyForHrManagementSystem2026!MustBeAtLeast256BitsLong";
+    public string Secret { get; set; } = string.Empty;
     public string Issuer { get; set; } = "HrSystemApi";
     public string Audience { get; set; } = "HrSystemApp";
     public int AccessTokenExpirationMinutes { get; set; } = 15;
