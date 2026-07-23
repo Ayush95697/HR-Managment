@@ -15,10 +15,12 @@ namespace HrSystem.Application.Services;
 public class EmailService : IEmailService
 {
     private readonly HrDbContext _dbContext;
+    private readonly INotificationService _notificationService;
 
-    public EmailService(HrDbContext dbContext)
+    public EmailService(HrDbContext dbContext, INotificationService notificationService)
     {
         _dbContext = dbContext;
+        _notificationService = notificationService;
     }
 
     public async Task<List<EmailTemplateDto>> GetTemplatesAsync()
@@ -109,6 +111,19 @@ public class EmailService : IEmailService
 
         _ = renderedSubject; // Reserved for Phase 3 SMTP integration
         _ = renderedBody;    // Reserved for Phase 3 SMTP integration
+
+        // Simulated Failure Path (for testing Notification UI)
+        if (toUser.Email.Contains("fail", StringComparison.OrdinalIgnoreCase))
+        {
+            log.Status = EmailLogStatus.Failed;
+            log.ErrorMessage = "Simulated delivery failure";
+
+            await _notificationService.NotifyAsync(
+                recipientId: currentUserId,
+                actorId: null, // System generated
+                type: NotificationType.EmailFailed,
+                message: $"Email to {toUser.Name} failed to send");
+        }
 
         _dbContext.EmailLogs.Add(log);
         await _dbContext.SaveChangesAsync();

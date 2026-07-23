@@ -1,10 +1,13 @@
-import { NavLink } from 'react-router-dom';
-import { Kanban, Users, Building2, Mail, ShieldAlert, LayoutDashboard } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Kanban, Users, Building2, Mail, ShieldAlert, LayoutDashboard, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import RoleGate from '../shared/RoleGate';
+import { useProfile } from '../../hooks/useProfile';
 
 export default function Sidebar() {
   const { user } = useAuthStore();
+  const { data: profile } = useProfile();
+  const navigate = useNavigate();
 
   const linkStyle = ({ isActive }: { isActive: boolean }) => ({
     display: 'flex',
@@ -99,23 +102,35 @@ export default function Sidebar() {
             <span>Audit Logs</span>
           </NavLink>
         </RoleGate>
+
+        {/* Settings — all roles */}
+        <NavLink to="/settings" style={linkStyle}>
+          <Settings size={18} />
+          <span>Settings</span>
+        </NavLink>
       </nav>
 
-      {/* Footer User Info */}
+      {/* Footer User Info — click to go to settings */}
       <div
+        onClick={() => navigate('/settings')}
         style={{
           padding: '16px 20px',
           borderTop: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
+          cursor: 'pointer',
+          transition: 'background 0.15s',
         }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <div
           style={{
             width: '36px',
             height: '36px',
             borderRadius: '50%',
+            overflow: 'hidden',
             backgroundColor: 'var(--accent, #6366f1)',
             color: '#fff',
             fontWeight: 700,
@@ -123,9 +138,13 @@ export default function Sidebar() {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '0.9rem',
+            flexShrink: 0,
           }}
         >
-          {user?.name.charAt(0).toUpperCase() || 'U'}
+          {profile?.avatarUrl 
+            ? <img src={profile.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            : user?.name.charAt(0).toUpperCase() || 'U'
+          }
         </div>
         <div style={{ overflow: 'hidden' }}>
           <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

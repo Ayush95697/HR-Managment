@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Building2, Trash2 } from 'lucide-react';
@@ -19,6 +20,16 @@ export default function DepartmentListPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
   const [deptToDelete, setDeptToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const queryId = searchParams.get('selectedId');
+    if (queryId) {
+      setSelectedDeptId(queryId);
+      // Clean up the URL after setting state so it doesn't persist if they close and refresh
+      setSearchParams(new URLSearchParams());
+    }
+  }, [searchParams, setSearchParams]);
 
   const getActiveStaff = (deptId: string) => {
     return users.filter(u => u.departmentId === deptId && u.isActive);

@@ -11,6 +11,7 @@ import DepartmentListPage from './pages/DepartmentListPage';
 import EmailCenterPage from './pages/EmailCenterPage';
 import AuditLogPage from './pages/AuditLogPage';
 import ForbiddenPage from './pages/ForbiddenPage';
+import SettingsPage from './pages/SettingsPage';
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
             <AuditLogPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
       },
     ],
   },

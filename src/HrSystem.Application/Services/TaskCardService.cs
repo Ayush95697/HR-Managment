@@ -16,10 +16,12 @@ namespace HrSystem.Application.Services;
 public class TaskCardService : ITaskCardService
 {
     private readonly HrDbContext _dbContext;
+    private readonly INotificationService _notificationService;
 
-    public TaskCardService(HrDbContext dbContext)
+    public TaskCardService(HrDbContext dbContext, INotificationService notificationService)
     {
         _dbContext = dbContext;
+        _notificationService = notificationService;
     }
 
     public async Task<List<TaskCardDto>> GetCardsByBoardIdAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -291,6 +293,19 @@ public class TaskCardService : ITaskCardService
                 Action = TaskActivityAction.Moved,
                 Timestamp = DateTime.UtcNow
             });
+
+            if (card.AssignedToId.HasValue)
+            {
+                var actor = await _dbContext.Users.FindAsync(currentUserId);
+                var targetColumnName = (await _dbContext.BoardColumns.FindAsync(card.ColumnId))?.Name ?? "another column";
+                await _notificationService.NotifyAsync(
+                    recipientId: card.AssignedToId.Value,
+                    actorId: currentUserId,
+                    type: NotificationType.TaskMoved,
+                    message: $"{actor?.Name ?? "Someone"} moved your task to '{targetColumnName}'",
+                    taskCardId: card.Id,
+                    boardId: card.BoardId);
+            }
         }
         else if (oldAssignedToId != card.AssignedToId)
         {
@@ -305,6 +320,17 @@ public class TaskCardService : ITaskCardService
                 Timestamp = DateTime.UtcNow,
                 MetadataJson = JsonSerializer.Serialize(assignMeta)
             });
+
+            if (card.AssignedToId.HasValue)
+            {
+                await _notificationService.NotifyAsync(
+                    recipientId: card.AssignedToId.Value,
+                    actorId: currentUserId,
+                    type: NotificationType.TaskAssigned,
+                    message: $"You were assigned a new task: {card.Title}",
+                    taskCardId: card.Id,
+                    boardId: card.BoardId);
+            }
         }
         else
         {
@@ -381,6 +407,28 @@ public class TaskCardService : ITaskCardService
             Action = TaskActivityAction.Commented,
             Timestamp = DateTime.UtcNow
         });
+
+        if (card.AssignedToId.HasValue && card.AssignedToId.Value != currentUserId)
+        {
+            await _notificationService.NotifyAsync(
+                recipientId: card.AssignedToId.Value,
+                actorId: currentUserId,
+                type: NotificationType.TaskCommented,
+                message: $"{author.Name} commented on '{card.Title}'",
+                taskCardId: card.Id,
+                boardId: card.BoardId);
+        }
+
+        if (card.CreatedById != currentUserId && card.CreatedById != card.AssignedToId)
+        {
+            await _notificationService.NotifyAsync(
+                recipientId: card.CreatedById,
+                actorId: currentUserId,
+                type: NotificationType.TaskCommented,
+                message: $"{author.Name} commented on '{card.Title}'",
+                taskCardId: card.Id,
+                boardId: card.BoardId);
+        }
 
         await _dbContext.SaveChangesAsync();
 
