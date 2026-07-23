@@ -62,17 +62,17 @@ public class UserService : IUserService
 
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {id} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"User with ID {id} not found.");
         }
 
         // Scope check
         if (currentUserRole == RoleType.HR.ToString() && user.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("HR users can only access users within their own department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only access users within their own department.");
         }
         if (currentUserRole == RoleType.Employee.ToString() && user.Id != currentUserId)
         {
-            throw new UnauthorizedAccessException("Employees can only view their own user details.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees can only view their own user details.");
         }
 
         return new UserSummaryDto(
@@ -97,7 +97,7 @@ public class UserService : IUserService
 
         if (user == null)
         {
-            throw new KeyNotFoundException("Current user record not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException("Current user record not found.");
         }
 
         return new UserSummaryDto(
@@ -158,7 +158,12 @@ public class UserService : IUserService
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {id} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"User with ID {id} not found.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw new ArgumentException("Email is required.");
         }
 
         // BUG-06 FIX: Case-insensitive email duplicate check on update
@@ -187,7 +192,7 @@ public class UserService : IUserService
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {id} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"User with ID {id} not found.");
         }
 
         user.IsActive = false;
@@ -196,3 +201,4 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
     }
 }
+

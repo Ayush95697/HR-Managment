@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using HrSystem.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,7 @@ public class GlobalExceptionMiddleware
                 break;
 
             case UnauthorizedAccessException:
+            case AppUnauthorizedException:
                 // If invalid login attempt, return 401 Unauthorized. Otherwise 403 Forbidden.
                 if (exception.Message.Contains("Invalid email or password") || exception.Message.Contains("refresh token"))
                 {
@@ -71,6 +73,7 @@ public class GlobalExceptionMiddleware
                 break;
 
             case KeyNotFoundException:
+            case AppNotFoundException:
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 problemDetails.Status = (int)HttpStatusCode.NotFound;
                 problemDetails.Title = "Resource Not Found";
@@ -78,6 +81,7 @@ public class GlobalExceptionMiddleware
                 break;
 
             case ArgumentException or InvalidOperationException:
+            case AppBadRequestException:
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 problemDetails.Status = (int)HttpStatusCode.BadRequest;
                 problemDetails.Title = "Bad Request";

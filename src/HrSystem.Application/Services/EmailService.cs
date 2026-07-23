@@ -75,18 +75,18 @@ public class EmailService : IEmailService
         var toUser = await _dbContext.Users.FindAsync(request.ToUserId);
         if (toUser == null)
         {
-            throw new KeyNotFoundException($"Recipient User with ID {request.ToUserId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Recipient User with ID {request.ToUserId} not found.");
         }
 
         if (currentUserRole == RoleType.HR.ToString() && toUser.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("HR users can only send emails to users within their own department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only send emails to users within their own department.");
         }
 
         var template = await _dbContext.EmailTemplates.FindAsync(request.TemplateId);
         if (template == null)
         {
-            throw new KeyNotFoundException($"Email Template with ID {request.TemplateId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Email Template with ID {request.TemplateId} not found.");
         }
 
         // I-03 FIX: Apply placeholders to the email subject and body before logging/sending
@@ -192,3 +192,4 @@ public class EmailService : IEmailService
         });
     }
 }
+

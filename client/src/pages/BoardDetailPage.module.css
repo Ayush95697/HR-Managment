@@ -1,0 +1,257 @@
+.wrapper { display: flex; flex-direction: column; height: calc(100vh - 60px - 56px); overflow: hidden; }
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.headerLeft { display: flex; align-items: center; gap: 14px; }
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+.backBtn:hover { background: var(--surface-hover); color: var(--text-primary); }
+
+.boardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.boardMeta { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+.iconActionBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), color var(--transition);
+}
+.iconActionBtn:hover { background: var(--surface-2); color: var(--text-primary); }
+
+/* ─── Board (horizontal scroll) ──────────────────────────────────────────── */
+.board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  flex: 1;
+  align-items: flex-start;
+  padding-bottom: 20px;
+}
+
+/* ─── Column ─────────────────────────────────────────────────────────────── */
+.column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.colHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.colTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.colDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.colCount {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  padding: 1px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.colMenuBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  transition: background var(--transition), color var(--transition);
+}
+.colMenuBtn:hover { background: var(--surface-2); color: var(--text-primary); }
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  padding: 4px;
+}
+
+.dropdownMenu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+}
+
+.dropdownMenu button:hover {
+  background: var(--surface-hover);
+}
+
+/* ─── Card List (droppable area) ─────────────────────────────────────────── */
+.cardList {
+  padding: 10px;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  transition: background var(--transition);
+}
+
+.draggingOver { background: var(--accent-light); }
+
+/* ─── Task Card ──────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  cursor: pointer;
+  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition), background var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.card:active { cursor: grabbing; }
+
+.dragging {
+  box-shadow: var(--shadow-xl);
+  transform: rotate(1deg) scale(1.02);
+  opacity: 0.95;
+}
+
+.cardTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.cardDesc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cardMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.cardPriority {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* ─── Add Card Button ────────────────────────────────────────────────────── */
+.addCardBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  font-family: inherit;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.addCardBtn:hover { background: var(--surface-hover); color: var(--accent); }

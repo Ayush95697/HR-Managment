@@ -27,13 +27,20 @@ public class TaskCardService : ITaskCardService
         var board = await _dbContext.Boards.FindAsync(boardId);
         if (board == null)
         {
-            throw new KeyNotFoundException($"Board with ID {boardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
         }
 
-        if ((currentUserRole == RoleType.HR.ToString() || currentUserRole == RoleType.Employee.ToString()) &&
-            board.DepartmentId != currentUserDeptId)
+        if (currentUserRole == RoleType.HR.ToString() && board.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("Cannot view cards for a board in another department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards for a board in another department.");
+        }
+        else if (currentUserRole == RoleType.Employee.ToString())
+        {
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == boardId && c.AssignedToId == currentUserId);
+            if (!isAssigned)
+            {
+                throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards for a board you are not assigned to.");
+            }
         }
 
         return await _dbContext.TaskCards
@@ -79,13 +86,20 @@ public class TaskCardService : ITaskCardService
 
         if (card == null)
         {
-            throw new KeyNotFoundException($"Task Card with ID {cardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
-        if ((currentUserRole == RoleType.HR.ToString() || currentUserRole == RoleType.Employee.ToString()) &&
-            card.Board.DepartmentId != currentUserDeptId)
+        if (currentUserRole == RoleType.HR.ToString() && card.Board.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("Cannot view cards from another department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards from another department.");
+        }
+        else if (currentUserRole == RoleType.Employee.ToString())
+        {
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == card.BoardId && c.AssignedToId == currentUserId);
+            if (!isAssigned)
+            {
+                throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards from a board you are not assigned to.");
+            }
         }
 
         var commentDtos = card.Comments
@@ -140,12 +154,12 @@ public class TaskCardService : ITaskCardService
         var board = await _dbContext.Boards.FindAsync(boardId);
         if (board == null)
         {
-            throw new KeyNotFoundException($"Board with ID {boardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
         }
 
         if (currentUserRole == RoleType.HR.ToString() && board.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("HR users can only create cards in their own department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only create cards in their own department.");
         }
 
         var column = await _dbContext.BoardColumns.FirstOrDefaultAsync(c => c.Id == request.ColumnId && c.BoardId == boardId);
@@ -209,17 +223,17 @@ public class TaskCardService : ITaskCardService
 
         if (card == null)
         {
-            throw new KeyNotFoundException($"Task Card with ID {cardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
         if (currentUserRole == RoleType.HR.ToString() && card.Board.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("HR users can only edit cards in their department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only edit cards in their department.");
         }
 
         if (currentUserRole == RoleType.Employee.ToString())
         {
-            throw new UnauthorizedAccessException("Employees cannot edit card details or move cards.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot edit card details or move cards.");
         }
 
         // BUG-04 FIX: Manual concurrency check kept as early-exit guard.
@@ -313,13 +327,13 @@ public class TaskCardService : ITaskCardService
     {
         if (currentUserRole != RoleType.Admin.ToString())
         {
-            throw new UnauthorizedAccessException("Only Admins can delete cards.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Only Admins can delete cards.");
         }
 
         var card = await _dbContext.TaskCards.FirstOrDefaultAsync(c => c.Id == cardId);
         if (card == null)
         {
-            throw new KeyNotFoundException($"Task Card with ID {cardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
         _dbContext.TaskCards.Remove(card);
@@ -334,18 +348,18 @@ public class TaskCardService : ITaskCardService
 
         if (card == null)
         {
-            throw new KeyNotFoundException($"Task Card with ID {cardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
-        if (currentUserRole == RoleType.Employee.ToString() && card.AssignedToId != currentUserId && card.Board.DepartmentId != currentUserDeptId)
+        if (currentUserRole == RoleType.Employee.ToString() && card.AssignedToId != currentUserId)
         {
-            throw new UnauthorizedAccessException("Employees can only comment on tasks assigned to them or in their department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees can only comment on tasks assigned directly to them.");
         }
 
         var author = await _dbContext.Users.FindAsync(currentUserId);
         if (author == null)
         {
-            throw new KeyNotFoundException("Author user record not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException("Author user record not found.");
         }
 
         var comment = new TaskComment
@@ -388,17 +402,25 @@ public class TaskCardService : ITaskCardService
 
         if (card == null)
         {
-            throw new KeyNotFoundException($"Task Card with ID {cardId} not found.");
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
-        if ((currentUserRole == RoleType.HR.ToString() || currentUserRole == RoleType.Employee.ToString()) &&
-            card.Board.DepartmentId != currentUserDeptId)
+        if (currentUserRole == RoleType.HR.ToString() && card.Board.DepartmentId != currentUserDeptId)
         {
-            throw new UnauthorizedAccessException("Cannot view activity logs for a card in another department.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view activity logs for a card in another department.");
+        }
+        else if (currentUserRole == RoleType.Employee.ToString())
+        {
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == card.BoardId && c.AssignedToId == currentUserId);
+            if (!isAssigned)
+            {
+                throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view activity logs for a card on a board you are not assigned to.");
+            }
         }
 
         return await _dbContext.TaskActivityLogs
             .Include(al => al.Actor)
+                .ThenInclude(a => a.Role)
             .Include(al => al.FromColumn)
             .Include(al => al.ToColumn)
             .Where(al => al.TaskCardId == cardId)
@@ -408,6 +430,7 @@ public class TaskCardService : ITaskCardService
                 al.TaskCardId,
                 al.ActorId,
                 al.Actor.Name,
+                al.Actor.Role.Name,
                 al.FromColumnId,
                 al.FromColumn != null ? al.FromColumn.Name : null,
                 al.ToColumnId,
@@ -448,3 +471,4 @@ public class TaskCardService : ITaskCardService
         );
     }
 }
+

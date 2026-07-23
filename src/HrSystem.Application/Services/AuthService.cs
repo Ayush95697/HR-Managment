@@ -37,7 +37,7 @@ public class AuthService : IAuthService
     {
         if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
         {
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            return null;
         }
 
         string normalizedEmail = request.Email.Trim().ToLower();
@@ -50,20 +50,20 @@ public class AuthService : IAuthService
         if (user == null)
         {
             _logger.LogWarning("Login failed: User with email '{Email}' not found in database.", normalizedEmail);
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            return null;
         }
 
         if (!user.IsActive)
         {
             _logger.LogWarning("Login failed: User '{Email}' is inactive.", normalizedEmail);
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            return null;
         }
 
         bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password.Trim(), user.PasswordHash);
         if (!isPasswordValid)
         {
             _logger.LogWarning("Login failed: Password mismatch for user '{Email}'.", normalizedEmail);
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            return null;
         }
 
         var (accessToken, expiresAt) = _jwtTokenGenerator.GenerateAccessToken(user);
@@ -115,7 +115,7 @@ public class AuthService : IAuthService
 
         if (tokenEntity == null || !tokenEntity.IsActive || !tokenEntity.User.IsActive)
         {
-            throw new UnauthorizedAccessException("Invalid or expired refresh token.");
+            return null;
         }
 
         tokenEntity.RevokedAt = DateTime.UtcNow;

@@ -59,4 +59,16 @@ public class DepartmentService : IDepartmentService
 
         return new DepartmentDto(department.Id, department.Name, 0);
     }
+
+    public async Task DeleteDepartmentAsync(Guid id)
+    {
+        var department = await _dbContext.Departments.FindAsync(id);
+        if (department == null)
+        {
+            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Department with ID {id} not found.");
+        }
+
+        _dbContext.Departments.Remove(department);
+        await _dbContext.SaveChangesAsync();
+    }
 }

@@ -95,6 +95,7 @@ public record TaskActivityLogDto(
     Guid TaskCardId,
     Guid ActorId,
     string ActorName,
+    string ActorRole,
     Guid? FromColumnId,
     string? FromColumnName,
     Guid? ToColumnId,

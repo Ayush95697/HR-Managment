@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using HrSystem.Api.Filters;
 using HrSystem.Api.Middleware;
 using HrSystem.Application.Interfaces;
 using HrSystem.Application.Security;
@@ -89,7 +90,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 // 7. Controllers & Validation
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
@@ -98,7 +102,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

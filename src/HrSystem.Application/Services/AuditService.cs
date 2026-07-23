@@ -23,6 +23,7 @@ public class AuditService : IAuditService
     {
         var query = _dbContext.TaskActivityLogs
             .Include(al => al.Actor)
+                .ThenInclude(a => a.Role)
             .Include(al => al.FromColumn)
             .Include(al => al.ToColumn)
             .Include(al => al.TaskCard)
@@ -45,6 +46,7 @@ public class AuditService : IAuditService
                 al.TaskCardId,
                 al.ActorId,
                 al.Actor.Name,
+                al.Actor.Role.Name,
                 al.FromColumnId,
                 al.FromColumn != null ? al.FromColumn.Name : null,
                 al.ToColumnId,

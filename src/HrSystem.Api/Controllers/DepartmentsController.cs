@@ -43,4 +43,12 @@ public class DepartmentsController : BaseApiController
         // BUG-17 FIX: now points to the correct single-item endpoint
         return CreatedAtAction(nameof(GetDepartmentById), new { id = department.Id }, department);
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> DeleteDepartment(Guid id)
+    {
+        await _departmentService.DeleteDepartmentAsync(id);
+        return NoContent();
+    }
 }
