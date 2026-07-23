@@ -65,7 +65,7 @@ HR-Managment/
    ```bash
    cd src/HrSystem.Api
    ```
-3. Configure the database connection string and JWT secret in `appsettings.json` (or `appsettings.Development.json`). Note: The JWT secret must be at least 32 characters long.
+3. Run `dotnet user-secrets set "ConnectionStrings:DefaultConnection" "..."` and `dotnet user-secrets set "JwtSettings:Secret" "..."` before running the API — these are intentionally left blank in appsettings.json. Note: The JWT secret must be at least 32 characters long.
 4. Run the API:
    ```bash
    dotnet run
