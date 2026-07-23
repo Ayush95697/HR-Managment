@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Infrastructure.Persistence;
@@ -15,9 +16,22 @@ namespace HrSystem.Tests.Integration;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public CustomWebApplicationFactory()
+    {
+        Environment.SetEnvironmentVariable("JwtSettings__Secret", "SuperSecretKeyForHrManagementSystemTesting2026!MustBeAtLeast32Chars");
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                { "JwtSettings:Secret", "SuperSecretKeyForHrManagementSystemTesting2026!MustBeAtLeast32Chars" }
+            });
+        });
 
         builder.ConfigureTestServices(services =>
         {

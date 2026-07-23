@@ -24,7 +24,7 @@ export interface PatchCardRequest {
 
 export const cardsApi = {
   create: (boardId: string, data: CreateCardRequest) => {
-    const priorityMap: Record<string, number> = { Low: 0, Medium: 1, High: 2, Critical: 2 };
+    const priorityMap: Record<string, number> = { Low: 0, Medium: 1, High: 2, Critical: 3 };
     const payload = {
       ...data,
       priority: typeof data.priority === 'string' ? priorityMap[data.priority] : data.priority
@@ -36,7 +36,7 @@ export const cardsApi = {
     client.get<TaskCard>(`/cards/${id}`).then((r) => r.data),
 
   patch: (id: string, data: PatchCardRequest) => {
-    const priorityMap: Record<string, number> = { Low: 0, Medium: 1, High: 2, Critical: 2 };
+    const priorityMap: Record<string, number> = { Low: 0, Medium: 1, High: 2, Critical: 3 };
     const payload = {
       ...data,
       ...(data.priority && typeof data.priority === 'string' ? { priority: priorityMap[data.priority] } : {})
