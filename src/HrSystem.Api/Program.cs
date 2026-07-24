@@ -20,7 +20,31 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using System.IO;
+
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (!File.Exists(envPath))
+{
+    envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".env");
+}
+if (File.Exists(envPath))
+{
+    foreach (var line in File.ReadAllLines(envPath))
+    {
+        var span = line.AsSpan().Trim();
+        if (span.IsEmpty || span.StartsWith("#")) continue;
+        var index = span.IndexOf('=');
+        if (index > 0)
+        {
+            var key = span.Slice(0, index).Trim().ToString();
+            var value = span.Slice(index + 1).Trim().Trim('"').ToString();
+            Environment.SetEnvironmentVariable(key, value);
+        }
+    }
+}
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 // 1. Jwt Settings
 var jwtSettings = new JwtSettings();
