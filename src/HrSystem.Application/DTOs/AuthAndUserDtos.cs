@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace HrSystem.Application.DTOs;
 
@@ -15,7 +16,10 @@ public record UserSummaryDto(
     Guid? DepartmentId,
     string? DepartmentName,
     Guid? ManagerId,
-    bool IsActive
+    bool IsActive,
+    string? AvatarUrl = null,
+    string ThemePreference = "System",
+    bool EmailNotificationsEnabled = true
 );
 
 public record LoginResponse(
@@ -41,4 +45,23 @@ public record UpdateUserRequest(
     Guid? DepartmentId,
     Guid? ManagerId,
     bool IsActive
+);
+
+// Self-service profile update (no role/dept — those are admin-only)
+public record UpdateProfileRequest(
+    string Name,
+    string ThemePreference,
+    bool EmailNotificationsEnabled
+);
+
+public record ChangePasswordRequest(
+    string CurrentPassword,
+    string NewPassword
+);
+
+public record SessionDto(
+    Guid Id,
+    DateTime CreatedAt,
+    DateTime ExpiresAt,
+    bool IsCurrent
 );

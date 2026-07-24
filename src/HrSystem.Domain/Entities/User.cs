@@ -24,5 +24,10 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    // Profile & Settings
+    public string? AvatarUrl { get; set; }
+    public string ThemePreference { get; set; } = "System"; // "Light" | "Dark" | "System"
+    public bool EmailNotificationsEnabled { get; set; } = true;
+
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

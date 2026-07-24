@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { LogIn } from 'lucide-react';
+import { LogIn, Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../types/schemas';
 import { jwtDecode } from 'jwt-decode';
 import { authApi } from '../api/auth.api';
@@ -14,11 +14,11 @@ import ErrorBanner from '../components/shared/ErrorBanner';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
   const setToken = useAuthStore((state) => state.setToken);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<Role>('Employee');
+  const [showPassword, setShowPassword] = useState(false);
 
   // Always redirect to dashboard on login to prevent 403 errors from old state
   const from = '/';
@@ -164,13 +164,36 @@ export default function LoginPage() {
 
           <div>
             <label className="form-label">Password</label>
-            <input
-              {...register('password')}
-              type="password"
-              className="form-input"
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
+                className="form-input"
+                placeholder="••••••••"
+                autoComplete="current-password"
+                style={{ paddingRight: '40px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {errors.password && (
               <span style={{ fontSize: '0.78rem', color: 'var(--danger)', marginTop: '4px', display: 'block' }}>
                 {errors.password.message}

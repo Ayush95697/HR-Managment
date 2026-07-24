@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -40,6 +40,8 @@ function computeNewPosition(prevCard: TaskCard | undefined, nextCard: TaskCard |
 export default function BoardDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCardId = searchParams.get('card');
   const { user } = useAuthStore();
   const role = user?.role;
   const canEdit = role === 'Admin' || role === 'HR';
@@ -57,7 +59,7 @@ export default function BoardDetailPage() {
   const createCardMutation = useCreateCard(id!);
 
   // Modals state
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(initialCardId);
   const [addCardColId, setAddCardColId] = useState<string | null>(null);
   const [showAddColumnModal, setShowAddColumnModal] = useState(false);
   const [showEditBoardModal, setShowEditBoardModal] = useState(false);
@@ -353,7 +355,13 @@ export default function BoardDetailPage() {
       <CardModal
         cardId={selectedCardId}
         boardId={id!}
-        onClose={() => setSelectedCardId(null)}
+        onClose={() => {
+          setSelectedCardId(null);
+          if (searchParams.has('card')) {
+            searchParams.delete('card');
+            setSearchParams(searchParams, { replace: true });
+          }
+        }}
       />
 
       {/* Confirm Board Delete */}

@@ -21,6 +21,7 @@ public class HrDbContext : DbContext
     public DbSet<EmailTemplate> EmailTemplates => Set<EmailTemplate>();
     public DbSet<EmailLog> EmailLogs => Set<EmailLog>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,6 +49,10 @@ public class HrDbContext : DbContext
             entity.Property(u => u.Name).IsRequired().HasMaxLength(100);
             entity.Property(u => u.Email).IsRequired().HasMaxLength(150);
             entity.HasIndex(u => u.Email).IsUnique();
+
+            entity.Property(u => u.AvatarUrl).HasMaxLength(500);
+            entity.Property(u => u.ThemePreference).IsRequired().HasMaxLength(20).HasDefaultValue("System");
+            entity.Property(u => u.EmailNotificationsEnabled).IsRequired().HasDefaultValue(true);
 
             entity.HasOne(u => u.Role)
                 .WithMany(r => r.Users)
@@ -232,12 +237,42 @@ public class HrDbContext : DbContext
         {
             entity.HasKey(rt => rt.Id);
             entity.Property(rt => rt.TokenHash).IsRequired().HasMaxLength(256);
+            entity.Property(rt => rt.CreatedAt).IsRequired();
             entity.HasIndex(rt => rt.TokenHash);
 
             entity.HasOne(rt => rt.User)
                 .WithMany(u => u.RefreshTokens)
                 .HasForeignKey(rt => rt.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Notification Configuration
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(n => n.Id);
+            
+            // Composite index for fast querying of unread items and dropdown list
+            entity.HasIndex(n => new { n.RecipientId, n.IsRead, n.CreatedAt });
+
+            entity.HasOne(n => n.Recipient)
+                .WithMany()
+                .HasForeignKey(n => n.RecipientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(n => n.Actor)
+                .WithMany()
+                .HasForeignKey(n => n.ActorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(n => n.TaskCard)
+                .WithMany()
+                .HasForeignKey(n => n.TaskCardId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(n => n.Board)
+                .WithMany()
+                .HasForeignKey(n => n.BoardId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
     }
 }

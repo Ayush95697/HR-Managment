@@ -136,6 +136,7 @@ export default function UserManagementPage() {
               <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Name & Email</th>
               <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Role</th>
               <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Department</th>
+              <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Manager</th>
               <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Status</th>
               <th style={{ padding: '14px 20px', color: 'var(--text-muted)', fontWeight: 600, textAlign: 'right' }}>Actions</th>
             </tr>
@@ -152,6 +153,11 @@ export default function UserManagementPage() {
                 </td>
                 <td style={{ padding: '14px 20px', color: 'var(--text-secondary)' }}>
                   {u.departmentName || 'Unassigned'}
+                </td>
+                <td style={{ padding: '14px 20px', color: 'var(--text-secondary)' }}>
+                  {u.role === 'Employee' 
+                    ? (u.managerId ? users.find(x => x.id === u.managerId)?.name || 'Unknown' : 'Unassigned') 
+                    : 'N/A'}
                 </td>
                 <td style={{ padding: '14px 20px' }}>
                   {u.isActive ? (
