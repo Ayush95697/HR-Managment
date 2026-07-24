@@ -82,7 +82,10 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<ITaskCardService, TaskCardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
@@ -186,6 +189,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("CorsPolicy");
+
+app.UseStaticFiles(); // Serves wwwroot/avatars/ and other static files
 
 app.UseAuthentication();
 app.UseAuthorization();

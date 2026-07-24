@@ -1,0 +1,7 @@
+feat: Implement Notifications, Global Search, User Profiles, and HR Management Rules
+
+- **In-App Notifications**: Added a comprehensive polling-based notification system. Features a `NotificationService` triggered by task assignments, board moves, and comments. Includes a notification bell in the TopBar with unread count badges and a dropdown panel. Added `?card=` deep-linking to open Task Modals directly from notifications.
+- **Global Search**: Implemented a global search bar in the TopBar allowing instant searches across Task Cards, Employees, Departments, and Boards. Features strict Role-Based Access Control (RBAC) to ensure users only see search results they are authorized to access.
+- **User Profiles & Avatars**: Added a user settings page to allow users to update their profile and upload avatars. Integrated avatars into the TopBar user menu and Sidebar profile section.
+- **HR Manager Rule & User Management**: Enforced the business rule of 1 HR per department. Automatically assigns the department's HR as the manager for all employees. Updated the User Management page to display the Manager column.
+- **UI/UX Polish**: Added `date-fns` for relative timestamps on notifications. Fixed CSS variables for transparent backgrounds in dropdowns and the correct display of the notification red dot (`--danger`).
