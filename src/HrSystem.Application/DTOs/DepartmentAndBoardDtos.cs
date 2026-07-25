@@ -28,12 +28,13 @@ public record BoardColumnDto(
     Guid BoardId,
     string Name,
     int Order,
+    bool IsDoneColumn,
     List<TaskCardDto> Cards
 );
 
 public record CreateColumnRequest(string Name, int Order);
 
-public record UpdateColumnRequest(string Name, int Order);
+public record UpdateColumnRequest(string Name, int Order, bool? IsDoneColumn);
 
 public record BoardDetailDto(
     Guid Id,

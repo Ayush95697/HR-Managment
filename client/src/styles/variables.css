@@ -1,11 +1,11 @@
 /* ─── Dark Theme (default) ─────────────────────────────────────────────────────────── */
 :root {
   --bg:             #0f1117;
-  --surface:        #1a1d27;
-  --surface-2:      #222535;
-  --surface-hover:  #2a2d42;
-  --border:         #2e3148;
-  --border-strong:  #3d4166;
+  --surface:        rgba(0, 0, 0, 0.4);
+  --surface-2:      rgba(0, 0, 0, 0.6);
+  --surface-hover:  rgba(255, 255, 255, 0.05);
+  --border:         rgba(255, 255, 255, 0.05);
+  --border-strong:  rgba(255, 255, 255, 0.1);
   --text-primary:   #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-muted:     #94a3b8;

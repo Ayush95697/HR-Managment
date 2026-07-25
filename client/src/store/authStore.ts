@@ -94,3 +94,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ accessToken: null, user: null, isAuthenticated: false });
   },
 }));
+
+// Synchronously initialize auth state from sessionStorage before React renders
+useAuthStore.getState().initAuth();

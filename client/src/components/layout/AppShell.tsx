@@ -4,7 +4,7 @@ import TopBar from './TopBar';
 
 export default function AppShell() {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--background, #0f172a)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'transparent' }}>
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <TopBar />

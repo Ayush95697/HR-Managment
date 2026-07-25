@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, Loader2, Building2, User, KanbanSquare, LayoutTemplate, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useSearch } from '../../hooks/useSearch';
 import type { SearchEmployeeDto } from '../../api/search.api';
@@ -76,9 +77,16 @@ export default function GlobalSearch() {
 
   return (
     <>
-      <div ref={containerRef} style={{ position: 'relative', width: '320px', marginLeft: '24px' }}>
-        <div style={{ position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+      <div ref={containerRef} style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
+        <div className="relative group">
+          <div className="absolute -inset-[1px] rounded-full overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-500 z-0">
+            <motion.div className="absolute top-0 left-0 h-[2px] w-[50%] bg-gradient-to-r from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ left: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }} />
+            <motion.div className="absolute top-0 right-0 h-[100%] w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ top: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 0.6 }} />
+            <motion.div className="absolute bottom-0 right-0 h-[2px] w-[50%] bg-gradient-to-r from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ right: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 1.2 }} />
+            <motion.div className="absolute bottom-0 left-0 h-[100%] w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ bottom: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 1.8 }} />
+          </div>
+
+          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', zIndex: 10 }} />
           <input
             ref={inputRef}
             type="text"
@@ -91,23 +99,27 @@ export default function GlobalSearch() {
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             style={{
+              position: 'relative',
+              zIndex: 1,
               width: '100%',
               padding: '8px 12px 8px 36px',
-              backgroundColor: 'var(--bg-primary)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-md)',
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              borderRadius: '9999px',
               color: 'var(--text-primary)',
               fontSize: '0.875rem',
               outline: 'none',
-              transition: 'border-color 0.15s, box-shadow 0.15s',
+              transition: 'border-color 0.15s, box-shadow 0.15s, background-color 0.15s',
             }}
             onFocusCapture={(e) => {
-               e.currentTarget.style.borderColor = 'var(--accent)';
-               e.currentTarget.style.boxShadow = '0 0 0 2px rgba(99, 102, 241, 0.2)';
+               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
             }}
             onBlurCapture={(e) => {
-               e.currentTarget.style.borderColor = 'var(--border)';
-               e.currentTarget.style.boxShadow = 'none';
+               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
             }}
           />
           {query && (
@@ -142,7 +154,7 @@ export default function GlobalSearch() {
             right: 0,
             backgroundColor: 'var(--surface)',
             border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: '16px',
             boxShadow: 'var(--shadow-lg)',
             maxHeight: '400px',
             overflowY: 'auto',

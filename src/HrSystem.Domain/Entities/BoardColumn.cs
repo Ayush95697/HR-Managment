@@ -11,6 +11,7 @@ public class BoardColumn
 
     public string Name { get; set; } = string.Empty;
     public int Order { get; set; }
+    public bool IsDoneColumn { get; set; } = false;
 
     public ICollection<TaskCard> Cards { get; set; } = new List<TaskCard>();
 }
