@@ -15,7 +15,7 @@ export default function AvatarUploader({ profile }: Props) {
   const uploadAvatar = useUploadAvatar();
   const removeAvatar = useRemoveAvatar();
 
-  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
   const handleFileSelect = async (file: File) => {
     setError(null);

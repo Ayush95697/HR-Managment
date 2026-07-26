@@ -39,15 +39,10 @@ export const profileApi = {
   updateMe: (payload: UpdateProfilePayload) =>
     client.put<UserProfile>('/users/me', payload).then((r: { data: UserProfile }) => r.data),
 
-  uploadAvatar: (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    return client
-      .post<{ avatarUrl: string }>('/users/me/avatar', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      .then((r: { data: { avatarUrl: string } }) => r.data);
-  },
+  uploadAvatar: (file: File) =>
+    client
+      .postForm<{ avatarUrl: string }>('/users/me/avatar', { file })
+      .then((r: { data: { avatarUrl: string } }) => r.data),
 
   removeAvatar: () => client.delete('/users/me/avatar'),
 

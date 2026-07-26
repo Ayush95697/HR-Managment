@@ -46,6 +46,7 @@ public class AvatarService : IAvatarService
         var ext = file.ContentType.ToLower() switch
         {
             "image/jpeg" => ".jpg",
+            "image/jpg"  => ".jpg",
             "image/png"  => ".png",
             "image/webp" => ".webp",
             _            => ".jpg"
@@ -60,9 +61,23 @@ public class AvatarService : IAvatarService
             Mode = ResizeMode.Max
         }));
 
-        // Get container client and ensure it exists and is public
+        // Get container client and ensure it exists
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        try
+        {
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        }
+        catch (Azure.RequestFailedException ex)
+        {
+            try
+            {
+                await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Azure Blob Storage error: {ex.Message}");
+            }
+        }
 
         var blobClient = containerClient.GetBlobClient(fileName);
 

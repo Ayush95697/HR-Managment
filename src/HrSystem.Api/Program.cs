@@ -79,7 +79,7 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 // 4. Azure Blob Storage
 var azureStorageConnString = builder.Configuration.GetSection("AzureStorage:ConnectionString").Value;
-if (!string.IsNullOrWhiteSpace(azureStorageConnString) && azureStorageConnString != "REPLACE_WITH_YOUR_AZURE_CONNECTION_STRING")
+if (!string.IsNullOrWhiteSpace(azureStorageConnString))
 {
     builder.Services.AddSingleton(x => new BlobServiceClient(azureStorageConnString));
 }

@@ -79,7 +79,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("me/avatar")]
-    public async Task<IActionResult> UploadAvatar(IFormFile file)
+    public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0)
             return BadRequest(new { message = "No file provided." });
@@ -87,7 +87,7 @@ public class UsersController : BaseApiController
         if (file.Length > 2 * 1024 * 1024)
             return StatusCode(413, new { message = "File too large. Maximum size is 2MB." });
 
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+        var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/webp" };
         if (!allowedTypes.Contains(file.ContentType.ToLower()))
             return BadRequest(new { message = "Unsupported file type. Please upload a JPG, PNG, or WebP image." });
 
