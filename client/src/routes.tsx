@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProtectedRoute from './auth/ProtectedRoute';
 import AppShell from './components/layout/AppShell';
+import { useAuthStore } from './store/authStore';
 
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -12,6 +13,14 @@ import EmailCenterPage from './pages/EmailCenterPage';
 import AuditLogPage from './pages/AuditLogPage';
 import ForbiddenPage from './pages/ForbiddenPage';
 import SettingsPage from './pages/SettingsPage';
+
+const RoleBasedHome = () => {
+  const { user } = useAuthStore();
+  if (user?.role === 'Employee') {
+    return <Navigate to="/boards" replace />;
+  }
+  return <DashboardPage />;
+};
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +41,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardPage />,
+        element: <RoleBasedHome />,
       },
       {
         path: 'boards',

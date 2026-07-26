@@ -105,6 +105,7 @@ public class BoardService : IBoardService
                 c.BoardId,
                 c.Name,
                 c.Order,
+                c.IsDoneColumn,
                 c.Cards
                     .OrderBy(card => card.Position)
                     .Select(card => new TaskCardDto(
@@ -165,7 +166,7 @@ public class BoardService : IBoardService
         // Add default columns: To Do, In Progress, Done
         board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "To Do", Order = 0 });
         board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "In Progress", Order = 1 });
-        board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "Done", Order = 2 });
+        board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "Done", Order = 2, IsDoneColumn = true });
 
         _dbContext.Boards.Add(board);
         await _dbContext.SaveChangesAsync();
@@ -257,7 +258,7 @@ public class BoardService : IBoardService
         _dbContext.BoardColumns.Add(column);
         await _dbContext.SaveChangesAsync();
 
-        return new BoardColumnDto(column.Id, column.BoardId, column.Name, column.Order, new List<TaskCardDto>());
+        return new BoardColumnDto(column.Id, column.BoardId, column.Name, column.Order, column.IsDoneColumn, new List<TaskCardDto>());
     }
 
     public async Task<BoardColumnDto> UpdateColumnAsync(Guid columnId, UpdateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -282,6 +283,15 @@ public class BoardService : IBoardService
 
         column.Name = request.Name;
         column.Order = request.Order;
+        if (request.IsDoneColumn.HasValue && request.IsDoneColumn.Value != column.IsDoneColumn)
+        {
+            column.IsDoneColumn = request.IsDoneColumn.Value;
+            var now = DateTime.UtcNow;
+            foreach (var card in column.Cards)
+            {
+                card.CompletedAt = column.IsDoneColumn ? now : null;
+            }
+        }
         await _dbContext.SaveChangesAsync();
 
         // BUG-12 FIX: Return the actual cards in the column, not an empty list
@@ -306,7 +316,7 @@ public class BoardService : IBoardService
                 card.UpdatedAt
             )).ToList();
 
-        return new BoardColumnDto(column.Id, column.BoardId, column.Name, column.Order, cardDtos);
+        return new BoardColumnDto(column.Id, column.BoardId, column.Name, column.Order, column.IsDoneColumn, cardDtos);
     }
 
     public async Task DeleteColumnAsync(Guid columnId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)

@@ -86,6 +86,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
@@ -121,6 +122,7 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
 });
+builder.Services.AddResponseCaching();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
@@ -191,6 +193,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("CorsPolicy");
 
 app.UseStaticFiles(); // Serves wwwroot/avatars/ and other static files
+
+app.UseResponseCaching();
 
 app.UseAuthentication();
 app.UseAuthorization();

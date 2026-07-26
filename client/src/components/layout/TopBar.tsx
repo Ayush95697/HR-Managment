@@ -47,8 +47,10 @@ export default function TopBar() {
     <header
       style={{
         height: '60px',
-        backgroundColor: 'var(--surface, #1e293b)',
-        borderBottom: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
         padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
@@ -58,15 +60,18 @@ export default function TopBar() {
         zIndex: 100,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
         <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
           HR Management Portal
         </span>
         {user?.role && <RoleBadge role={user.role} />}
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
         <GlobalSearch />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, justifyContent: 'flex-end' }}>
         <NotificationBell />
         {/* User menu */}
         <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -106,12 +111,12 @@ export default function TopBar() {
           <ChevronDown size={14} color="var(--text-muted)" style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
         </button>
 
-        {/* Dropdown menu */}
         {dropdownOpen && (
           <div style={{
             position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-            minWidth: '180px', backgroundColor: 'var(--surface)',
-            border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
+            minWidth: '180px', backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: 'var(--radius-lg)',
             boxShadow: '0 20px 40px -12px rgba(0,0,0,0.5)',
             overflow: 'hidden', zIndex: 200,
           }}>

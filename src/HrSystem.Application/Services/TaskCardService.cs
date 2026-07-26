@@ -257,6 +257,15 @@ public class TaskCardService : ITaskCardService
                 throw new ArgumentException("Target column does not belong to the board.");
             }
             card.ColumnId = request.ColumnId.Value;
+
+            if (targetColumn.IsDoneColumn)
+            {
+                card.CompletedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                card.CompletedAt = null;
+            }
         }
 
         if (request.Title != null) card.Title = request.Title;

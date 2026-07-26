@@ -25,6 +25,9 @@ export default function UserManagementPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deactivatingUserId, setDeactivatingUserId] = useState<string | null>(null);
   const [activatingUser, setActivatingUser] = useState<User | null>(null);
+  
+  const [selectedRole, setSelectedRole] = useState<string>('All');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('All');
 
   const {
     register,
@@ -111,21 +114,54 @@ export default function UserManagementPage() {
     );
   }
 
+  const filteredUsers = users.filter((u) => {
+    const roleMatch = selectedRole === 'All' || u.role === selectedRole;
+    const deptMatch = selectedDepartment === 'All' || (selectedDepartment === 'Unassigned' ? !u.departmentId : u.departmentId === selectedDepartment);
+    return roleMatch && deptMatch;
+  });
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
             User Management
           </h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '4px 0 0' }}>
-            {users.length} system user{users.length !== 1 ? 's' : ''} registered
+            {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
           </p>
         </div>
 
-        <Button leftIcon={<Plus size={16} />} onClick={() => { reset(); setShowCreateModal(true); }}>
-          New User
-        </Button>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <select 
+            className="form-select" 
+            style={{ width: '150px' }} 
+            value={selectedRole} 
+            onChange={(e) => setSelectedRole(e.target.value)}
+          >
+            <option value="All">All Roles</option>
+            <option value="Admin">Admin</option>
+            <option value="HR">HR</option>
+            <option value="Employee">Employee</option>
+          </select>
+
+          <select 
+            className="form-select" 
+            style={{ width: '200px' }} 
+            value={selectedDepartment} 
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+          >
+            <option value="All">All Departments</option>
+            <option value="Unassigned">Unassigned</option>
+            {departments.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+
+          <Button leftIcon={<Plus size={16} />} onClick={() => { reset(); setShowCreateModal(true); }}>
+            New User
+          </Button>
+        </div>
       </div>
 
       {/* Users Table */}
@@ -142,7 +178,7 @@ export default function UserManagementPage() {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
+            {filteredUsers.map((u) => (
               <tr key={u.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td style={{ padding: '14px 20px' }}>
                   <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{u.name}</div>

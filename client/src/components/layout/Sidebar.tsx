@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Kanban, Users, Building2, Mail, ShieldAlert, LayoutDashboard, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import RoleGate from '../shared/RoleGate';
+import Logo from '../shared/Logo';
 import { useProfile } from '../../hooks/useProfile';
 
 export default function Sidebar() {
@@ -13,22 +14,32 @@ export default function Sidebar() {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '10px 16px',
-    borderRadius: 'var(--radius-md, 8px)',
-    color: isActive ? 'var(--accent-text, #ffffff)' : 'var(--text-secondary, #94a3b8)',
-    backgroundColor: isActive ? 'var(--accent, #6366f1)' : 'transparent',
+    padding: '12px 18px',
+    borderRadius: '9999px',
+    color: isActive ? '#ffffff' : 'var(--text-secondary, #94a3b8)',
+    background: isActive 
+      ? 'linear-gradient(135deg, var(--accent, #6366f1) 0%, #8b5cf6 100%)' 
+      : 'transparent',
+    border: isActive 
+      ? '1px solid rgba(255, 255, 255, 0.2)' 
+      : '1px solid transparent',
+    boxShadow: isActive 
+      ? '0 8px 24px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' 
+      : 'none',
     textDecoration: 'none',
     fontWeight: isActive ? 600 : 500,
     fontSize: '0.875rem',
-    transition: 'all 0.15s ease',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   });
 
   return (
     <aside
       style={{
         width: '240px',
-        backgroundColor: 'var(--surface, #1e293b)',
-        borderRight: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.05)',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
@@ -42,46 +53,28 @@ export default function Sidebar() {
         style={{
           padding: '20px 24px',
           borderBottom: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
         }}
       >
-        <div
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, var(--accent, #6366f1), #8b5cf6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            fontWeight: 800,
-          }}
-        >
-          HR
-        </div>
-        <span style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)' }}>
-          HR Flow
-        </span>
+        <Logo size="md" showText={true} />
       </div>
 
       {/* Nav Links */}
       <nav style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-        <NavLink to="/" end style={linkStyle}>
-          <LayoutDashboard size={18} />
-          <span>Dashboard</span>
-        </NavLink>
+        <RoleGate roles={['Admin', 'HR']}>
+          <NavLink to="/" end style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
+            <LayoutDashboard size={18} />
+            <span>Dashboard</span>
+          </NavLink>
+        </RoleGate>
 
-        <NavLink to="/boards" style={linkStyle}>
+        <NavLink to="/boards" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
           <Kanban size={18} />
           <span>Boards</span>
         </NavLink>
 
         {/* Admin-only Nav Item */}
         <RoleGate roles={['Admin']}>
-          <NavLink to="/users" style={linkStyle}>
+          <NavLink to="/users" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
             <Users size={18} />
             <span>User Management</span>
           </NavLink>
@@ -89,22 +82,22 @@ export default function Sidebar() {
 
         {/* HR & Admin Nav Item */}
         <RoleGate roles={['Admin', 'HR']}>
-          <NavLink to="/departments" style={linkStyle}>
+          <NavLink to="/departments" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
             <Building2 size={18} />
             <span>Departments</span>
           </NavLink>
-          <NavLink to="/email" style={linkStyle}>
+          <NavLink to="/email" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
             <Mail size={18} />
             <span>Email Center</span>
           </NavLink>
-          <NavLink to="/audit" style={linkStyle}>
+          <NavLink to="/audit" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
             <ShieldAlert size={18} />
             <span>Audit Logs</span>
           </NavLink>
         </RoleGate>
 
         {/* Settings — all roles */}
-        <NavLink to="/settings" style={linkStyle}>
+        <NavLink to="/settings" style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
           <Settings size={18} />
           <span>Settings</span>
         </NavLink>
