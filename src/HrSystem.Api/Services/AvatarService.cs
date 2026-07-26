@@ -1,8 +1,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
@@ -11,16 +14,15 @@ namespace HrSystem.Api.Services;
 public class AvatarService : IAvatarService
 {
     private const int MaxDimension = 256;
-    private readonly string _avatarsDirectory;
-    private readonly string _baseUrl;
+    private readonly BlobServiceClient _blobServiceClient;
+    private readonly string _containerName;
 
     private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-    public AvatarService(IWebHostEnvironment env)
+    public AvatarService(BlobServiceClient blobServiceClient, IConfiguration configuration)
     {
-        _avatarsDirectory = Path.Combine(env.WebRootPath, "avatars");
-        _baseUrl = "/avatars";
-        Directory.CreateDirectory(_avatarsDirectory);
+        _blobServiceClient = blobServiceClient;
+        _containerName = configuration.GetValue<string>("AzureStorage:AvatarContainerName") ?? "avatars";
     }
 
     public async Task<string> SaveAvatarAsync(Guid userId, IFormFile file)
@@ -50,7 +52,6 @@ public class AvatarService : IAvatarService
         };
 
         var fileName = $"{userId}{ext}";
-        var filePath = Path.Combine(_avatarsDirectory, fileName);
 
         // Resize to max 256×256 maintaining aspect ratio
         image.Mutate(x => x.Resize(new ResizeOptions
@@ -59,20 +60,41 @@ public class AvatarService : IAvatarService
             Mode = ResizeMode.Max
         }));
 
-        await image.SaveAsync(filePath);
+        // Get container client and ensure it exists and is public
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+        var blobClient = containerClient.GetBlobClient(fileName);
+
+        using var memoryStream = new MemoryStream();
+        
+        // Save to memory stream with appropriate encoder
+        if (ext == ".png")
+            await image.SaveAsPngAsync(memoryStream);
+        else if (ext == ".webp")
+            await image.SaveAsWebpAsync(memoryStream);
+        else
+            await image.SaveAsJpegAsync(memoryStream);
+
+        memoryStream.Position = 0;
+
+        var blobHttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType };
+        await blobClient.UploadAsync(memoryStream, new BlobUploadOptions { HttpHeaders = blobHttpHeaders });
+        
         image.Dispose();
 
-        return $"{_baseUrl}/{fileName}?t={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+        return $"{blobClient.Uri}?t={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
     }
 
-    public Task DeleteAvatarAsync(Guid userId)
+    public async Task DeleteAvatarAsync(Guid userId)
     {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        
         foreach (var ext in AllowedExtensions)
         {
-            var path = Path.Combine(_avatarsDirectory, $"{userId}{ext}");
-            if (File.Exists(path))
-                File.Delete(path);
+            var fileName = $"{userId}{ext}";
+            var blobClient = containerClient.GetBlobClient(fileName);
+            await blobClient.DeleteIfExistsAsync();
         }
-        return Task.CompletedTask;
     }
 }

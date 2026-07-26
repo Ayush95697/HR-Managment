@@ -1,6 +1,8 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HrSystem.Api.Filters;
@@ -75,7 +77,19 @@ builder.Services.AddDbContext<HrDbContext>(options =>
 builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
-// 4. Application Services
+// 4. Azure Blob Storage
+var azureStorageConnString = builder.Configuration.GetSection("AzureStorage:ConnectionString").Value;
+if (!string.IsNullOrWhiteSpace(azureStorageConnString) && azureStorageConnString != "REPLACE_WITH_YOUR_AZURE_CONNECTION_STRING")
+{
+    builder.Services.AddSingleton(x => new BlobServiceClient(azureStorageConnString));
+}
+else
+{
+    // Fallback or log if missing
+    builder.Services.AddSingleton(x => new BlobServiceClient("UseDevelopmentStorage=true"));
+}
+
+// 5. Application Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
