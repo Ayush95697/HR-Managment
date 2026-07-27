@@ -82,17 +82,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       if (value === undefined) {
         setInternalValue(val);
       }
-      
+
       if (selectRef.current) {
         selectRef.current.value = val;
-        const event = new Event('change', { bubbles: true });
-        selectRef.current.dispatchEvent(event);
-        
-        if (onChange) {
-           onChange({ target: { value: val, name: props.name } });
-        }
+        selectRef.current.dispatchEvent(new Event('change', { bubbles: true }));
       } else if (onChange) {
-         onChange({ target: { value: val, name: props.name } });
+        onChange({ target: { value: val, name: props.name } });
       }
 
       setIsOpen(false);
