@@ -84,8 +84,9 @@ if (!string.IsNullOrWhiteSpace(azureStorageConnString))
 }
 else
 {
-    // Fallback or log if missing
-    builder.Services.AddSingleton(x => new BlobServiceClient("UseDevelopmentStorage=true"));
+    if (!builder.Environment.IsDevelopment())
+        throw new InvalidOperationException("AzureStorage:ConnectionString is not configured.");
+    builder.Services.AddSingleton(_ => new BlobServiceClient("UseDevelopmentStorage=true"));
 }
 
 // 5. Application Services
