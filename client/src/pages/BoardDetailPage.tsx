@@ -28,6 +28,7 @@ import Modal from '../components/shared/Modal';
 import ErrorBanner from '../components/shared/ErrorBanner';
 import RoleGate from '../components/shared/RoleGate';
 import ConfirmDialog from '../components/shared/ConfirmDialog';
+import Select from '../components/shared/Select';
 import toast from 'react-hot-toast';
 
 function computeNewPosition(prevCard: TaskCard | undefined, nextCard: TaskCard | undefined): number {
@@ -90,6 +91,7 @@ export default function BoardDetailPage() {
     register: registerCard,
     handleSubmit: handleSubmitCard,
     reset: resetCardForm,
+    watch: watchCard,
     formState: { errors: cardErrors },
   } = useForm<CardFormData>({
     resolver: zodResolver(cardSchema),
@@ -410,22 +412,28 @@ export default function BoardDetailPage() {
 
           <div>
             <label className="form-label">Priority</label>
-            <select {...registerCard('priority')} className="form-select">
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-              <option value="Critical">Critical</option>
-            </select>
+            <Select 
+              {...registerCard('priority')} 
+              value={watchCard('priority')}
+              options={[
+                { value: 'Low', label: 'Low' },
+                { value: 'Medium', label: 'Medium' },
+                { value: 'High', label: 'High' },
+                { value: 'Critical', label: 'Critical' }
+              ]} 
+            />
           </div>
 
           <div>
             <label className="form-label">Assignee</label>
-            <select {...registerCard('assignedToId')} className="form-select">
-              <option value="">Unassigned</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>{u.name}</option>
-              ))}
-            </select>
+            <Select 
+              {...registerCard('assignedToId')} 
+              value={watchCard('assignedToId')}
+              options={[
+                { value: '', label: 'Unassigned' },
+                ...users.map(u => ({ value: u.id, label: u.name }))
+              ]} 
+            />
           </div>
 
           <div>

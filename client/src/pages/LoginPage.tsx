@@ -279,7 +279,7 @@ export default function LoginPage() {
                     )}
                   </div>
 
-                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '9999px' }}>
+                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', background: '#ffffff', color: '#000000', borderRadius: '9999px', border: 'none' }}>
                     Sign In
                   </Button>
                 </form>

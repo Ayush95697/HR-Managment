@@ -9,6 +9,7 @@ import Spinner from '../shared/Spinner';
 import Modal from '../shared/Modal';
 import ErrorBanner from '../shared/ErrorBanner';
 import ConfirmDialog from '../shared/ConfirmDialog';
+import Select from '../shared/Select';
 
 interface CardModalProps {
   cardId: string | null;
@@ -198,17 +199,17 @@ export default function CardModal({ cardId, boardId, onClose }: CardModalProps) 
                     <Flag size={14} /> Priority
                   </span>
                   {isEditing ? (
-                    <select
-                      className="form-select"
-                      style={{ width: '140px', padding: '4px 8px', fontSize: '0.8125rem' }}
+                    <Select
+                      style={{ width: '140px' }}
                       value={editPriority}
                       onChange={(e) => setEditPriority(e.target.value as 'Low' | 'Medium' | 'High' | 'Critical')}
-                    >
-                      <option value="Low">Low</option>
-                      <option value="Medium">Medium</option>
-                      <option value="High">High</option>
-                      <option value="Critical">Critical</option>
-                    </select>
+                      options={[
+                        { value: 'Low', label: 'Low' },
+                        { value: 'Medium', label: 'Medium' },
+                        { value: 'High', label: 'High' },
+                        { value: 'Critical', label: 'Critical' }
+                      ]}
+                    />
                   ) : (
                     <span style={{ fontWeight: 600, color: priorityColor }}>{currentPriority}</span>
                   )}
@@ -240,17 +241,15 @@ export default function CardModal({ cardId, boardId, onClose }: CardModalProps) 
                     <User size={14} /> Assignee
                   </span>
                   {isEditing ? (
-                    <select
-                      className="form-select"
-                      style={{ width: '140px', padding: '4px 8px', fontSize: '0.8125rem' }}
+                    <Select
+                      style={{ width: '140px' }}
                       value={editAssignee}
                       onChange={(e) => setEditAssignee(e.target.value)}
-                    >
-                      <option value="">Unassigned</option>
-                      {users.map((u) => (
-                        <option key={u.id} value={u.id}>{u.name}</option>
-                      ))}
-                    </select>
+                      options={[
+                        { value: '', label: 'Unassigned' },
+                        ...users.map((u) => ({ value: u.id, label: u.name }))
+                      ]}
+                    />
                   ) : (
                     <span style={{ color: 'var(--text-primary)' }}>
                       {card.assignedToName || 'Unassigned'}

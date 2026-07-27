@@ -124,7 +124,9 @@ export default function GlobalSearch() {
           />
           {query && (
             <button
-              onClick={() => {
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault(); // Prevents input from losing focus
                 setQuery('');
                 inputRef.current?.focus();
               }}
@@ -138,7 +140,8 @@ export default function GlobalSearch() {
                 color: 'var(--text-muted)',
                 cursor: 'pointer',
                 padding: 0,
-                display: 'flex'
+                display: 'flex',
+                zIndex: 20
               }}
             >
               <X size={14} />
@@ -152,10 +155,12 @@ export default function GlobalSearch() {
             top: 'calc(100% + 8px)',
             left: 0,
             right: 0,
-            backgroundColor: 'var(--surface)',
-            border: '1px solid var(--border)',
+            backgroundColor: 'rgba(8, 8, 12, 0.95)',
+            backdropFilter: 'blur(32px)',
+            WebkitBackdropFilter: 'blur(32px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '16px',
-            boxShadow: 'var(--shadow-lg)',
+            boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.6)',
             maxHeight: '400px',
             overflowY: 'auto',
             zIndex: 50,

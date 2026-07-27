@@ -12,6 +12,8 @@ import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
 import Modal from '../components/shared/Modal';
 import RoleGate from '../components/shared/RoleGate';
+import Select from '../components/shared/Select';
+import { WaterfallContainer, WaterfallItem } from '../components/shared/Waterfall';
 
 export default function BoardListPage() {
   const navigate = useNavigate();
@@ -27,6 +29,7 @@ export default function BoardListPage() {
     register,
     handleSubmit,
     reset,
+    watch,
     setValue,
     formState: { errors },
   } = useForm<BoardFormData>({
@@ -61,7 +64,7 @@ export default function BoardListPage() {
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
-    <div>
+    <WaterfallContainer staggerDelay={0.08}>
       {user?.role === 'Employee' ? (
         /* Header Banner - Organic Shape with Glassmorphism & Animated Borders */
         <motion.div
@@ -174,57 +177,64 @@ export default function BoardListPage() {
       )}
 
       {/* Search Input */}
-      <div style={{ position: 'relative', marginBottom: '24px', maxWidth: '360px' }}>
-        <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input
-          type="text"
-          className="form-input"
-          style={{ paddingLeft: '38px' }}
-          placeholder="Search boards..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+      <WaterfallItem>
+        <div style={{ position: 'relative', marginBottom: '24px', maxWidth: '360px' }}>
+          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input
+            type="text"
+            className="form-input"
+            style={{ paddingLeft: '38px' }}
+            placeholder="Search boards..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </WaterfallItem>
 
       {/* Boards Grid */}
       {filteredBoards.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px', backgroundColor: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-          <Kanban size={48} style={{ color: 'var(--text-muted)', marginBottom: '12px' }} />
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>No boards found</h3>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Try adjusting your search criteria or create a new board.</p>
-        </div>
+        <WaterfallItem>
+          <div style={{ textAlign: 'center', padding: '60px 20px', backgroundColor: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+            <Kanban size={48} style={{ color: 'var(--text-muted)', marginBottom: '12px' }} />
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>No boards found</h3>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Try adjusting your search criteria or create a new board.</p>
+          </div>
+        </WaterfallItem>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
           {filteredBoards.map((b) => (
-            <div
-              key={b.id}
-              onClick={() => navigate(`/boards/${b.id}`)}
-              style={{
-                backgroundColor: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '24px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(99, 102, 241, 0.15)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Kanban size={18} />
+            <WaterfallItem key={b.id}>
+              <motion.div
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate(`/boards/${b.id}`)}
+                style={{
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(99, 102, 241, 0.15)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Kanban size={18} />
+                  </div>
+                  <ArrowRight size={16} style={{ color: 'var(--text-muted)' }} />
                 </div>
-                <ArrowRight size={16} style={{ color: 'var(--text-muted)' }} />
-              </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>
-                {b.name}
-              </h3>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: '0 0 16px' }}>
-                Department: {b.departmentName || 'General'}
-              </p>
-              <div style={{ display: 'flex', gap: '16px', fontSize: '0.78rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                <span><Layers size={13} style={{ verticalAlign: 'middle' }} /> {b.columnCount || 0} columns</span>
-                <span>{b.cardCount || 0} tasks</span>
-              </div>
-            </div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>
+                  {b.name}
+                </h3>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: '0 0 16px' }}>
+                  Department: {b.departmentName || 'General'}
+                </p>
+                <div style={{ display: 'flex', gap: '16px', fontSize: '0.78rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+                  <span><Layers size={13} style={{ verticalAlign: 'middle' }} /> {b.columnCount || 0} columns</span>
+                  <span>{b.cardCount || 0} tasks</span>
+                </div>
+              </motion.div>
+            </WaterfallItem>
           ))}
         </div>
       )}
@@ -251,12 +261,14 @@ export default function BoardListPage() {
           {user?.role === 'Admin' ? (
             <div>
               <label className="form-label">Department</label>
-              <select {...register('departmentId')} className="form-select">
-                <option value="">Select Department</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
-                ))}
-              </select>
+              <Select 
+                {...register('departmentId')}
+                value={watch('departmentId')}
+                options={[
+                  { value: '', label: 'Select Department' },
+                  ...departments.map(d => ({ value: d.id, label: d.name }))
+                ]}
+              />
               {errors.departmentId && <span style={{ fontSize: '0.78rem', color: 'var(--danger)' }}>{errors.departmentId.message}</span>}
             </div>
           ) : (
@@ -272,6 +284,6 @@ export default function BoardListPage() {
           )}
         </form>
       </Modal>
-    </div>
+    </WaterfallContainer>
   );
 }

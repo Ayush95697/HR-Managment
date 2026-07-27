@@ -1,7 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import Spinner from './Spinner';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof HTMLMotionProps<"button">>, HTMLMotionProps<"button"> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
@@ -24,28 +25,33 @@ export default function Button({
     switch (variant) {
       case 'secondary':
         return {
-          backgroundColor: 'var(--surface-2, #1e293b)',
-          color: 'var(--text-primary, #f8fafc)',
-          border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          color: 'var(--text-primary)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 4px 12px -4px rgba(0, 0, 0, 0.2)',
         };
       case 'danger':
         return {
-          backgroundColor: 'var(--danger, #ef4444)',
+          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.85), rgba(220, 38, 38, 0.85))',
           color: '#ffffff',
-          border: 'none',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 8px 20px -6px rgba(239, 68, 68, 0.4)',
         };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
           color: 'var(--text-secondary, #94a3b8)',
-          border: 'none',
+          border: '1px solid transparent',
         };
       case 'primary':
       default:
         return {
-          backgroundColor: 'var(--accent, #6366f1)',
+          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9))',
           color: '#ffffff',
-          border: 'none',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 8px 25px -6px rgba(99, 102, 241, 0.5)',
         };
     }
   };
@@ -65,9 +71,14 @@ export default function Button({
   const variantStyle = getVariantStyles();
   const sizeStyle = getSizeStyles();
 
+  const isDisabled = disabled || isLoading;
+
   return (
-    <button
-      disabled={disabled || isLoading}
+    <motion.button
+      whileHover={isDisabled ? undefined : { scale: 1.02, filter: 'brightness(1.05)' }}
+      whileTap={isDisabled ? undefined : { scale: 0.97 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+      disabled={isDisabled}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -75,9 +86,8 @@ export default function Button({
         gap: '8px',
         borderRadius: 'var(--radius-md, 8px)',
         fontWeight: 600,
-        cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
-        opacity: disabled || isLoading ? 0.65 : 1,
-        transition: 'all 0.15s ease',
+        cursor: isDisabled ? 'not-allowed' : 'pointer',
+        opacity: isDisabled ? 0.65 : 1,
         ...variantStyle,
         ...sizeStyle,
         ...style,
@@ -93,6 +103,6 @@ export default function Button({
           {rightIcon}
         </>
       )}
-    </button>
+    </motion.button>
   );
 }

@@ -12,6 +12,7 @@ import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
 import Modal from '../components/shared/Modal';
 import ConfirmDialog from '../components/shared/ConfirmDialog';
+import Select from '../components/shared/Select';
 
 export default function UserManagementPage() {
   const { data: users = [], isLoading } = useUsers();
@@ -34,6 +35,7 @@ export default function UserManagementPage() {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
@@ -133,30 +135,28 @@ export default function UserManagementPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <select 
-            className="form-select" 
+          <Select 
             style={{ width: '150px' }} 
             value={selectedRole} 
             onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            <option value="All">All Roles</option>
-            <option value="Admin">Admin</option>
-            <option value="HR">HR</option>
-            <option value="Employee">Employee</option>
-          </select>
+            options={[
+              { value: 'All', label: 'All Roles' },
+              { value: 'Admin', label: 'Admin' },
+              { value: 'HR', label: 'HR' },
+              { value: 'Employee', label: 'Employee' }
+            ]}
+          />
 
-          <select 
-            className="form-select" 
+          <Select 
             style={{ width: '200px' }} 
             value={selectedDepartment} 
             onChange={(e) => setSelectedDepartment(e.target.value)}
-          >
-            <option value="All">All Departments</option>
-            <option value="Unassigned">Unassigned</option>
-            {departments.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
+            options={[
+              { value: 'All', label: 'All Departments' },
+              { value: 'Unassigned', label: 'Unassigned' },
+              ...departments.map(d => ({ value: d.id, label: d.name }))
+            ]}
+          />
 
           <Button leftIcon={<Plus size={16} />} onClick={() => { reset(); setShowCreateModal(true); }}>
             New User
@@ -261,21 +261,27 @@ export default function UserManagementPage() {
 
           <div>
             <label className="form-label">Role</label>
-            <select {...register('role')} className="form-select">
-              <option value="Employee">Employee</option>
-              <option value="HR">HR</option>
-              <option value="Admin">Admin</option>
-            </select>
+            <Select 
+              {...register('role')} 
+              value={watch('role')}
+              options={[
+                { value: 'Employee', label: 'Employee' },
+                { value: 'HR', label: 'HR' },
+                { value: 'Admin', label: 'Admin' }
+              ]} 
+            />
           </div>
 
           <div>
             <label className="form-label">Department</label>
-            <select {...register('departmentId')} className="form-select">
-              <option value="">Unassigned</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
-              ))}
-            </select>
+            <Select 
+              {...register('departmentId')} 
+              value={watch('departmentId')}
+              options={[
+                { value: '', label: 'Unassigned' },
+                ...departments.map(d => ({ value: d.id, label: d.name }))
+              ]} 
+            />
           </div>
         </form>
       </Modal>
@@ -301,21 +307,27 @@ export default function UserManagementPage() {
 
           <div>
             <label className="form-label">Role</label>
-            <select {...register('role')} className="form-select">
-              <option value="Employee">Employee</option>
-              <option value="HR">HR</option>
-              <option value="Admin">Admin</option>
-            </select>
+            <Select 
+              {...register('role')} 
+              value={watch('role')}
+              options={[
+                { value: 'Employee', label: 'Employee' },
+                { value: 'HR', label: 'HR' },
+                { value: 'Admin', label: 'Admin' }
+              ]} 
+            />
           </div>
 
           <div>
             <label className="form-label">Department</label>
-            <select {...register('departmentId')} className="form-select">
-              <option value="">Unassigned</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
-              ))}
-            </select>
+            <Select 
+              {...register('departmentId')} 
+              value={watch('departmentId')}
+              options={[
+                { value: '', label: 'Unassigned' },
+                ...departments.map(d => ({ value: d.id, label: d.name }))
+              ]} 
+            />
           </div>
         </form>
       </Modal>
