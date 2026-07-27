@@ -13,7 +13,7 @@ export function RangeSelector({ value, onChange, options }: RangeSelectorProps) 
           key={opt}
           onClick={() => onChange(opt)}
           style={{
-            background: value === opt ? 'var(--primary)' : 'transparent',
+            background: value === opt ? 'var(--accent)' : 'transparent',
             color: value === opt ? 'white' : 'var(--text-secondary)',
             border: 'none',
             padding: '4px 12px',
