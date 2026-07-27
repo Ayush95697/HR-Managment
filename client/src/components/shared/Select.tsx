@@ -113,8 +113,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {/* Custom UI */}
         <button
           type="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
           className={`form-select ${className || ''}`}
-          style={{ 
+          style={{
             ...style, 
             display: 'flex', 
             justifyContent: 'space-between', 
