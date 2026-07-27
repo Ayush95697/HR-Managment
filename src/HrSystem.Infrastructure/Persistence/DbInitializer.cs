@@ -223,7 +223,7 @@ public static class DbInitializer
         await context.SaveChangesAsync();
 
         // 6. Ensure Task Cards Exist for Velocity & Workload Balance
-        if (!await context.TaskCards.AnyAsync(t => t.CompletedAt != null))
+        if (!await context.TaskCards.AnyAsync(t => t.BoardId == board1Id || t.BoardId == board2Id))
         {
             var alexId = Guid.Parse("77777777-7777-7777-7777-777777777701");
             var davidId = Guid.Parse("77777777-7777-7777-7777-777777777702");
