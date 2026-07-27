@@ -20,11 +20,14 @@ public class DashboardService : IDashboardService
         _dbContext = dbContext;
     }
 
-    public async Task<List<TaskVelocityDto>> GetTaskVelocityAsync(int range, string interval, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
-    {
-        var since = DateTime.UtcNow.Date.AddDays(-range);
-        var query = _dbContext.TaskCards
-            .Where(c => c.CompletedAt != null && c.CompletedAt >= since);
+public async Task<List<TaskVelocityDto>> GetTaskVelocityAsync(int range, string interval, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+{
+    if (!string.Equals(interval, "day", StringComparison.OrdinalIgnoreCase))
+        throw new ArgumentException("Only 'day' interval is currently supported.", nameof(interval));
+
+    var since = DateTime.UtcNow.Date.AddDays(-range);
+    var query = _dbContext.TaskCards
+        .Where(c => c.CompletedAt != null && c.CompletedAt >= since);
 
         if (currentUserRole == RoleType.HR.ToString())
         {
