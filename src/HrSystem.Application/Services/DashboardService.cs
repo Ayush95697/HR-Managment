@@ -116,7 +116,7 @@ public async Task<List<TaskVelocityDto>> GetTaskVelocityAsync(int range, string 
 
         var taskEvents = await taskQuery
             .OrderByDescending(l => l.Timestamp)
-            .Take(pageSize * 2)
+            .Take(page * pageSize * 2)
             .Select(l => new ActivityFeedItemDto
             {
                 Id = l.Id,
@@ -128,7 +128,7 @@ public async Task<List<TaskVelocityDto>> GetTaskVelocityAsync(int range, string 
 
         var onboardingEvents = await userQuery
             .OrderByDescending(u => u.CreatedAt)
-            .Take(pageSize * 2)
+            .Take(page * pageSize * 2)
             .Select(u => new ActivityFeedItemDto
             {
                 Id = u.Id,
