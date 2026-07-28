@@ -48,11 +48,17 @@ namespace HrSystem.Application.Assistant.Nvidia
             HttpResponseMessage responseMessage;
             try
             {
-                responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                cts.CancelAfter(TimeSpan.FromSeconds(15));
+                responseMessage = await _httpClient.SendAsync(requestMessage, cts.Token);
             }
             catch (HttpRequestException ex)
             {
                 throw new InvalidOperationException("Network failure while calling the LLM API.", ex);
+            }
+            catch (TaskCanceledException ex)
+            {
+                throw new InvalidOperationException("The LLM API request timed out (NVIDIA is not responding).", ex);
             }
 
             if (!responseMessage.IsSuccessStatusCode)
