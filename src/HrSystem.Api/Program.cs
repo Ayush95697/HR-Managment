@@ -17,7 +17,7 @@ using HrSystem.Infrastructure.Persistence.Repositories;
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Services;
 using HrSystem.Application.Assistant.Builders;
-using HrSystem.Infrastructure.Assistant.Nvidia;
+using HrSystem.Application.Assistant.Nvidia;
 using HrSystem.Infrastructure.Assistant.Retrieval;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -65,6 +65,10 @@ if (string.IsNullOrWhiteSpace(jwtSettings.Secret) || jwtSettings.Secret.Length <
         "JwtSettings:Secret is not configured or is too short. Set it in appsettings.json or user-secrets.");
 
 builder.Services.AddSingleton(jwtSettings);
+
+// Assistant Settings
+builder.Services.Configure<HrSystem.Application.Assistant.Models.AssistantOptions>(
+    builder.Configuration.GetSection(HrSystem.Application.Assistant.Models.AssistantOptions.SectionName));
 
 // 2. DbContext
 builder.Services.AddDbContext<HrDbContext>(options =>
@@ -122,7 +126,8 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 // AI Assistant Module
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPromptBuilder, PromptBuilder>();
-builder.Services.AddScoped<ILLMClient, NvidiaNimClient>();
+builder.Services.AddHttpClient("NvidiaNimClient");
+builder.Services.AddScoped<ILLMClient, HrSystem.Application.Assistant.Nvidia.NvidiaNimClient>();
 builder.Services.AddScoped<IRetriever, SyntheticRetriever>();
 
 builder.Services.AddScoped<IContextBuilder, EmployeeContextBuilder>();
