@@ -4,43 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
-using HrSystem.Domain.Enums;
-using HrSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using HrSystem.Application.Interfaces.Repositories;
 
 namespace HrSystem.Application.Services;
 
 public class AuditService : IAuditService
 {
-    private readonly HrDbContext _dbContext;
+    private readonly IAuditRepository _auditRepository;
 
-    public AuditService(HrDbContext dbContext)
+    public AuditService(IAuditRepository auditRepository)
     {
-        _dbContext = dbContext;
+        _auditRepository = auditRepository;
     }
 
     public async Task<List<TaskActivityLogDto>> GetAuditLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var query = _dbContext.TaskActivityLogs
-            .Include(al => al.Actor)
-                .ThenInclude(a => a.Role)
-            .Include(al => al.FromColumn)
-            .Include(al => al.ToColumn)
-            .Include(al => al.TaskCard)
-                .ThenInclude(tc => tc.Board)
-            .AsQueryable();
+        var logs = await _auditRepository.GetAuditLogsAsync(currentUserRole, currentUserDeptId);
 
-        // BUG-10 FIX: AuditController is restricted to HR and Admin only at the controller level.
-        // The Employee branch below was dead code (employees can never reach this service method).
-        // Keeping only the HR department scope filter.
-        if (currentUserRole == RoleType.HR.ToString())
-        {
-            query = query.Where(al => al.TaskCard.Board.DepartmentId == currentUserDeptId);
-        }
-        // Admin sees all logs — no filter needed.
-
-        return await query
-            .OrderByDescending(al => al.Timestamp)
+        return logs
             .Select(al => new TaskActivityLogDto(
                 al.Id,
                 al.TaskCardId,
@@ -55,6 +36,6 @@ public class AuditService : IAuditService
                 al.Timestamp,
                 al.MetadataJson
             ))
-            .ToListAsync();
+            .ToList();
     }
 }

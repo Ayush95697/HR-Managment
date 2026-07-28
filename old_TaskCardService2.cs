@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -6,35 +6,27 @@ using System.Threading.Tasks;
 using HrSystem.Application.Common;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
-using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using Microsoft.EntityFrameworkCore; // For DbUpdateConcurrencyException
+using HrSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Application.Services;
 
 public class TaskCardService : ITaskCardService
 {
-    private readonly ITaskCardRepository _taskCardRepository;
-    private readonly IBoardRepository _boardRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly HrDbContext _dbContext;
     private readonly INotificationService _notificationService;
 
-    public TaskCardService(
-        ITaskCardRepository taskCardRepository, 
-        IBoardRepository boardRepository, 
-        IUserRepository userRepository, 
-        INotificationService notificationService)
+    public TaskCardService(HrDbContext dbContext, INotificationService notificationService)
     {
-        _taskCardRepository = taskCardRepository;
-        _boardRepository = boardRepository;
-        _userRepository = userRepository;
+        _dbContext = dbContext;
         _notificationService = notificationService;
     }
 
     public async Task<List<TaskCardDto>> GetCardsByBoardIdAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var board = await _boardRepository.GetBoardByIdAsync(boardId);
+        var board = await _dbContext.Boards.FindAsync(boardId);
         if (board == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
@@ -46,16 +38,19 @@ public class TaskCardService : ITaskCardService
         }
         else if (currentUserRole == RoleType.Employee.ToString())
         {
-            bool isAssigned = await _taskCardRepository.IsAssignedToBoardAsync(boardId, currentUserId);
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == boardId && c.AssignedToId == currentUserId);
             if (!isAssigned)
             {
                 throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards for a board you are not assigned to.");
             }
         }
 
-        var cards = await _taskCardRepository.GetCardsByBoardIdAsync(boardId);
-
-        return cards
+        return await _dbContext.TaskCards
+            .Include(c => c.Column)
+            .Include(c => c.AssignedTo)
+            .Include(c => c.CreatedBy)
+            .Where(c => c.BoardId == boardId)
+            .OrderBy(c => c.Position)
             .Select(c => new TaskCardDto(
                 c.Id,
                 c.BoardId,
@@ -75,12 +70,21 @@ public class TaskCardService : ITaskCardService
                 c.CreatedAt,
                 c.UpdatedAt
             ))
-            .ToList();
+            .ToListAsync();
     }
 
     public async Task<TaskCardDetailDto> GetCardByIdAsync(Guid cardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var card = await _taskCardRepository.GetCardByIdWithDetailsAsync(cardId);
+        var card = await _dbContext.TaskCards
+            .Include(c => c.Board)
+            .Include(c => c.Column)
+            .Include(c => c.AssignedTo)
+            .Include(c => c.CreatedBy)
+            .Include(c => c.Comments)
+                .ThenInclude(com => com.Author)
+            .Include(c => c.Attachments)
+                .ThenInclude(att => att.UploadedBy)
+            .FirstOrDefaultAsync(c => c.Id == cardId);
 
         if (card == null)
         {
@@ -93,7 +97,7 @@ public class TaskCardService : ITaskCardService
         }
         else if (currentUserRole == RoleType.Employee.ToString())
         {
-            bool isAssigned = await _taskCardRepository.IsAssignedToBoardAsync(card.BoardId, currentUserId);
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == card.BoardId && c.AssignedToId == currentUserId);
             if (!isAssigned)
             {
                 throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view cards from a board you are not assigned to.");
@@ -149,7 +153,7 @@ public class TaskCardService : ITaskCardService
 
     public async Task<TaskCardDto> CreateCardAsync(Guid boardId, CreateTaskCardRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var board = await _boardRepository.GetBoardByIdAsync(boardId);
+        var board = await _dbContext.Boards.FindAsync(boardId);
         if (board == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
@@ -160,13 +164,16 @@ public class TaskCardService : ITaskCardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only create cards in their own department.");
         }
 
-        var column = await _boardRepository.GetColumnByIdWithBoardAsync(request.ColumnId);
-        if (column == null || column.BoardId != boardId)
+        var column = await _dbContext.BoardColumns.FirstOrDefaultAsync(c => c.Id == request.ColumnId && c.BoardId == boardId);
+        if (column == null)
         {
             throw new ArgumentException($"Column ID {request.ColumnId} does not belong to Board {boardId}.");
         }
 
-        double lastPosition = await _taskCardRepository.GetMaxPositionAsync(request.ColumnId);
+        double lastPosition = await _dbContext.TaskCards
+            .Where(c => c.ColumnId == request.ColumnId)
+            .Select(c => (double?)c.Position)
+            .MaxAsync() ?? 0.0;
 
         double newPosition = PositionCalculator.CalculateNewEndPosition(lastPosition == 0.0 ? null : lastPosition);
 
@@ -188,7 +195,7 @@ public class TaskCardService : ITaskCardService
             UpdatedAt = DateTime.UtcNow
         };
 
-        await _taskCardRepository.AddAsync(card);
+        _dbContext.TaskCards.Add(card);
 
         // I-02 FIX: Use JsonSerializer to safely build MetadataJson (prevents JSON injection)
         var metadata = new { title = card.Title };
@@ -202,16 +209,19 @@ public class TaskCardService : ITaskCardService
             Timestamp = DateTime.UtcNow,
             MetadataJson = JsonSerializer.Serialize(metadata)
         };
-        await _taskCardRepository.AddActivityLogAsync(activityLog);
+        _dbContext.TaskActivityLogs.Add(activityLog);
 
-        await _taskCardRepository.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return await GetCardDtoByIdInternal(card.Id);
     }
 
     public async Task<TaskCardDto> PatchCardAsync(Guid cardId, PatchTaskCardRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var card = await _taskCardRepository.GetCardByIdWithBoardAndColumnAsync(cardId);
+        var card = await _dbContext.TaskCards
+            .Include(c => c.Board)
+            .Include(c => c.Column)
+            .FirstOrDefaultAsync(c => c.Id == cardId);
 
         if (card == null)
         {
@@ -241,8 +251,8 @@ public class TaskCardService : ITaskCardService
 
         if (request.ColumnId.HasValue && request.ColumnId.Value != card.ColumnId)
         {
-            var targetColumn = await _boardRepository.GetColumnByIdWithBoardAsync(request.ColumnId.Value);
-            if (targetColumn == null || targetColumn.BoardId != card.BoardId)
+            var targetColumn = await _dbContext.BoardColumns.FirstOrDefaultAsync(c => c.Id == request.ColumnId.Value && c.BoardId == card.BoardId);
+            if (targetColumn == null)
             {
                 throw new ArgumentException("Target column does not belong to the board.");
             }
@@ -282,7 +292,7 @@ public class TaskCardService : ITaskCardService
         // Log Activity based on action
         if (oldColumnId != card.ColumnId)
         {
-            await _taskCardRepository.AddActivityLogAsync(new TaskActivityLog
+            _dbContext.TaskActivityLogs.Add(new TaskActivityLog
             {
                 Id = Guid.NewGuid(),
                 TaskCardId = card.Id,
@@ -295,8 +305,8 @@ public class TaskCardService : ITaskCardService
 
             if (card.AssignedToId.HasValue)
             {
-                var actor = await _userRepository.GetUserByIdAsync(currentUserId);
-                var targetColumnName = (await _boardRepository.GetColumnByIdWithBoardAsync(card.ColumnId))?.Name ?? "another column";
+                var actor = await _dbContext.Users.FindAsync(currentUserId);
+                var targetColumnName = (await _dbContext.BoardColumns.FindAsync(card.ColumnId))?.Name ?? "another column";
                 await _notificationService.NotifyAsync(
                     recipientId: card.AssignedToId.Value,
                     actorId: currentUserId,
@@ -310,7 +320,7 @@ public class TaskCardService : ITaskCardService
         {
             // I-02 FIX: Safe JSON serialization for assignee metadata
             var assignMeta = new { assignedToId = card.AssignedToId?.ToString() };
-            await _taskCardRepository.AddActivityLogAsync(new TaskActivityLog
+            _dbContext.TaskActivityLogs.Add(new TaskActivityLog
             {
                 Id = Guid.NewGuid(),
                 TaskCardId = card.Id,
@@ -333,7 +343,7 @@ public class TaskCardService : ITaskCardService
         }
         else
         {
-            await _taskCardRepository.AddActivityLogAsync(new TaskActivityLog
+            _dbContext.TaskActivityLogs.Add(new TaskActivityLog
             {
                 Id = Guid.NewGuid(),
                 TaskCardId = card.Id,
@@ -343,7 +353,7 @@ public class TaskCardService : ITaskCardService
             });
         }
 
-        await _taskCardRepository.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return await GetCardDtoByIdInternal(card.Id);
     }
@@ -355,19 +365,21 @@ public class TaskCardService : ITaskCardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Only Admins can delete cards.");
         }
 
-        var card = await _taskCardRepository.GetCardByIdAsync(cardId);
+        var card = await _dbContext.TaskCards.FirstOrDefaultAsync(c => c.Id == cardId);
         if (card == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
         }
 
-        await _taskCardRepository.DeleteAsync(card);
-        await _taskCardRepository.SaveChangesAsync();
+        _dbContext.TaskCards.Remove(card);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<TaskCommentDto> AddCommentAsync(Guid cardId, CreateCommentRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var card = await _taskCardRepository.GetCardByIdWithBoardAndColumnAsync(cardId);
+        var card = await _dbContext.TaskCards
+            .Include(c => c.Board)
+            .FirstOrDefaultAsync(c => c.Id == cardId);
 
         if (card == null)
         {
@@ -379,7 +391,7 @@ public class TaskCardService : ITaskCardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees can only comment on tasks assigned directly to them.");
         }
 
-        var author = await _userRepository.GetUserByIdAsync(currentUserId);
+        var author = await _dbContext.Users.FindAsync(currentUserId);
         if (author == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException("Author user record not found.");
@@ -394,9 +406,9 @@ public class TaskCardService : ITaskCardService
             CreatedAt = DateTime.UtcNow
         };
 
-        await _taskCardRepository.AddCommentAsync(comment);
+        _dbContext.TaskComments.Add(comment);
 
-        await _taskCardRepository.AddActivityLogAsync(new TaskActivityLog
+        _dbContext.TaskActivityLogs.Add(new TaskActivityLog
         {
             Id = Guid.NewGuid(),
             TaskCardId = cardId,
@@ -427,7 +439,7 @@ public class TaskCardService : ITaskCardService
                 boardId: card.BoardId);
         }
 
-        await _taskCardRepository.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return new TaskCommentDto(
             comment.Id,
@@ -441,7 +453,9 @@ public class TaskCardService : ITaskCardService
 
     public async Task<List<TaskActivityLogDto>> GetCardActivityLogsAsync(Guid cardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var card = await _taskCardRepository.GetCardByIdWithBoardAndColumnAsync(cardId);
+        var card = await _dbContext.TaskCards
+            .Include(c => c.Board)
+            .FirstOrDefaultAsync(c => c.Id == cardId);
 
         if (card == null)
         {
@@ -454,16 +468,20 @@ public class TaskCardService : ITaskCardService
         }
         else if (currentUserRole == RoleType.Employee.ToString())
         {
-            bool isAssigned = await _taskCardRepository.IsAssignedToCardBoardAsync(card.Id, currentUserId);
+            bool isAssigned = await _dbContext.TaskCards.AnyAsync(c => c.BoardId == card.BoardId && c.AssignedToId == currentUserId);
             if (!isAssigned)
             {
                 throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Cannot view activity logs for a card on a board you are not assigned to.");
             }
         }
 
-        var logs = await _taskCardRepository.GetActivityLogsByCardIdAsync(cardId);
-
-        return logs
+        return await _dbContext.TaskActivityLogs
+            .Include(al => al.Actor)
+                .ThenInclude(a => a.Role)
+            .Include(al => al.FromColumn)
+            .Include(al => al.ToColumn)
+            .Where(al => al.TaskCardId == cardId)
+            .OrderByDescending(al => al.Timestamp)
             .Select(al => new TaskActivityLogDto(
                 al.Id,
                 al.TaskCardId,
@@ -478,12 +496,16 @@ public class TaskCardService : ITaskCardService
                 al.Timestamp,
                 al.MetadataJson
             ))
-            .ToList();
+            .ToListAsync();
     }
 
     private async Task<TaskCardDto> GetCardDtoByIdInternal(Guid cardId)
     {
-        var card = await _taskCardRepository.GetCardWithDetailsInternalAsync(cardId);
+        var card = await _dbContext.TaskCards
+            .Include(c => c.Column)
+            .Include(c => c.AssignedTo)
+            .Include(c => c.CreatedBy)
+            .FirstAsync(c => c.Id == cardId);
 
         return new TaskCardDto(
             card.Id,
@@ -506,3 +528,4 @@ public class TaskCardService : ITaskCardService
         );
     }
 }
+

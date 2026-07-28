@@ -8,10 +8,17 @@ using FluentValidation.AspNetCore;
 using HrSystem.Api.Filters;
 using HrSystem.Api.Middleware;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Application.Services;
 using HrSystem.Application.Validators;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Infrastructure.Persistence.Repositories;
+using HrSystem.Application.Assistant.Interfaces;
+using HrSystem.Application.Assistant.Services;
+using HrSystem.Application.Assistant.Builders;
+using HrSystem.Infrastructure.Assistant.Nvidia;
+using HrSystem.Infrastructure.Assistant.Retrieval;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -90,6 +97,16 @@ else
 }
 
 // 5. Application Services
+builder.Services.AddScoped<IAuditRepository, AuditRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<ITaskCardRepository, TaskCardRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
@@ -101,6 +118,16 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+// AI Assistant Module
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IPromptBuilder, PromptBuilder>();
+builder.Services.AddScoped<ILLMClient, NvidiaNimClient>();
+builder.Services.AddScoped<IRetriever, SyntheticRetriever>();
+
+builder.Services.AddScoped<IContextBuilder, EmployeeContextBuilder>();
+builder.Services.AddScoped<IContextBuilder, HrContextBuilder>();
+builder.Services.AddScoped<IContextBuilder, AdminContextBuilder>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();

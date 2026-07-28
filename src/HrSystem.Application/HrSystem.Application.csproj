@@ -1,8 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\HrSystem.Domain\HrSystem.Domain.csproj" />
-    <ProjectReference Include="..\HrSystem.Infrastructure\HrSystem.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

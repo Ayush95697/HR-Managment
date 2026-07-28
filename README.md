@@ -95,3 +95,4 @@ To run the tests:
 ```bash
 dotnet test
 ```
+To run -- .\run.bat
