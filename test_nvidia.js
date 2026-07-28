@@ -1,3 +1,4 @@
+require('dotenv').config();
 const https = require('https');
 
 const data = JSON.stringify({
@@ -11,7 +12,7 @@ const options = {
   path: '/v1/chat/completions',
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer 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',
+    'Authorization': `Bearer ${process.env.NVIDIA_API_KEY}`,
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(data)
   }
