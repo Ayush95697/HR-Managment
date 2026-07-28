@@ -229,6 +229,14 @@ public class BoardService : IBoardService
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
         }
 
+        // Delete associated cards to satisfy FK constraints (TaskCard.BoardId has NoAction)
+        var cards = await _dbContext.TaskCards.Where(c => c.BoardId == boardId).ToListAsync();
+        _dbContext.TaskCards.RemoveRange(cards);
+
+        // Delete associated columns to satisfy any potential constraints
+        var columns = await _dbContext.BoardColumns.Where(c => c.BoardId == boardId).ToListAsync();
+        _dbContext.BoardColumns.RemoveRange(columns);
+
         _dbContext.Boards.Remove(board);
         await _dbContext.SaveChangesAsync();
     }
