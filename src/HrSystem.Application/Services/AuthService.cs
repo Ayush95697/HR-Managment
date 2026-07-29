@@ -1,32 +1,30 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Domain.Entities;
-using HrSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly HrDbContext _dbContext;
+    private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly JwtSettings _jwtSettings;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
-        HrDbContext dbContext,
+        IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator,
         JwtSettings jwtSettings,
         ILogger<AuthService> logger)
     {
-        _dbContext = dbContext;
+        _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _jwtTokenGenerator = jwtTokenGenerator;
         _jwtSettings = jwtSettings;
@@ -40,29 +38,24 @@ public class AuthService : IAuthService
             return null;
         }
 
-        string normalizedEmail = request.Email.Trim().ToLower();
-
-        var user = await _dbContext.Users
-            .Include(u => u.Role)
-            .Include(u => u.Department)
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail);
+        var user = await _userRepository.GetUserByEmailWithDetailsAsync(request.Email);
 
         if (user == null)
         {
-            _logger.LogWarning("Login failed: User with email '{Email}' not found in database.", normalizedEmail);
+            _logger.LogWarning("Login failed: User with email '{Email}' not found in database.", request.Email);
             return null;
         }
 
         if (!user.IsActive)
         {
-            _logger.LogWarning("Login failed: User '{Email}' is inactive.", normalizedEmail);
+            _logger.LogWarning("Login failed: User '{Email}' is inactive.", request.Email);
             return null;
         }
 
         bool isPasswordValid = _passwordHasher.VerifyPassword(request.Password.Trim(), user.PasswordHash);
         if (!isPasswordValid)
         {
-            _logger.LogWarning("Login failed: Password mismatch for user '{Email}'.", normalizedEmail);
+            _logger.LogWarning("Login failed: Password mismatch for user '{Email}'.", request.Email);
             return null;
         }
 
@@ -70,11 +63,7 @@ public class AuthService : IAuthService
         var rawRefreshToken = _jwtTokenGenerator.GenerateRefreshToken();
         var hashedRefreshToken = _jwtTokenGenerator.HashRefreshToken(rawRefreshToken);
 
-        // I-04 FIX: Clean up expired and revoked tokens for this user before creating a new one
-        var staleTokens = await _dbContext.RefreshTokens
-            .Where(rt => rt.UserId == user.Id && (rt.RevokedAt != null || rt.ExpiresAt <= DateTime.UtcNow))
-            .ToListAsync();
-        _dbContext.RefreshTokens.RemoveRange(staleTokens);
+        await _userRepository.RemoveStaleRefreshTokensAsync(user.Id);
 
         var refreshTokenEntity = new RefreshToken
         {
@@ -84,8 +73,8 @@ public class AuthService : IAuthService
             ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         };
 
-        _dbContext.RefreshTokens.Add(refreshTokenEntity);
-        await _dbContext.SaveChangesAsync();
+        await _userRepository.AddRefreshTokenAsync(refreshTokenEntity);
+        await _userRepository.SaveChangesAsync();
 
         var userSummary = new UserSummaryDto(
             user.Id,
@@ -106,12 +95,7 @@ public class AuthService : IAuthService
     {
         var hashedToken = _jwtTokenGenerator.HashRefreshToken(request.RefreshToken);
 
-        var tokenEntity = await _dbContext.RefreshTokens
-            .Include(rt => rt.User)
-                .ThenInclude(u => u.Role)
-            .Include(rt => rt.User)
-                .ThenInclude(u => u.Department)
-            .FirstOrDefaultAsync(rt => rt.TokenHash == hashedToken);
+        var tokenEntity = await _userRepository.GetRefreshTokenWithDetailsAsync(hashedToken);
 
         if (tokenEntity == null || !tokenEntity.IsActive || !tokenEntity.User.IsActive)
         {
@@ -134,8 +118,8 @@ public class AuthService : IAuthService
             ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
         };
 
-        _dbContext.RefreshTokens.Add(newRefreshTokenEntity);
-        await _dbContext.SaveChangesAsync();
+        await _userRepository.AddRefreshTokenAsync(newRefreshTokenEntity);
+        await _userRepository.SaveChangesAsync();
 
         var userSummary = new UserSummaryDto(
             tokenEntity.User.Id,
@@ -155,12 +139,12 @@ public class AuthService : IAuthService
     public async Task RevokeTokenAsync(string refreshToken)
     {
         var hashedToken = _jwtTokenGenerator.HashRefreshToken(refreshToken);
-        var tokenEntity = await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenHash == hashedToken);
+        var tokenEntity = await _userRepository.GetRefreshTokenAsync(hashedToken);
 
         if (tokenEntity != null && tokenEntity.IsActive)
         {
             tokenEntity.RevokedAt = DateTime.UtcNow;
-            await _dbContext.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync();
         }
     }
 }

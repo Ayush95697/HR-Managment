@@ -5,27 +5,29 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using HrSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Application.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly HrDbContext _dbContext;
+    private readonly IEmailRepository _emailRepository;
+    private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
 
-    public EmailService(HrDbContext dbContext, INotificationService notificationService)
+    public EmailService(IEmailRepository emailRepository, IUserRepository userRepository, INotificationService notificationService)
     {
-        _dbContext = dbContext;
+        _emailRepository = emailRepository;
+        _userRepository = userRepository;
         _notificationService = notificationService;
     }
 
     public async Task<List<EmailTemplateDto>> GetTemplatesAsync()
     {
-        return await _dbContext.EmailTemplates
+        var templates = await _emailRepository.GetTemplatesAsync();
+        return templates
             .Select(t => new EmailTemplateDto(
                 t.Id,
                 t.Name,
@@ -33,7 +35,7 @@ public class EmailService : IEmailService
                 t.BodyHtml,
                 t.PlaceholderSchemaJson
             ))
-            .ToListAsync();
+            .ToList();
     }
 
     public async Task<EmailTemplateDto> CreateTemplateAsync(CreateEmailTemplateRequest request)
@@ -47,8 +49,8 @@ public class EmailService : IEmailService
             PlaceholderSchemaJson = request.PlaceholderSchemaJson
         };
 
-        _dbContext.EmailTemplates.Add(template);
-        await _dbContext.SaveChangesAsync();
+        await _emailRepository.AddTemplateAsync(template);
+        await _emailRepository.SaveChangesAsync();
 
         return new EmailTemplateDto(
             template.Id,
@@ -62,11 +64,7 @@ public class EmailService : IEmailService
     public async Task<EmailLogDto> SendEmailAsync(SendEmailRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
         // 1. Idempotency Check
-        var existingLog = await _dbContext.EmailLogs
-            .Include(el => el.ToUser)
-            .Include(el => el.Template)
-            .Include(el => el.SentBy)
-            .FirstOrDefaultAsync(el => el.IdempotencyKey == request.IdempotencyKey);
+        var existingLog = await _emailRepository.GetLogByIdempotencyKeyAsync(request.IdempotencyKey);
 
         if (existingLog != null)
         {
@@ -74,7 +72,7 @@ public class EmailService : IEmailService
         }
 
         // 2. Target user check & Dept scope check
-        var toUser = await _dbContext.Users.FindAsync(request.ToUserId);
+        var toUser = await _userRepository.GetUserByIdAsync(request.ToUserId);
         if (toUser == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Recipient User with ID {request.ToUserId} not found.");
@@ -85,7 +83,7 @@ public class EmailService : IEmailService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only send emails to users within their own department.");
         }
 
-        var template = await _dbContext.EmailTemplates.FindAsync(request.TemplateId);
+        var template = await _emailRepository.GetTemplateByIdAsync(request.TemplateId);
         if (template == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Email Template with ID {request.TemplateId} not found.");
@@ -125,52 +123,17 @@ public class EmailService : IEmailService
                 message: $"Email to {toUser.Name} failed to send");
         }
 
-        _dbContext.EmailLogs.Add(log);
-        await _dbContext.SaveChangesAsync();
+        await _emailRepository.AddLogAsync(log);
+        await _emailRepository.SaveChangesAsync();
 
-        return await GetLogByIdAsync(log.Id);
+        var createdLog = await _emailRepository.GetLogByIdWithDetailsAsync(log.Id);
+        return MapToDto(createdLog);
     }
 
     public async Task<List<EmailLogDto>> GetLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        IQueryable<EmailLog> query = _dbContext.EmailLogs
-            .Include(el => el.ToUser)
-            .Include(el => el.Template)
-            .Include(el => el.SentBy);
-
-        if (currentUserRole == RoleType.HR.ToString())
-        {
-            query = query.Where(el => el.SentById == currentUserId || el.ToUser.DepartmentId == currentUserDeptId);
-        }
-
-        return await query
-            .OrderByDescending(el => el.QueuedAt)
-            .Select(el => new EmailLogDto(
-                el.Id,
-                el.ToUserId,
-                el.ToUser.Email,
-                el.TemplateId,
-                el.Template.Name,
-                el.SentById,
-                el.SentBy.Name,
-                el.Status,
-                el.IdempotencyKey,
-                el.ErrorMessage,
-                el.QueuedAt,
-                el.SentAt
-            ))
-            .ToListAsync();
-    }
-
-    private async Task<EmailLogDto> GetLogByIdAsync(Guid id)
-    {
-        var el = await _dbContext.EmailLogs
-            .Include(l => l.ToUser)
-            .Include(l => l.Template)
-            .Include(l => l.SentBy)
-            .FirstAsync(l => l.Id == id);
-
-        return MapToDto(el);
+        var logs = await _emailRepository.GetLogsAsync(currentUserId, currentUserRole, currentUserDeptId);
+        return logs.Select(MapToDto).ToList();
     }
 
     private static EmailLogDto MapToDto(EmailLog el)
@@ -207,4 +170,3 @@ public class EmailService : IEmailService
         });
     }
 }
-

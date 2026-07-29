@@ -4,33 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using HrSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Application.Services;
 
 public class DepartmentService : IDepartmentService
 {
-    private readonly HrDbContext _dbContext;
+    private readonly IDepartmentRepository _departmentRepository;
 
-    public DepartmentService(HrDbContext dbContext)
+    public DepartmentService(IDepartmentRepository departmentRepository)
     {
-        _dbContext = dbContext;
+        _departmentRepository = departmentRepository;
     }
 
     public async Task<List<DepartmentDto>> GetDepartmentsAsync()
     {
-        // BUG-07 FIX: Use a subquery count instead of unloaded d.Users navigation property.
-        // Lazy loading is not configured; calling d.Users.Count() without Include would return 0.
-        var departments = await _dbContext.Departments.ToListAsync();
-
-        var activeUserCounts = await _dbContext.Users
-            .Where(u => u.IsActive && u.DepartmentId != null)
-            .GroupBy(u => u.DepartmentId!.Value)
-            .Select(g => new { DepartmentId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.DepartmentId, x => x.Count);
+        var departments = await _departmentRepository.GetAllAsync();
+        var activeUserCounts = await _departmentRepository.GetActiveUserCountsAsync();
 
         return departments
             .Select(d => new DepartmentDto(
@@ -43,7 +35,7 @@ public class DepartmentService : IDepartmentService
 
     public async Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentRequest request)
     {
-        if (await _dbContext.Departments.AnyAsync(d => d.Name.ToLower() == request.Name.ToLower()))
+        if (await _departmentRepository.ExistsByNameAsync(request.Name))
         {
             throw new InvalidOperationException($"Department with name '{request.Name}' already exists.");
         }
@@ -54,21 +46,43 @@ public class DepartmentService : IDepartmentService
             Name = request.Name
         };
 
-        _dbContext.Departments.Add(department);
-        await _dbContext.SaveChangesAsync();
+        await _departmentRepository.AddAsync(department);
+        await _departmentRepository.SaveChangesAsync();
 
         return new DepartmentDto(department.Id, department.Name, 0);
     }
 
     public async Task DeleteDepartmentAsync(Guid id)
     {
-        var department = await _dbContext.Departments.FindAsync(id);
+        var department = await _departmentRepository.GetByIdAsync(id);
         if (department == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Department with ID {id} not found.");
         }
 
-        _dbContext.Departments.Remove(department);
-        await _dbContext.SaveChangesAsync();
+        await _departmentRepository.DeleteAsync(department);
+        await _departmentRepository.SaveChangesAsync();
+    }
+
+    public async Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.DepartmentQuery? query = null)
+    {
+        // Enforce RBAC
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view department statistics.");
+        }
+
+        Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        if (query?.DepartmentId != null)
+        {
+            if (currentUserRole == RoleType.HR.ToString() && query.DepartmentId != currentUserDeptId)
+            {
+                return new List<DepartmentStatisticsDto>();
+            }
+            departmentFilter = query.DepartmentId;
+        }
+
+        return await _departmentRepository.GetDepartmentStatisticsAsync(departmentFilter);
     }
 }

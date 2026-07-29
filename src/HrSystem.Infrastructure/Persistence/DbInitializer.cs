@@ -283,6 +283,29 @@ public static class DbInitializer
 
             context.TaskActivityLogs.AddRange(sampleLogs);
             await context.SaveChangesAsync();
+
+            // 7. Seed Legacy Test Card
+            Guid legacyCardId = Guid.Parse("d1111111-1111-1111-1111-111111111111");
+            if (!await context.TaskCards.AnyAsync(c => c.Id == legacyCardId))
+            {
+                var sampleCard = new TaskCard
+                {
+                    Id = legacyCardId,
+                    BoardId = board1Id,
+                    ColumnId = c1TodoId,
+                    AssignedToId = employeeUserId,
+                    Title = "Complete HR Profile Information",
+                    Description = "Please fill in tax details and emergency contacts.",
+                    Priority = TaskPriority.High,
+                    CreatedById = hrUserId,
+                    Position = 1024.0,
+                    RowVersion = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1 },
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                context.TaskCards.Add(sampleCard);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

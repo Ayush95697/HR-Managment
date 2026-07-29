@@ -8,10 +8,17 @@ using FluentValidation.AspNetCore;
 using HrSystem.Api.Filters;
 using HrSystem.Api.Middleware;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Application.Services;
 using HrSystem.Application.Validators;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Infrastructure.Persistence.Repositories;
+using HrSystem.Application.Assistant.Interfaces;
+using HrSystem.Application.Assistant.Services;
+using HrSystem.Application.Assistant.Builders;
+using HrSystem.Application.Assistant.Nvidia;
+using HrSystem.Infrastructure.Assistant.Retrieval;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -59,6 +66,10 @@ if (string.IsNullOrWhiteSpace(jwtSettings.Secret) || jwtSettings.Secret.Length <
 
 builder.Services.AddSingleton(jwtSettings);
 
+// Assistant Settings
+builder.Services.Configure<HrSystem.Application.Assistant.Models.AssistantOptions>(
+    builder.Configuration.GetSection(HrSystem.Application.Assistant.Models.AssistantOptions.SectionName));
+
 // 2. DbContext
 builder.Services.AddDbContext<HrDbContext>(options =>
 {
@@ -90,6 +101,16 @@ else
 }
 
 // 5. Application Services
+builder.Services.AddScoped<IAuditRepository, AuditRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<ITaskCardRepository, TaskCardRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
@@ -101,6 +122,37 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+// AI Assistant Module
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IPromptBuilder, PromptBuilder>();
+builder.Services.AddHttpClient("NvidiaNimClient");
+builder.Services.AddScoped<ILLMClient, HrSystem.Application.Assistant.Nvidia.NvidiaNimClient>();
+builder.Services.AddScoped<IRetriever, SyntheticRetriever>();
+
+builder.Services.AddScoped<IContextBuilder, EmployeeContextBuilder>();
+builder.Services.AddScoped<IContextBuilder, HrContextBuilder>();
+builder.Services.AddScoped<IContextBuilder, AdminContextBuilder>();
+
+// Capability System
+builder.Services.AddScoped<HrSystem.Application.Assistant.IntentRouting.IIntentRouter, HrSystem.Application.Assistant.IntentRouting.IntentRouter>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.ICapabilityResolver, HrSystem.Application.Assistant.Capabilities.CapabilityResolver>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.TaskCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.DepartmentCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.EmployeeCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.BoardCapability>();
+
+// Parameter Extractors
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IParameterExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.MainParameterExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IDepartmentExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.DepartmentExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.ITaskExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.TaskExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IEmployeeExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.EmployeeExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IBoardExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.BoardExtractor>();
+
+// Response Strategies
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategyResolver, HrSystem.Application.Assistant.ResponseStrategies.Implementations.ResponseStrategyResolver>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.TemplateResponseStrategy>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.LlmResponseStrategy>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();

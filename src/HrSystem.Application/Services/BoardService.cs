@@ -4,48 +4,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using HrSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Application.Services;
 
 public class BoardService : IBoardService
 {
-    private readonly HrDbContext _dbContext;
+    private readonly IBoardRepository _boardRepository;
+    private readonly IDepartmentRepository _departmentRepository;
+    private readonly IUserRepository _userRepository;
 
-    public BoardService(HrDbContext dbContext)
+    public BoardService(IBoardRepository boardRepository, IDepartmentRepository departmentRepository, IUserRepository userRepository)
     {
-        _dbContext = dbContext;
+        _boardRepository = boardRepository;
+        _departmentRepository = departmentRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<List<BoardDto>> GetBoardsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        IQueryable<Board> query = _dbContext.Boards
-            .Include(b => b.Owner)
-            .Include(b => b.Department)
-            .Include(b => b.Columns)
-            .Include(b => b.Cards);
+        var boards = await _boardRepository.GetBoardsAsync(currentUserId, currentUserRole, currentUserDeptId);
 
-        if (currentUserRole == RoleType.HR.ToString())
-        {
-            if (!currentUserDeptId.HasValue)
-            {
-                query = query.Where(b => false); // HR without department sees no boards
-            }
-            else
-            {
-                query = query.Where(b => b.DepartmentId == currentUserDeptId.Value);
-            }
-        }
-        else if (currentUserRole == RoleType.Employee.ToString())
-        {
-            // Employees only see boards WHERE they are assigned to at least one card, regardless of department
-            query = query.Where(b => b.Cards.Any(c => c.AssignedToId == currentUserId));
-        }
-
-        return await query
+        return boards
             .Select(b => new BoardDto(
                 b.Id,
                 b.Name,
@@ -58,23 +40,14 @@ public class BoardService : IBoardService
                 b.Columns.Count,
                 b.Cards.Count
             ))
-            .ToListAsync();
+            .ToList();
     }
 
     public async Task<BoardDetailDto> GetBoardByIdAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
         // BUG-15 FIX: Removed the duplicate .Include(b => b.Columns) chain.
         // Use a single Include chain with separate ThenInclude paths.
-        var board = await _dbContext.Boards
-            .Include(b => b.Owner)
-            .Include(b => b.Department)
-            .Include(b => b.Columns.OrderBy(c => c.Order))
-                .ThenInclude(c => c.Cards.OrderBy(card => card.Position))
-                    .ThenInclude(card => card.AssignedTo)
-            .Include(b => b.Columns.OrderBy(c => c.Order))
-                .ThenInclude(c => c.Cards.OrderBy(card => card.Position))
-                    .ThenInclude(card => card.CreatedBy)
-            .FirstOrDefaultAsync(b => b.Id == boardId);
+        var board = await _boardRepository.GetBoardByIdWithDetailsAsync(boardId);
 
         if (board == null)
         {
@@ -148,7 +121,7 @@ public class BoardService : IBoardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only create boards for their own department.");
         }
 
-        var department = await _dbContext.Departments.FindAsync(request.DepartmentId);
+        var department = await _departmentRepository.GetByIdAsync(request.DepartmentId);
         if (department == null)
         {
             throw new ArgumentException($"Department ID {request.DepartmentId} not found.");
@@ -168,10 +141,10 @@ public class BoardService : IBoardService
         board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "In Progress", Order = 1 });
         board.Columns.Add(new BoardColumn { Id = Guid.NewGuid(), BoardId = board.Id, Name = "Done", Order = 2, IsDoneColumn = true });
 
-        _dbContext.Boards.Add(board);
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.AddAsync(board);
+        await _boardRepository.SaveChangesAsync();
 
-        var owner = await _dbContext.Users.FindAsync(currentUserId);
+        var owner = await _userRepository.GetUserByIdAsync(currentUserId);
 
         return new BoardDto(
             board.Id,
@@ -188,12 +161,7 @@ public class BoardService : IBoardService
 
     public async Task<BoardDto> UpdateBoardAsync(Guid boardId, UpdateBoardRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var board = await _dbContext.Boards
-            .Include(b => b.Owner)
-            .Include(b => b.Department)
-            .Include(b => b.Columns)
-            .Include(b => b.Cards)
-            .FirstOrDefaultAsync(b => b.Id == boardId);
+        var board = await _boardRepository.GetBoardByIdWithFullDetailsAsync(boardId);
 
         if (board == null)
         {
@@ -206,7 +174,7 @@ public class BoardService : IBoardService
         }
 
         board.Name = request.Name;
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.SaveChangesAsync();
 
         return new BoardDto(
             board.Id,
@@ -223,28 +191,20 @@ public class BoardService : IBoardService
 
     public async Task DeleteBoardAsync(Guid boardId)
     {
-        var board = await _dbContext.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
+        var board = await _boardRepository.GetBoardByIdAsync(boardId);
         if (board == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
         }
 
-        // Delete associated cards to satisfy FK constraints (TaskCard.BoardId has NoAction)
-        var cards = await _dbContext.TaskCards.Where(c => c.BoardId == boardId).ToListAsync();
-        _dbContext.TaskCards.RemoveRange(cards);
-
-        // Delete associated columns to satisfy any potential constraints
-        var columns = await _dbContext.BoardColumns.Where(c => c.BoardId == boardId).ToListAsync();
-        _dbContext.BoardColumns.RemoveRange(columns);
-
-        _dbContext.Boards.Remove(board);
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.DeleteAsync(board);
+        await _boardRepository.SaveChangesAsync();
     }
 
     // Columns
     public async Task<BoardColumnDto> CreateColumnAsync(Guid boardId, CreateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var board = await _dbContext.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
+        var board = await _boardRepository.GetBoardByIdAsync(boardId);
         if (board == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
@@ -263,21 +223,15 @@ public class BoardService : IBoardService
             Order = request.Order
         };
 
-        _dbContext.BoardColumns.Add(column);
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.AddColumnAsync(column);
+        await _boardRepository.SaveChangesAsync();
 
         return new BoardColumnDto(column.Id, column.BoardId, column.Name, column.Order, column.IsDoneColumn, new List<TaskCardDto>());
     }
 
     public async Task<BoardColumnDto> UpdateColumnAsync(Guid columnId, UpdateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var column = await _dbContext.BoardColumns
-            .Include(c => c.Board)
-            .Include(c => c.Cards.OrderBy(card => card.Position))
-                .ThenInclude(card => card.AssignedTo)
-            .Include(c => c.Cards.OrderBy(card => card.Position))
-                .ThenInclude(card => card.CreatedBy)
-            .FirstOrDefaultAsync(c => c.Id == columnId);
+        var column = await _boardRepository.GetColumnByIdWithCardsAsync(columnId);
 
         if (column == null)
         {
@@ -300,7 +254,7 @@ public class BoardService : IBoardService
                 card.CompletedAt = column.IsDoneColumn ? now : null;
             }
         }
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.SaveChangesAsync();
 
         // BUG-12 FIX: Return the actual cards in the column, not an empty list
         var cardDtos = column.Cards
@@ -329,9 +283,7 @@ public class BoardService : IBoardService
 
     public async Task DeleteColumnAsync(Guid columnId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        var column = await _dbContext.BoardColumns
-            .Include(c => c.Board)
-            .FirstOrDefaultAsync(c => c.Id == columnId);
+        var column = await _boardRepository.GetColumnByIdWithBoardAsync(columnId);
 
         if (column == null)
         {
@@ -343,8 +295,20 @@ public class BoardService : IBoardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only delete columns in their department.");
         }
 
-        _dbContext.BoardColumns.Remove(column);
-        await _dbContext.SaveChangesAsync();
+        await _boardRepository.DeleteColumnAsync(column);
+        await _boardRepository.SaveChangesAsync();
+    }
+
+    public async Task<List<BoardStatisticsDto>> GetBoardStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.BoardQuery? query = null)
+    {
+        // Enforce RBAC
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view overall board statistics.");
+        }
+
+        Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        return await _boardRepository.GetBoardStatisticsAsync(departmentFilter, query);
     }
 }
-

@@ -1,0 +1,43 @@
+*   [33m69a1677[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mAi[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/Ai[m[33m, [m[1;32mmain[m[33m)[m Merge branch 'main' of https://github.com/Ayush95697/HR-Managment
+[31m|[m[32m\[m  
+[31m|[m * [33m4c55457[m feat(ui): global glassmorphism and branding enhancements (#4)
+[31m|[m [32m|[m * [33m72b3243[m[33m ([m[1;31morigin/feat/ui-glassmorphism-enhancements[m[33m)[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m3db4516[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m50b7316[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m25b5d00[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m62daff5[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m5087ee3[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m48f9906[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33me2457dc[m Potential fix for pull request finding
+[31m|[m [32m|[m * [33m234eb4e[m Potential fix for pull request finding
+[31m|[m [32m|[m[31m/[m  
+[31m|[m[31m/[m[32m|[m   
+* [32m|[m [33m2bb56a5[m feat: implement initial core UI pages, layout components, and shared UI primitives
+* [32m|[m [33mbbd0138[m feat: implement avatar upload and management functionality for user profiles
+* [32m|[m [33m0cedbf3[m feat: implement AvatarService for processing and uploading user profile images to Azure Blob Storage
+* [32m|[m [33m2646c09[m fix(ui): restore password autofill using base64 obfuscation
+* [32m|[m [33m8e799c6[m feat(ui): global glassmorphism and branding enhancements
+[32m|[m[32m/[m  
+*   [33m33a8a98[m Merge pull request #3 from Ayush95697/Ai
+[34m|[m[35m\[m  
+[34m|[m *   [33mf054687[m Merge pull request #2 from Ayush95697/main
+[34m|[m [36m|[m[34m\[m  
+[34m|[m [36m|[m[34m/[m  
+[34m|[m[34m/[m[36m|[m   
+* [36m|[m   [33m782436e[m Created a bat file
+[36m|[m[1;33m\[m [36m\[m  
+[36m|[m [1;33m|[m[36m/[m  
+[36m|[m[36m/[m[1;33m|[m   
+[36m|[m * [33m81f50a0[m feat: Implement Notifications, Global Search, User Profiles, and HR Management Rules
+[36m|[m *   [33maf41924[m Merge pull request #1 from Ayush95697/Ai
+[36m|[m [1;34m|[m[1;35m\[m  
+* [1;34m|[m [1;35m|[m [33m8ee7728[m feat: initialize HR Management API project with authentication, dependency injection, and startup orchestration script
+* [1;34m|[m [1;35m|[m [33m8bd5209[m Adding Critical option
+[1;35m|[m [1;34m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[1;34m|[m   
+* [1;34m|[m [33m74a95be[m Cleaning Up
+[1;34m|[m[1;34m/[m  
+* [33m1be73b1[m Second Phase
+* [33m43cd5f2[m Add frontend, bug fixes, and new features
+* [33m68df02a[m Add HR Management section to README
+* [33m9949296[m Initial commit of HR Management Backend

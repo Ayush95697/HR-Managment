@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HrSystem.Domain\HrSystem.Domain.csproj" />
+    <ProjectReference Include="..\HrSystem.Application\HrSystem.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

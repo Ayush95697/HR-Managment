@@ -2,15 +2,22 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HrSystem.Domain\HrSystem.Domain.csproj" />
-    <ProjectReference Include="..\HrSystem.Infrastructure\HrSystem.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.10" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assistant\Prompts\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>
