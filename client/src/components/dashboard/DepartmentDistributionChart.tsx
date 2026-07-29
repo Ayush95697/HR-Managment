@@ -3,9 +3,9 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useAuthStore } from '../../store/authStore';
 
 const MONO_COLORS = [
-  '#6366f1', // Primary Indigo
-  '#818cf8', // Soft Indigo
-  '#a5b4fc', // Light Indigo
+  '#3B82F6', // Primary Indigo
+  '#06B6D4', // Soft Indigo
+  '#93C5FD', // Light Indigo
   '#475569', // Slate Dark
   '#64748b', // Slate Medium
   '#94a3b8', // Slate Light
@@ -56,7 +56,7 @@ export function DepartmentDistributionChart() {
         gap: '16px',
         height: '380px',
         maxHeight: '380px',
-        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.04)',
+        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.04)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
       }}
       className="hover-scale-subtle"

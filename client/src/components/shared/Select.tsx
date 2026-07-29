@@ -168,7 +168,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     color: option.value === currentValue ? 'var(--accent)' : 'var(--text-primary)',
-                    backgroundColor: option.value === currentValue ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                    backgroundColor: option.value === currentValue ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => {

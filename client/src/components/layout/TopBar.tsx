@@ -95,7 +95,7 @@ export default function TopBar() {
           {/* Avatar */}
           <div style={{
             width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden',
-            background: 'linear-gradient(135deg, var(--accent), #8b5cf6)',
+            background: 'linear-gradient(135deg, var(--accent), #2563EB)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontWeight: 700, fontSize: '0.8rem', flexShrink: 0,
           }}>

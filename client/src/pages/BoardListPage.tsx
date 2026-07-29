@@ -109,7 +109,7 @@ export default function BoardListPage() {
           <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`, backgroundSize: '200px 200px' }} />
           
           {/* Decorative glowing orb */}
-          <div style={{ position: 'absolute', top: '-60px', right: '-40px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(255,255,255,0) 70%)', borderRadius: '50%', pointerEvents: 'none', filter: 'blur(20px)' }} />
+          <div style={{ position: 'absolute', top: '-60px', right: '-40px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(255,255,255,0) 70%)', borderRadius: '50%', pointerEvents: 'none', filter: 'blur(20px)' }} />
 
           <div style={{ position: 'relative', zIndex: 1 }}>
             <motion.h1 
@@ -118,7 +118,7 @@ export default function BoardListPage() {
               transition={{ delay: 0.2, duration: 0.5 }}
               style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 12px', letterSpacing: '-0.5px' }}
             >
-              {greeting}, <span style={{ color: '#818cf8' }}>{user?.name?.split(' ')[0]}</span>! <motion.span animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }} transition={{ repeat: Infinity, repeatDelay: 5, duration: 1.5 }} style={{ display: 'inline-block', transformOrigin: '70% 70%' }}>👋</motion.span>
+              {greeting}, <span style={{ color: '#06B6D4' }}>{user?.name?.split(' ')[0]}</span>! <motion.span animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }} transition={{ repeat: Infinity, repeatDelay: 5, duration: 1.5 }} style={{ display: 'inline-block', transformOrigin: '70% 70%' }}>👋</motion.span>
             </motion.h1>
             
             <motion.div 
@@ -128,13 +128,13 @@ export default function BoardListPage() {
               style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}
             >
               <span style={{ 
-                background: 'rgba(99, 102, 241, 0.15)', 
-                border: '1px solid rgba(99, 102, 241, 0.3)',
+                background: 'rgba(59, 130, 246, 0.15)', 
+                border: '1px solid rgba(59, 130, 246, 0.3)',
                 padding: '4px 12px', 
                 borderRadius: '999px', 
                 fontSize: '0.8rem', 
                 fontWeight: 700, 
-                color: '#a5b4fc',
+                color: '#93C5FD',
                 letterSpacing: '0.5px',
                 textTransform: 'uppercase'
               }}>
@@ -218,7 +218,7 @@ export default function BoardListPage() {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(99, 102, 241, 0.15)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Kanban size={18} />
                   </div>
                   <ArrowRight size={16} style={{ color: 'var(--text-muted)' }} />

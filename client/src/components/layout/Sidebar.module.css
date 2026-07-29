@@ -63,7 +63,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  background: linear-gradient(135deg, var(--accent), #2563EB);
   color: #fff;
   font-weight: 700;
   font-size: 0.85rem;
@@ -90,7 +90,7 @@
   margin-top: 1px;
 }
 
-.roleAdmin    { color: #a5b4fc; }
+.roleAdmin    { color: #93C5FD; }
 .roleHR       { color: #5eead4; }
 .roleEmployee { color: var(--sidebar-muted); }
 

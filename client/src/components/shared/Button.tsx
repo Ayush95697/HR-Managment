@@ -48,10 +48,10 @@ export default function Button({
       case 'primary':
       default:
         return {
-          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9))',
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9))',
           color: '#ffffff',
           border: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 8px 25px -6px rgba(99, 102, 241, 0.5)',
+          boxShadow: '0 8px 25px -6px rgba(59, 130, 246, 0.5)',
         };
     }
   };

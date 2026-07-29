@@ -32,16 +32,16 @@ export function ActivityFeedTimeline() {
         gap: '16px',
         height: '380px',
         maxHeight: '380px',
-        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.04)',
+        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.04)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
       }}
       className="hover-scale-subtle"
     >
       <style>{`
         @keyframes livePulse {
-          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
-          70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(79, 70, 229, 0); }
-          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
         }
         .live-dot {
           width: 8px;
@@ -70,7 +70,7 @@ export function ActivityFeedTimeline() {
                 <div key={`${item.id}-${idx}`} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <div style={{
                     width: '32px', height: '32px', borderRadius: '50%',
-                    background: 'rgba(79, 70, 229, 0.1)',
+                    background: 'rgba(29, 78, 216, 0.1)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     color: '#4f46e5'
                   }}>

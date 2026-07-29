@@ -27,7 +27,7 @@
 
 .searchInput:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246,0.15);
 }
 
 .searchInput::placeholder { color: var(--text-muted); }

@@ -76,7 +76,7 @@ export default function ActiveSessions() {
                 borderRadius: 'var(--radius-lg)',
                 background: 'var(--surface-2, #334155)',
                 border: session.isCurrent
-                  ? '1px solid rgba(99, 102, 241, 0.4)'
+                  ? '1px solid rgba(59, 130, 246, 0.4)'
                   : '1px solid var(--border)',
                 gap: '12px',
                 flexWrap: 'wrap',
@@ -85,7 +85,7 @@ export default function ActiveSessions() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div style={{
                   width: '40px', height: '40px', borderRadius: '10px',
-                  background: session.isCurrent ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.05)',
+                  background: session.isCurrent ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.05)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 }}>
                   <Monitor size={20} color={session.isCurrent ? 'var(--accent)' : 'var(--text-muted)'} />
@@ -98,8 +98,8 @@ export default function ActiveSessions() {
                     {session.isCurrent && (
                       <span style={{
                         fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px',
-                        borderRadius: '20px', background: 'rgba(99, 102, 241, 0.2)',
-                        color: 'var(--accent)', border: '1px solid rgba(99, 102, 241, 0.3)',
+                        borderRadius: '20px', background: 'rgba(59, 130, 246, 0.2)',
+                        color: 'var(--accent)', border: '1px solid rgba(59, 130, 246, 0.3)',
                       }}>
                         This device
                       </span>

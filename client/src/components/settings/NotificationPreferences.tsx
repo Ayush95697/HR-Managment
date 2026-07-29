@@ -41,7 +41,7 @@ export default function NotificationPreferences({ profile }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             width: '40px', height: '40px', borderRadius: '10px',
-            background: enabled ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.05)',
+            background: enabled ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.05)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <Bell size={20} color={enabled ? 'var(--accent)' : 'var(--text-muted)'} />

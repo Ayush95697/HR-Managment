@@ -75,7 +75,7 @@ export default function SettingsPage() {
                 cursor: 'pointer',
                 fontSize: '0.875rem',
                 fontWeight: activeTab === tab.id ? 700 : 500,
-                backgroundColor: activeTab === tab.id ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                backgroundColor: activeTab === tab.id ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
                 color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-secondary)',
                 transition: 'all 0.15s',
               }}

@@ -28,7 +28,7 @@ export const PriorityMap: Record<number, Priority> = {
 
 export const PriorityColor: Record<Priority, string> = {
   Low: 'var(--success, #10b981)',
-  Medium: 'var(--accent, #6366f1)',
+  Medium: 'var(--accent, #3B82F6)',
   High: 'var(--warning, #f59e0b)',
   Critical: 'var(--danger, #ef4444)',
 };

@@ -10,7 +10,7 @@ export default function RoleBadge({ role }: RoleBadgeProps) {
       case 'Admin':
         return { bg: 'rgba(239, 68, 68, 0.12)', color: 'var(--danger, #ef4444)', border: 'rgba(239, 68, 68, 0.3)' };
       case 'HR':
-        return { bg: 'rgba(99, 102, 241, 0.12)', color: 'var(--accent, #6366f1)', border: 'rgba(99, 102, 241, 0.3)' };
+        return { bg: 'rgba(59, 130, 246, 0.12)', color: 'var(--accent, #3B82F6)', border: 'rgba(59, 130, 246, 0.3)' };
       case 'Employee':
       default:
         return { bg: 'rgba(16, 185, 129, 0.12)', color: 'var(--success, #10b981)', border: 'rgba(16, 185, 129, 0.3)' };

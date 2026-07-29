@@ -44,7 +44,7 @@ export default function EmployeeModal({ isOpen, onClose, employee }: Props) {
             borderRadius: '50%',
             overflow: 'hidden',
             border: '3px solid var(--border)',
-            background: 'linear-gradient(135deg, var(--accent), #8b5cf6)',
+            background: 'linear-gradient(135deg, var(--accent), #2563EB)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -68,7 +68,7 @@ export default function EmployeeModal({ isOpen, onClose, employee }: Props) {
               marginTop: '6px',
               padding: '2px 8px',
               borderRadius: '12px',
-              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
               color: 'var(--accent)',
               fontSize: '0.75rem',
               fontWeight: 600

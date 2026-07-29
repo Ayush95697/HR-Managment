@@ -71,7 +71,7 @@ export default function AuditLogPage() {
                         borderRadius: '4px',
                         fontSize: '0.75rem',
                         fontWeight: 700,
-                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.15)',
                         color: 'var(--accent)',
                         textTransform: 'uppercase',
                       }}

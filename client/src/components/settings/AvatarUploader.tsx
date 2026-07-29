@@ -70,7 +70,7 @@ export default function AvatarUploader({ profile }: Props) {
           overflow: 'hidden',
           border: '3px solid var(--border)',
           flexShrink: 0,
-          background: 'linear-gradient(135deg, var(--accent), #8b5cf6)',
+          background: 'linear-gradient(135deg, var(--accent), #2563EB)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

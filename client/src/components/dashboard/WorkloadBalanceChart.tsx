@@ -5,7 +5,7 @@ import { BarChart2, LayoutList, AlertTriangle, ShieldCheck, User } from 'lucide-
 
 const CHART_MARGIN = { top: 5, right: 20, left: 35, bottom: 5 };
 const TOOLTIP_CURSOR = { fill: 'rgba(255, 255, 255, 0.03)' };
-const TOOLTIP_CONTENT_STYLE = { background: '#1e293b', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
+const TOOLTIP_CONTENT_STYLE = { background: '#1e293b', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
 const LEGEND_WRAPPER_STYLE = { fontSize: '0.75rem', paddingTop: '6px', color: 'var(--text-secondary)' };
 const BAR_RADIUS: [number, number, number, number] = [0, 4, 4, 0];
 
@@ -41,7 +41,7 @@ export function WorkloadBalanceChart() {
         gap: '16px',
         height: '380px',
         maxHeight: '380px',
-        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.04)',
+        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.04)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
       }}
       className="hover-scale-subtle"
@@ -100,8 +100,8 @@ export function WorkloadBalanceChart() {
 
       {/* Summary KPI Badges */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
-        <div style={{ background: 'rgba(79, 70, 229, 0.08)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(79, 70, 229, 0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ padding: '6px', borderRadius: '6px', background: 'rgba(79, 70, 229, 0.15)', color: '#818cf8' }}>
+        <div style={{ background: 'rgba(29, 78, 216, 0.08)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(29, 78, 216, 0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ padding: '6px', borderRadius: '6px', background: 'rgba(29, 78, 216, 0.15)', color: '#06B6D4' }}>
             <User size={14} />
           </div>
           <div>
@@ -110,13 +110,13 @@ export function WorkloadBalanceChart() {
           </div>
         </div>
 
-        <div style={{ background: 'rgba(99, 102, 241, 0.08)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(99, 102, 241, 0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ padding: '6px', borderRadius: '6px', background: 'rgba(99, 102, 241, 0.15)', color: '#6366f1' }}>
+        <div style={{ background: 'rgba(59, 130, 246, 0.08)', borderRadius: '8px', padding: '8px 12px', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ padding: '6px', borderRadius: '6px', background: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6' }}>
             <ShieldCheck size={14} />
           </div>
           <div>
             <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 500 }}>High Priority</div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#818cf8' }}>{totalHigh} Tasks</div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#06B6D4' }}>{totalHigh} Tasks</div>
           </div>
         </div>
 
@@ -169,7 +169,7 @@ export function WorkloadBalanceChart() {
                         width: '26px',
                         height: '26px',
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #4f46e5, #818cf8)',
+                        background: 'linear-gradient(135deg, #4f46e5, #06B6D4)',
                         color: '#ffffff',
                         display: 'flex',
                         alignItems: 'center',
@@ -188,10 +188,10 @@ export function WorkloadBalanceChart() {
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ display: 'flex', gap: '4px' }}>
-                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(129, 140, 248, 0.15)', color: '#818cf8', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(96, 165, 250, 0.15)', color: '#06B6D4', fontWeight: 600 }}>
                         {item.high} High
                       </span>
-                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(99, 102, 241, 0.15)', color: '#6366f1', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.65rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6', fontWeight: 600 }}>
                         {item.critical} Critical
                       </span>
                     </div>
@@ -229,7 +229,7 @@ export function WorkloadBalanceChart() {
                       style={{
                         width: `${userTotal > 0 ? (item.high / Math.max(userTotal, maxCapacityRef)) * 100 : 0}%`,
                         height: '100%',
-                        background: '#818cf8',
+                        background: '#06B6D4',
                         transition: 'width 0.4s ease'
                       }}
                       title={`${item.high} High priority tasks`}
@@ -267,7 +267,7 @@ export function WorkloadBalanceChart() {
                 contentStyle={TOOLTIP_CONTENT_STYLE}
               />
               <Legend wrapperStyle={LEGEND_WRAPPER_STYLE} />
-              <Bar dataKey="high" stackId="a" fill="#818cf8" name="High Priority" barSize={14} />
+              <Bar dataKey="high" stackId="a" fill="#06B6D4" name="High Priority" barSize={14} />
               <Bar dataKey="critical" stackId="a" fill="#4f46e5" name="Critical Priority" radius={BAR_RADIUS} barSize={14} />
             </BarChart>
           </ResponsiveContainer>

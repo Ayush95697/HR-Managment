@@ -18,7 +18,7 @@ export default function Logo({ size = 'md', showText = false }: { size?: 'sm' | 
           width: dimensions.container,
           height: dimensions.container,
           borderRadius: size === 'sm' ? '6px' : size === 'md' ? '8px' : '12px',
-          background: 'linear-gradient(135deg, var(--accent, #6366f1), #8b5cf6)',
+          background: 'linear-gradient(135deg, var(--accent, #3B82F6), #2563EB)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

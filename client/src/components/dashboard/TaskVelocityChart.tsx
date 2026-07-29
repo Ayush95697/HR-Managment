@@ -23,7 +23,7 @@ export function TaskVelocityChart() {
         flexDirection: 'column',
         gap: '16px',
         height: '380px',
-        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.04)',
+        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.04)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
       }}
       className="hover-scale-subtle"
@@ -46,8 +46,8 @@ export function TaskVelocityChart() {
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="velocityGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
@@ -71,21 +71,21 @@ export function TaskVelocityChart() {
                 formatter={(value: any) => [`${value} tasks completed`, 'Velocity']}
                 contentStyle={{ 
                   background: '#1e293b', 
-                  border: '1px solid rgba(99, 102, 241, 0.3)', 
+                  border: '1px solid rgba(59, 130, 246, 0.3)', 
                   borderRadius: '8px', 
                   color: '#f8fafc',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
                 }}
-                itemStyle={{ color: '#818cf8', fontWeight: 600 }}
+                itemStyle={{ color: '#06B6D4', fontWeight: 600 }}
               />
               <Area 
                 type="monotone" 
                 dataKey="count" 
-                stroke="#6366f1" 
+                stroke="#3B82F6" 
                 strokeWidth={2}
                 fill="url(#velocityGrad)" 
                 dot={false}
-                activeDot={{ r: 5, fill: '#6366f1', stroke: '#ffffff', strokeWidth: 2 }} 
+                activeDot={{ r: 5, fill: '#3B82F6', stroke: '#ffffff', strokeWidth: 2 }} 
               />
             </AreaChart>
           </ResponsiveContainer>

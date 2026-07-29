@@ -55,7 +55,7 @@ export default function CardColumnContainer({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent, #6366f1)' }} />
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent, #3B82F6)' }} />
           {column.name}
           <span style={{ backgroundColor: 'var(--surface, #1e293b)', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
             {cards.length}
@@ -115,7 +115,7 @@ export default function CardColumnContainer({
           flex: 1,
           overflowY: 'auto',
           minHeight: '100px',
-          backgroundColor: isOver ? 'rgba(99, 102, 241, 0.08)' : 'transparent',
+          backgroundColor: isOver ? 'rgba(59, 130, 246, 0.08)' : 'transparent',
           transition: 'background-color 0.15s ease',
           display: 'flex',
           flexDirection: 'column',
@@ -134,7 +134,7 @@ export default function CardColumnContainer({
                 justifyContent: 'center',
                 color: 'var(--text-muted)',
                 fontSize: '0.8125rem',
-                backgroundColor: isOver ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                backgroundColor: isOver ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
               }}
             >
               Drop cards here

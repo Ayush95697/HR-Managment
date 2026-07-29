@@ -18,13 +18,13 @@ export default function Sidebar() {
     borderRadius: '9999px',
     color: isActive ? '#ffffff' : 'var(--text-secondary, #94a3b8)',
     background: isActive 
-      ? 'linear-gradient(135deg, var(--accent, #6366f1) 0%, #8b5cf6 100%)' 
+      ? 'linear-gradient(135deg, var(--accent, #3B82F6) 0%, #2563EB 100%)' 
       : 'transparent',
     border: isActive 
       ? '1px solid rgba(255, 255, 255, 0.2)' 
       : '1px solid transparent',
     boxShadow: isActive 
-      ? '0 8px 24px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' 
+      ? '0 8px 24px rgba(59, 130, 246, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' 
       : 'none',
     textDecoration: 'none',
     fontWeight: isActive ? 600 : 500,
@@ -124,7 +124,7 @@ export default function Sidebar() {
             height: '36px',
             borderRadius: '50%',
             overflow: 'hidden',
-            backgroundColor: 'var(--accent, #6366f1)',
+            backgroundColor: 'var(--accent, #3B82F6)',
             color: '#fff',
             fontWeight: 700,
             display: 'flex',

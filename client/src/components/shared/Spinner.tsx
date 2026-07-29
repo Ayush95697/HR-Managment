@@ -3,7 +3,7 @@ interface SpinnerProps {
   color?: string;
 }
 
-export default function Spinner({ size = 24, color = 'var(--accent, #6366f1)' }: SpinnerProps) {
+export default function Spinner({ size = 24, color = 'var(--accent, #3B82F6)' }: SpinnerProps) {
   return (
     <div
       style={{
