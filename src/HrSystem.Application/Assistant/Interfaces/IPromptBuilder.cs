@@ -8,6 +8,6 @@ namespace HrSystem.Application.Assistant.Interfaces
     /// </summary>
     public interface IPromptBuilder
     {
-        string BuildPrompt(ChatContext context, IEnumerable<KnowledgeDocument> documents, IEnumerable<ChatMessage> history, string question);
+        string BuildPrompt(PromptContext context);
     }
 }

@@ -307,4 +307,24 @@ public class UserService : IUserService
         user.ThemePreference,
         user.EmailNotificationsEnabled
     );
+
+    public async Task<EmployeeStatisticsDto> GetEmployeeStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    {
+        // Enforce RBAC
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view employee statistics.");
+        }
+
+        var users = await _userRepository.GetUsersAsync(currentUserId, currentUserRole, currentUserDeptId);
+        
+        var deptDict = users
+            .Where(u => u.IsActive && u.Department != null)
+            .GroupBy(u => u.Department!.Name)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        int totalEmployees = users.Count(u => u.IsActive);
+
+        return new EmployeeStatisticsDto(totalEmployees, deptDict);
+    }
 }

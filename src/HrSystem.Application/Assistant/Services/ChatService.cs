@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Models;
+using HrSystem.Application.Assistant.Capabilities.Interfaces;
+using HrSystem.Application.Assistant.Capabilities.Models;
 
 namespace HrSystem.Application.Assistant.Services
 {
@@ -14,17 +16,20 @@ namespace HrSystem.Application.Assistant.Services
         private readonly IRetriever _retriever;
         private readonly IPromptBuilder _promptBuilder;
         private readonly ILLMClient _llmClient;
+        private readonly ICapabilityResolver _capabilityResolver;
 
         public ChatService(
             IEnumerable<IContextBuilder> contextBuilders,
             IRetriever retriever,
             IPromptBuilder promptBuilder,
-            ILLMClient llmClient)
+            ILLMClient llmClient,
+            ICapabilityResolver capabilityResolver)
         {
             _contextBuilders = contextBuilders;
             _retriever = retriever;
             _promptBuilder = promptBuilder;
             _llmClient = llmClient;
+            _capabilityResolver = capabilityResolver;
         }
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
@@ -43,18 +48,43 @@ namespace HrSystem.Application.Assistant.Services
                 context = new ChatContext { User = user };
             }
 
-            // 2. Call Retriever (placeholder)
+            // 2. Capability Resolution
+            var matchContext = new CapabilityMatchContext { UserQuestion = request.Message };
+            var capability = _capabilityResolver.Resolve(matchContext);
+
+            CapabilityResult? capabilityResult = null;
+            if (capability != null)
+            {
+                var execContext = new CapabilityExecutionContext
+                {
+                    CurrentUser = user,
+                    UserQuestion = request.Message
+                };
+                capabilityResult = await capability.ExecuteAsync(execContext, cancellationToken);
+            }
+
+            // 3. Call Retriever (placeholder)
             var documents = await _retriever.RetrieveAsync(request.Message, context, cancellationToken);
             context.RetrievedDocuments = documents;
 
-            // 3. Call Prompt Builder
+            // 4. Call Prompt Builder
             var history = new List<ChatMessage>(); // History will be empty for Phase 1
-            var prompt = _promptBuilder.BuildPrompt(context, documents, history, request.Message);
+            
+            var promptContext = new PromptContext
+            {
+                ChatContext = context,
+                Documents = documents,
+                History = history,
+                Question = request.Message,
+                CapabilityResult = capabilityResult
+            };
 
-            // 4. Call LLM Client (placeholder)
+            var prompt = _promptBuilder.BuildPrompt(promptContext);
+
+            // 5. Call LLM Client (placeholder)
             var llmResponse = await _llmClient.GenerateResponseAsync(prompt, cancellationToken);
 
-            // 5. Return Response
+            // 6. Return Response
             return new ChatResponse
             {
                 ConversationId = Guid.NewGuid().ToString(),

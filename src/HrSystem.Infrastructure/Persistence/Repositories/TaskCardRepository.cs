@@ -125,4 +125,30 @@ public class TaskCardRepository : ITaskCardRepository
     {
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<TaskCard>> GetAssignedTasksAsync(Guid assignedToId)
+    {
+        return await _dbContext.TaskCards
+            .Include(c => c.Column)
+            .Include(c => c.AssignedTo)
+            .Include(c => c.CreatedBy)
+            .Where(c => c.AssignedToId == assignedToId && !c.Column.IsDoneColumn)
+            .OrderBy(c => c.DueDate)
+            .ToListAsync();
+    }
+
+    public async Task<List<TaskCard>> GetCriticalTasksAsync(Guid? departmentId = null)
+    {
+        var query = _dbContext.TaskCards
+            .Include(c => c.AssignedTo)
+            .Include(c => c.Board)
+            .Where(c => c.Priority == HrSystem.Domain.Enums.TaskPriority.Critical && !c.Column.IsDoneColumn);
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(c => c.Board.DepartmentId == departmentId.Value);
+        }
+
+        return await query.ToListAsync();
+    }
 }

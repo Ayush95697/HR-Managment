@@ -505,4 +505,47 @@ public class TaskCardService : ITaskCardService
             card.UpdatedAt
         );
     }
+
+    public async Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    {
+        // For capabilities: Employees can only query their own tasks
+        if (currentUserRole == RoleType.Employee.ToString() && currentUserId != assignedToId)
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees can only view their own tasks.");
+        }
+
+        var tasks = await _taskCardRepository.GetAssignedTasksAsync(assignedToId);
+
+        // HR can only see tasks in their department
+        if (currentUserRole == RoleType.HR.ToString())
+        {
+            tasks = tasks.Where(t => t.Board?.DepartmentId == currentUserDeptId).ToList();
+        }
+
+        return tasks.Select(c => new TaskCardDto(
+            c.Id, c.BoardId, c.ColumnId, c.Column.Name, c.AssignedToId, c.AssignedTo?.Name,
+            c.Title, c.Description, c.Priority, c.DueDate, c.CreatedById, c.CreatedBy?.Name ?? "",
+            c.Position, c.RowVersion, c.CreatedAt, c.UpdatedAt
+        )).ToList();
+    }
+
+    public async Task<CriticalTasksSummaryDto> GetCriticalTasksSummaryAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    {
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view critical task summaries.");
+        }
+
+        Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        var criticalTasks = await _taskCardRepository.GetCriticalTasksAsync(departmentFilter);
+
+        var assignedUsers = criticalTasks
+            .Where(t => t.AssignedTo != null)
+            .Select(t => t.AssignedTo!.Name)
+            .Distinct()
+            .ToList();
+
+        return new CriticalTasksSummaryDto(criticalTasks.Count, assignedUsers);
+    }
 }

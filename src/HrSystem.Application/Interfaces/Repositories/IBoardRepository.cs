@@ -18,4 +18,6 @@ public interface IBoardRepository
     Task AddColumnAsync(BoardColumn column);
     Task DeleteColumnAsync(BoardColumn column);
     Task SaveChangesAsync();
+    
+    Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null);
 }

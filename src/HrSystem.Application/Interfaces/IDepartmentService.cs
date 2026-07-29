@@ -10,4 +10,6 @@ public interface IDepartmentService
     Task<List<DepartmentDto>> GetDepartmentsAsync();
     Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentRequest request);
     Task DeleteDepartmentAsync(Guid id);
+    
+    Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
 }

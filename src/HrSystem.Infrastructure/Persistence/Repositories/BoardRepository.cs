@@ -121,4 +121,27 @@ public class BoardRepository : IBoardRepository
     {
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null)
+    {
+        var query = _dbContext.Boards
+            .Include(b => b.Columns)
+                .ThenInclude(c => c.Cards)
+            .AsQueryable();
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(b => b.DepartmentId == departmentId.Value);
+        }
+
+        var boards = await query.ToListAsync();
+
+        return boards.Select(b => new HrSystem.Application.DTOs.BoardStatisticsDto(
+            b.Id,
+            b.Name,
+            b.Columns.Count,
+            b.Columns.SelectMany(c => c.Cards).Count(t => !t.Column.IsDoneColumn),
+            b.Columns.SelectMany(c => c.Cards).Count(t => t.Column.IsDoneColumn)
+        )).ToList();
+    }
 }

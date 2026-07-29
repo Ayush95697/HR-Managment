@@ -21,4 +21,7 @@ public interface ITaskCardRepository
     Task<List<TaskActivityLog>> GetActivityLogsByCardIdAsync(Guid cardId);
     Task<TaskCard> GetCardWithDetailsInternalAsync(Guid cardId);
     Task SaveChangesAsync();
+    
+    Task<List<TaskCard>> GetAssignedTasksAsync(Guid assignedToId);
+    Task<List<TaskCard>> GetCriticalTasksAsync(Guid? departmentId = null);
 }

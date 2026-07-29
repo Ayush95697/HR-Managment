@@ -35,9 +35,9 @@ namespace HrSystem.Api.Controllers
             };
 
             var deptIdClaim = User.FindFirst("DepartmentId")?.Value;
-            if (int.TryParse(deptIdClaim, out var deptId))
+            if (!string.IsNullOrEmpty(deptIdClaim))
             {
-                userContext.DepartmentId = deptId;
+                userContext.DepartmentId = deptIdClaim;
             }
 
             var permissions = User.FindAll("Permission").Select(c => c.Value);

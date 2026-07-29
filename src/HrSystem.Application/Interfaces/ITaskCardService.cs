@@ -14,4 +14,8 @@ public interface ITaskCardService
     Task DeleteCardAsync(Guid cardId, Guid currentUserId, string currentUserRole);
     Task<TaskCommentDto> AddCommentAsync(Guid cardId, CreateCommentRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task<List<TaskActivityLogDto>> GetCardActivityLogsAsync(Guid cardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    
+    // Generic methods for Capabilities
+    Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task<CriticalTasksSummaryDto> GetCriticalTasksSummaryAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
 }

@@ -77,4 +77,23 @@ public class DepartmentRepository : IDepartmentRepository
     {
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<HrSystem.Application.DTOs.DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid? departmentId = null)
+    {
+        var query = _dbContext.Departments.AsQueryable();
+        if (departmentId.HasValue)
+        {
+            query = query.Where(d => d.Id == departmentId.Value);
+        }
+
+        var stats = await query.Select(d => new HrSystem.Application.DTOs.DepartmentStatisticsDto(
+            d.Id,
+            d.Name,
+            d.Users.Count(u => u.IsActive),
+            _dbContext.TaskCards.Count(t => t.Board.DepartmentId == d.Id && !t.Column.IsDoneColumn),
+            _dbContext.TaskCards.Count(t => t.Board.DepartmentId == d.Id && t.Column.IsDoneColumn)
+        )).ToListAsync();
+
+        return stats;
+    }
 }

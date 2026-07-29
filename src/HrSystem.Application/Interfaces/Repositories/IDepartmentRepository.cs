@@ -17,4 +17,6 @@ public interface IDepartmentRepository
     Task AddAsync(Department department);
     Task DeleteAsync(Department department);
     Task SaveChangesAsync();
+    
+    Task<List<HrSystem.Application.DTOs.DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid? departmentId = null);
 }

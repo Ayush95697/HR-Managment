@@ -134,6 +134,14 @@ builder.Services.AddScoped<IContextBuilder, EmployeeContextBuilder>();
 builder.Services.AddScoped<IContextBuilder, HrContextBuilder>();
 builder.Services.AddScoped<IContextBuilder, AdminContextBuilder>();
 
+// Capability System
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.ICapabilityResolver, HrSystem.Application.Assistant.Capabilities.CapabilityResolver>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetMyTasksCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetCriticalTasksCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetDepartmentSummaryCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetEmployeeCountCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetBoardStatusCapability>();
+
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
 builder.Services.AddAuthorization(options =>

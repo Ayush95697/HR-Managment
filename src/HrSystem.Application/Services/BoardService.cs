@@ -298,4 +298,17 @@ public class BoardService : IBoardService
         await _boardRepository.DeleteColumnAsync(column);
         await _boardRepository.SaveChangesAsync();
     }
+
+    public async Task<List<BoardStatisticsDto>> GetBoardStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    {
+        // Enforce RBAC
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view overall board statistics.");
+        }
+
+        Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        return await _boardRepository.GetBoardStatisticsAsync(departmentFilter);
+    }
 }

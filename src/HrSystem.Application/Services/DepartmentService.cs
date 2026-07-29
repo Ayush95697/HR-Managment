@@ -63,4 +63,17 @@ public class DepartmentService : IDepartmentService
         await _departmentRepository.DeleteAsync(department);
         await _departmentRepository.SaveChangesAsync();
     }
+
+    public async Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    {
+        // Enforce RBAC
+        if (currentUserRole == RoleType.Employee.ToString())
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view department statistics.");
+        }
+
+        Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        return await _departmentRepository.GetDepartmentStatisticsAsync(departmentFilter);
+    }
 }
