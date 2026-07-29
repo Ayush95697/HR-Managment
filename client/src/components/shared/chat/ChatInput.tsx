@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 import { Send, Paperclip, Mic } from 'lucide-react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -24,56 +25,133 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
     }
   };
 
-  // Auto-grow textarea
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+    if (!isLoading && textareaRef.current) {
+      setTimeout(() => textareaRef.current?.focus(), 100);
     }
-  }, [input]);
+  }, [isLoading]);
+
+  const canSend = input.trim() && !isLoading;
 
   return (
-    <div className="p-4 border-t border-[var(--border)] bg-[var(--surface-2)] shrink-0">
-      <div className="relative flex items-end gap-2 bg-[var(--surface-1)] border border-[var(--border)] rounded-2xl p-2 focus-within:border-purple-500 focus-within:ring-1 focus-within:ring-purple-500 transition-colors shadow-sm">
-        
-        <div className="flex gap-1 pb-1 pl-1 shrink-0">
-          <button 
-            disabled 
-            className="p-2 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] rounded-xl transition-colors opacity-50 cursor-not-allowed"
-            title="Attach file (Coming soon)"
-          >
-            <Paperclip size={18} />
-          </button>
-        </div>
+    <div style={{ padding: '12px 16px 20px 16px', flexShrink: 0 }}>
+      {/* Input pill */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '16px',
+          padding: '8px 8px 8px 8px',
+        }}
+      >
+        {/* Attach icon */}
+        <button
+          disabled
+          title="Attach file (Coming soon)"
+          style={{
+            width: '34px',
+            height: '34px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            color: 'rgba(255,255,255,0.25)',
+            border: 'none',
+            background: 'none',
+            cursor: 'not-allowed',
+            borderRadius: '10px',
+          }}
+        >
+          <Paperclip size={16} strokeWidth={2} />
+        </button>
 
-        <textarea
+        {/* Textarea */}
+        <TextareaAutosize
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about tasks, employees, departments or boards..."
+          placeholder="Ask Nexus anything..."
           disabled={isLoading}
-          rows={1}
-          className="flex-1 max-h-[150px] min-h-[24px] py-2 px-2 bg-transparent text-sm resize-none focus:outline-none scrollbar-thin scrollbar-thumb-[var(--border)] leading-tight"
+          minRows={1}
+          maxRows={6}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            resize: 'none',
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: 'white',
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            WebkitFontSmoothing: 'antialiased',
+            padding: '4px 0',
+          }}
+          className="placeholder-white/25"
         />
 
-        <div className="flex gap-1 pb-1 pr-1 shrink-0">
-          <button 
-            disabled 
-            className="p-2 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] rounded-xl transition-colors opacity-50 cursor-not-allowed"
-            title="Voice input (Coming soon)"
-          >
-            <Mic size={18} />
-          </button>
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="p-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 disabled:opacity-50 disabled:hover:bg-purple-600 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm"
-          >
-            <Send size={18} />
-          </button>
-        </div>
+        {/* Mic icon */}
+        <button
+          disabled
+          title="Voice (Coming soon)"
+          style={{
+            width: '34px',
+            height: '34px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            color: 'rgba(255,255,255,0.25)',
+            border: 'none',
+            background: 'none',
+            cursor: 'not-allowed',
+            borderRadius: '10px',
+          }}
+        >
+          <Mic size={16} strokeWidth={2} />
+        </button>
+
+        {/* Send button */}
+        <button
+          onClick={handleSend}
+          disabled={!canSend}
+          style={{
+            width: '34px',
+            height: '34px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            background: canSend ? '#7c3aed' : 'rgba(255,255,255,0.06)',
+            color: canSend ? 'white' : 'rgba(255,255,255,0.2)',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: canSend ? 'pointer' : 'not-allowed',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <Send size={14} strokeWidth={2.5} />
+        </button>
       </div>
+
+      {/* Disclaimer */}
+      <p
+        style={{
+          textAlign: 'center',
+          marginTop: '8px',
+          fontSize: '10.5px',
+          color: 'rgba(255,255,255,0.2)',
+          letterSpacing: '0.02em',
+          lineHeight: 1,
+        }}
+      >
+        Nexus can make mistakes. Verify important information.
+      </p>
     </div>
   );
 }

@@ -8,24 +8,28 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ onClose, isExpanded, onToggleExpand }: ChatHeaderProps) {
   return (
-    <div className="flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--surface-2)] shrink-0">
-      <div className="flex items-center gap-3">
+    <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border)]/50 bg-[var(--surface-2)]/80 backdrop-blur-md shrink-0 z-10">
+      <div className="flex items-center gap-4">
         <div className="relative">
-          <div className="p-2 bg-purple-600/20 text-purple-500 rounded-lg shadow-sm">
-            <Bot size={22} />
+          <div className="p-2.5 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 text-purple-500 rounded-xl shadow-inner border border-purple-500/10">
+            <Bot size={24} />
           </div>
           <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-[var(--surface-2)] rounded-full animate-pulse shadow-sm"></div>
         </div>
-        <div>
-          <h3 className="font-semibold text-sm flex items-center gap-1.5">
+        <div className="flex flex-col justify-center">
+          <h3 className="font-semibold text-[15px] flex items-center gap-1.5 tracking-tight text-[var(--text-primary)]">
             🤖 WorkTrail Nexus
           </h3>
-          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 font-medium">
-            <span className="text-emerald-500">Online</span> <span className="text-[var(--text-tertiary)] px-1">●</span> Ask about • Tasks • Employees • Depts • Boards
+          <p className="text-[12px] text-[var(--text-secondary)] mt-0.5 font-medium flex items-center gap-1.5 opacity-90">
+            <span className="text-emerald-500 flex items-center gap-1">
+              Online
+            </span> 
+            <span className="text-[var(--text-tertiary)] text-[8px]">●</span> 
+            <span>Ask about Tasks, Employees, Boards</span>
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onToggleExpand}
           className="p-2 hover:bg-[var(--surface-3)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
