@@ -9,6 +9,7 @@ using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Assistant.ParameterExtraction.Interfaces;
+using HrSystem.Application.Assistant.ResponseStrategies.Interfaces;
 
 namespace HrSystem.Application.Assistant.Services
 {
@@ -16,28 +17,25 @@ namespace HrSystem.Application.Assistant.Services
     {
         private readonly IEnumerable<IContextBuilder> _contextBuilders;
         private readonly IRetriever _retriever;
-        private readonly IPromptBuilder _promptBuilder;
-        private readonly ILLMClient _llmClient;
         private readonly ICapabilityResolver _capabilityResolver;
         private readonly HrSystem.Application.Assistant.IntentRouting.IIntentRouter _intentRouter;
         private readonly IParameterExtractor _parameterExtractor;
+        private readonly IResponseStrategyResolver _strategyResolver;
 
         public ChatService(
             IEnumerable<IContextBuilder> contextBuilders,
             IRetriever retriever,
-            IPromptBuilder promptBuilder,
-            ILLMClient llmClient,
             ICapabilityResolver capabilityResolver,
             HrSystem.Application.Assistant.IntentRouting.IIntentRouter intentRouter,
-            IParameterExtractor parameterExtractor)
+            IParameterExtractor parameterExtractor,
+            IResponseStrategyResolver strategyResolver)
         {
             _contextBuilders = contextBuilders;
             _retriever = retriever;
-            _promptBuilder = promptBuilder;
-            _llmClient = llmClient;
             _capabilityResolver = capabilityResolver;
             _intentRouter = intentRouter;
             _parameterExtractor = parameterExtractor;
+            _strategyResolver = strategyResolver;
         }
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
@@ -88,36 +86,15 @@ namespace HrSystem.Application.Assistant.Services
             var documents = await _retriever.RetrieveAsync(request.Message, context, cancellationToken);
             context.RetrievedDocuments = documents;
 
-            // 4. Call Prompt Builder
-            var history = new List<ChatMessage>(); // History will be empty for Phase 1
-            
-            var promptContext = new PromptContext
-            {
-                ChatContext = context,
-                Documents = documents,
-                History = history,
-                Question = request.Message,
-                CapabilityResult = capabilityResult
-            };
+            // 4. Resolve Response Strategy
+            var mode = _strategyResolver.DetermineMode(request.Message, intent, capabilityResult?.StructuredData);
+            var strategy = _strategyResolver.Resolve(mode);
 
-            var prompt = _promptBuilder.BuildPrompt(promptContext);
-
-            // 5. Call LLM Client (placeholder)
-            var llmResponse = await _llmClient.GenerateResponseAsync(prompt, cancellationToken);
-
-            // 6. Return Response
-            return new ChatResponse
-            {
-                ConversationId = Guid.NewGuid().ToString(),
-                Role = "assistant",
-                Answer = llmResponse.Text,
-                Sources = documents.Select(d => d.Source).Distinct(),
-                Metadata = new Dictionary<string, string>
-                {
-                    { "Model", llmResponse.Model },
-                    { "UsageTokens", llmResponse.UsageTokens.ToString() }
-                }
-            };
+            // 5. Generate and Return Final Response
+            // (CapabilityResult can be null if no capability handled it, Strategy will still handle it)
+            // If capabilityResult is null, we create a default empty one just to prevent passing null, or we can pass null. 
+            // The signature requires CapabilityResult, so we pass an empty one if null.
+            return await strategy.ExecuteAsync(capabilityResult ?? new CapabilityResult(), request, context, documents, cancellationToken);
         }
     }
 }

@@ -149,6 +149,11 @@ builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.In
 builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IEmployeeExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.EmployeeExtractor>();
 builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IBoardExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.BoardExtractor>();
 
+// Response Strategies
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategyResolver, HrSystem.Application.Assistant.ResponseStrategies.Implementations.ResponseStrategyResolver>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.TemplateResponseStrategy>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.LlmResponseStrategy>();
+
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
 builder.Services.AddAuthorization(options =>

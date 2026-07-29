@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import PageTransition from '../shared/PageTransition';
-import ChatWidget from '../shared/ChatWidget';
+import ChatWidget from '../shared/chat/ChatWidget';
 
 export default function AppShell() {
   const location = useLocation();

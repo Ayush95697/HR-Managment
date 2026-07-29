@@ -97,7 +97,7 @@ export default function UserManagementPage() {
           name: activatingUser.name,
           email: activatingUser.email,
           role: activatingUser.role,
-          departmentId: activatingUser.departmentId || '',
+          departmentId: activatingUser.departmentId ?? undefined,
           managerId: activatingUser.managerId || '',
           isActive: true
         }
