@@ -75,6 +75,13 @@ public class BoardRepository : IBoardRepository
         return await _dbContext.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
     }
 
+    public async Task<Guid?> FindIdByNameAsync(string name)
+    {
+        var board = await _dbContext.Boards
+            .FirstOrDefaultAsync(b => b.Name.ToLower() == name.ToLower());
+        return board?.Id;
+    }
+
     public Task AddAsync(Board board)
     {
         _dbContext.Boards.Add(board);
@@ -122,19 +129,24 @@ public class BoardRepository : IBoardRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null)
+    public async Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null, HrSystem.Application.Assistant.Capabilities.Queries.BoardQuery? query = null)
     {
-        var query = _dbContext.Boards
+        var q = _dbContext.Boards
             .Include(b => b.Columns)
                 .ThenInclude(c => c.Cards)
             .AsQueryable();
 
         if (departmentId.HasValue)
         {
-            query = query.Where(b => b.DepartmentId == departmentId.Value);
+            q = q.Where(b => b.DepartmentId == departmentId.Value);
         }
 
-        var boards = await query.ToListAsync();
+        if (query?.BoardId != null)
+        {
+            q = q.Where(b => b.Id == query.BoardId.Value);
+        }
+
+        var boards = await q.ToListAsync();
 
         return boards.Select(b => new HrSystem.Application.DTOs.BoardStatisticsDto(
             b.Id,

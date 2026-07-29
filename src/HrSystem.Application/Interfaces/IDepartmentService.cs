@@ -11,5 +11,5 @@ public interface IDepartmentService
     Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentRequest request);
     Task DeleteDepartmentAsync(Guid id);
     
-    Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.DepartmentQuery? query = null);
 }

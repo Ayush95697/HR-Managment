@@ -12,6 +12,6 @@ namespace HrSystem.Application.Assistant.Capabilities.Interfaces
         
         AssistantIntent SupportedIntent { get; }
         
-        Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken);
+        Task<CapabilityResult> ExecuteAsync(CapabilityRequest request, CancellationToken cancellationToken);
     }
 }

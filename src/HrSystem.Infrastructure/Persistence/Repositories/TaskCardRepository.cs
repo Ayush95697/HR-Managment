@@ -126,15 +126,33 @@ public class TaskCardRepository : ITaskCardRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<List<TaskCard>> GetAssignedTasksAsync(Guid assignedToId)
+    public async Task<List<TaskCard>> GetAssignedTasksAsync(Guid assignedToId, HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery? query = null)
     {
-        return await _dbContext.TaskCards
+        var q = _dbContext.TaskCards
             .Include(c => c.Column)
             .Include(c => c.AssignedTo)
             .Include(c => c.CreatedBy)
             .Where(c => c.AssignedToId == assignedToId && !c.Column.IsDoneColumn)
-            .OrderBy(c => c.DueDate)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (query != null)
+        {
+            if (!string.IsNullOrEmpty(query.Priority) && Enum.TryParse<HrSystem.Domain.Enums.TaskPriority>(query.Priority, true, out var priority))
+            {
+                q = q.Where(c => c.Priority == priority);
+            }
+            if (query.BoardId.HasValue)
+            {
+                q = q.Where(c => c.BoardId == query.BoardId.Value);
+            }
+            if (query.DueDate == "Today")
+            {
+                var today = DateTime.UtcNow.Date;
+                q = q.Where(c => c.DueDate.HasValue && c.DueDate.Value.Date == today);
+            }
+        }
+
+        return await q.OrderBy(c => c.DueDate).ToListAsync();
     }
 
     public async Task<List<TaskCard>> GetCriticalTasksAsync(Guid? departmentId = null)

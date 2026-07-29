@@ -49,6 +49,13 @@ public class DepartmentRepository : IDepartmentRepository
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
+    public async Task<Guid?> FindIdByNameAsync(string name)
+    {
+        var dept = await _dbContext.Departments
+            .FirstOrDefaultAsync(d => d.Name.ToLower() == name.ToLower());
+        return dept?.Id;
+    }
+
     public async Task<bool> ExistsByNameAsync(string name)
     {
         string normalizedName = name.Trim().ToLower();

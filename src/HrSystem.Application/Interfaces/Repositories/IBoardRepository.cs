@@ -11,6 +11,7 @@ public interface IBoardRepository
     Task<Board?> GetBoardByIdWithDetailsAsync(Guid boardId);
     Task<Board?> GetBoardByIdWithFullDetailsAsync(Guid boardId);
     Task<Board?> GetBoardByIdAsync(Guid boardId);
+    Task<Guid?> FindIdByNameAsync(string name);
     Task AddAsync(Board board);
     Task DeleteAsync(Board board);
     Task<BoardColumn?> GetColumnByIdWithBoardAsync(Guid columnId);
@@ -19,5 +20,5 @@ public interface IBoardRepository
     Task DeleteColumnAsync(BoardColumn column);
     Task SaveChangesAsync();
     
-    Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null);
+    Task<List<HrSystem.Application.DTOs.BoardStatisticsDto>> GetBoardStatisticsAsync(Guid? departmentId = null, HrSystem.Application.Assistant.Capabilities.Queries.BoardQuery? query = null);
 }

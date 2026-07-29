@@ -22,5 +22,5 @@ public interface IUserService
     Task RevokeSessionAsync(Guid sessionId, Guid ownerUserId);
     Task RevokeAllOtherSessionsAsync(Guid userId, Guid? currentTokenId);
     
-    Task<EmployeeStatisticsDto> GetEmployeeStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task<EmployeeStatisticsDto> GetEmployeeStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery? query = null);
 }

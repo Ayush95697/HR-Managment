@@ -8,6 +8,7 @@ using HrSystem.Application.Assistant.Models;
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
+using HrSystem.Application.Assistant.ParameterExtraction.Interfaces;
 
 namespace HrSystem.Application.Assistant.Services
 {
@@ -19,6 +20,7 @@ namespace HrSystem.Application.Assistant.Services
         private readonly ILLMClient _llmClient;
         private readonly ICapabilityResolver _capabilityResolver;
         private readonly HrSystem.Application.Assistant.IntentRouting.IIntentRouter _intentRouter;
+        private readonly IParameterExtractor _parameterExtractor;
 
         public ChatService(
             IEnumerable<IContextBuilder> contextBuilders,
@@ -26,7 +28,8 @@ namespace HrSystem.Application.Assistant.Services
             IPromptBuilder promptBuilder,
             ILLMClient llmClient,
             ICapabilityResolver capabilityResolver,
-            HrSystem.Application.Assistant.IntentRouting.IIntentRouter intentRouter)
+            HrSystem.Application.Assistant.IntentRouting.IIntentRouter intentRouter,
+            IParameterExtractor parameterExtractor)
         {
             _contextBuilders = contextBuilders;
             _retriever = retriever;
@@ -34,6 +37,7 @@ namespace HrSystem.Application.Assistant.Services
             _llmClient = llmClient;
             _capabilityResolver = capabilityResolver;
             _intentRouter = intentRouter;
+            _parameterExtractor = parameterExtractor;
         }
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
@@ -61,15 +65,11 @@ namespace HrSystem.Application.Assistant.Services
                 var capability = _capabilityResolver.Resolve(intent);
                 if (capability != null)
                 {
-                    var execContext = new CapabilityExecutionContext
-                    {
-                        CurrentUser = user,
-                        UserQuestion = request.Message
-                    };
+                    var capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
                     
                     try
                     {
-                        capabilityResult = await capability.ExecuteAsync(execContext, cancellationToken);
+                        capabilityResult = await capability.ExecuteAsync(capabilityRequest, cancellationToken);
                     }
                     catch
                     {

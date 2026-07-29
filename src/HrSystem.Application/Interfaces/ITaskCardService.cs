@@ -16,6 +16,6 @@ public interface ITaskCardService
     Task<List<TaskActivityLogDto>> GetCardActivityLogsAsync(Guid cardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     
     // Generic methods for Capabilities
-    Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery? query = null);
     Task<CriticalTasksSummaryDto> GetCriticalTasksSummaryAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
 }

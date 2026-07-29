@@ -64,7 +64,7 @@ public class DepartmentService : IDepartmentService
         await _departmentRepository.SaveChangesAsync();
     }
 
-    public async Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    public async Task<List<DepartmentStatisticsDto>> GetDepartmentStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.DepartmentQuery? query = null)
     {
         // Enforce RBAC
         if (currentUserRole == RoleType.Employee.ToString())
@@ -73,6 +73,15 @@ public class DepartmentService : IDepartmentService
         }
 
         Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
+
+        if (query?.DepartmentId != null)
+        {
+            if (currentUserRole == RoleType.HR.ToString() && query.DepartmentId != currentUserDeptId)
+            {
+                return new List<DepartmentStatisticsDto>();
+            }
+            departmentFilter = query.DepartmentId;
+        }
 
         return await _departmentRepository.GetDepartmentStatisticsAsync(departmentFilter);
     }

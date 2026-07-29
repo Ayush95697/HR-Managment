@@ -57,22 +57,34 @@ public class UserRepository : IUserRepository
         return await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash);
     }
 
-    public async Task<List<User>> GetUsersAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    public async Task<List<User>> GetUsersAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery? query = null)
     {
-        IQueryable<User> query = _dbContext.Users
+        IQueryable<User> q = _dbContext.Users
             .Include(u => u.Role)
             .Include(u => u.Department);
 
         if (currentUserRole == RoleType.HR.ToString())
         {
-            query = query.Where(u => u.DepartmentId == currentUserDeptId);
+            q = q.Where(u => u.DepartmentId == currentUserDeptId);
         }
         else if (currentUserRole == RoleType.Employee.ToString())
         {
-            query = query.Where(u => u.Id == currentUserId);
+            q = q.Where(u => u.Id == currentUserId);
         }
 
-        return await query.ToListAsync();
+        if (query != null)
+        {
+            if (query.DepartmentId.HasValue)
+            {
+                q = q.Where(u => u.DepartmentId == query.DepartmentId.Value);
+            }
+            if (query.EmployeeId.HasValue)
+            {
+                q = q.Where(u => u.Id == query.EmployeeId.Value);
+            }
+        }
+
+        return await q.ToListAsync();
     }
 
     public async Task<User?> GetUserByIdWithDetailsAsync(Guid id)
@@ -86,6 +98,13 @@ public class UserRepository : IUserRepository
     public async Task<User?> GetUserByIdAsync(Guid id)
     {
         return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public async Task<Guid?> FindIdByNameAsync(string name)
+    {
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Name.ToLower() == name.ToLower());
+        return user?.Id;
     }
 
     public async Task<bool> ExistsByEmailAsync(string email)

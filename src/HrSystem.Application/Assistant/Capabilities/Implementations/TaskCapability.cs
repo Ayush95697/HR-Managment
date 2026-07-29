@@ -21,23 +21,23 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
         public string Description => "Retrieves task information, including assigned tasks and critical tasks summary.";
         public AssistantIntent SupportedIntent => AssistantIntent.TaskInformation;
 
-        public async Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken)
+        public async Task<CapabilityResult> ExecuteAsync(CapabilityRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var userId = Guid.Parse(context.CurrentUser.UserId);
-                Guid? deptId = !string.IsNullOrEmpty(context.CurrentUser.DepartmentId) ? Guid.Parse(context.CurrentUser.DepartmentId) : null;
+                var userId = Guid.Parse(request.CurrentUser.UserId);
+                Guid? deptId = !string.IsNullOrEmpty(request.CurrentUser.DepartmentId) ? Guid.Parse(request.CurrentUser.DepartmentId) : null;
                 
-                // Fetch broad aggregated data that LLM can use to answer specific questions
-                var assignedTasks = await _taskCardService.GetAssignedTasksAsync(userId, userId, context.CurrentUser.Role, deptId);
+                var query = request.Query as HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery;
+                var assignedTasks = await _taskCardService.GetAssignedTasksAsync(userId, userId, request.CurrentUser.Role, deptId, query);
                 
                 object criticalTasksStats = null;
                 // Regular employees can't query critical tasks stats (it throws AppUnauthorizedException in service)
-                if (context.CurrentUser.Role != "Employee")
+                if (request.CurrentUser.Role != "Employee")
                 {
                     try
                     {
-                        criticalTasksStats = await _taskCardService.GetCriticalTasksSummaryAsync(userId, context.CurrentUser.Role, deptId);
+                        criticalTasksStats = await _taskCardService.GetCriticalTasksSummaryAsync(userId, request.CurrentUser.Role, deptId);
                     }
                     catch
                     {

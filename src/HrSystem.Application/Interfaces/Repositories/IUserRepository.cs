@@ -15,9 +15,10 @@ public interface IUserRepository
     Task<RefreshToken?> GetRefreshTokenAsync(string tokenHash);
 
     // UserService needs
-    Task<List<User>> GetUsersAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task<List<User>> GetUsersAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery? query = null);
     Task<User?> GetUserByIdWithDetailsAsync(Guid id);
     Task<User?> GetUserByIdAsync(Guid id);
+    Task<Guid?> FindIdByNameAsync(string name);
     Task<bool> ExistsByEmailAsync(string email);
     Task<bool> ExistsByEmailExceptIdAsync(string email, Guid excludeId);
     Task<bool> HrExistsInDepartmentAsync(Guid departmentId);

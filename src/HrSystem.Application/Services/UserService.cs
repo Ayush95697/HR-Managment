@@ -308,7 +308,7 @@ public class UserService : IUserService
         user.EmailNotificationsEnabled
     );
 
-    public async Task<EmployeeStatisticsDto> GetEmployeeStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    public async Task<EmployeeStatisticsDto> GetEmployeeStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery? query = null)
     {
         // Enforce RBAC
         if (currentUserRole == RoleType.Employee.ToString())
@@ -316,7 +316,7 @@ public class UserService : IUserService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot view employee statistics.");
         }
 
-        var users = await _userRepository.GetUsersAsync(currentUserId, currentUserRole, currentUserDeptId);
+        var users = await _userRepository.GetUsersAsync(currentUserId, currentUserRole, currentUserDeptId, query);
         
         var deptDict = users
             .Where(u => u.IsActive && u.Department != null)

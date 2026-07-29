@@ -299,7 +299,7 @@ public class BoardService : IBoardService
         await _boardRepository.SaveChangesAsync();
     }
 
-    public async Task<List<BoardStatisticsDto>> GetBoardStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    public async Task<List<BoardStatisticsDto>> GetBoardStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.BoardQuery? query = null)
     {
         // Enforce RBAC
         if (currentUserRole == RoleType.Employee.ToString())
@@ -309,6 +309,6 @@ public class BoardService : IBoardService
 
         Guid? departmentFilter = currentUserRole == RoleType.HR.ToString() ? currentUserDeptId : null;
 
-        return await _boardRepository.GetBoardStatisticsAsync(departmentFilter);
+        return await _boardRepository.GetBoardStatisticsAsync(departmentFilter, query);
     }
 }

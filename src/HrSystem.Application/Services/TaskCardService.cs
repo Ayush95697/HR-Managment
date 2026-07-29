@@ -506,7 +506,7 @@ public class TaskCardService : ITaskCardService
         );
     }
 
-    public async Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
+    public async Task<List<TaskCardDto>> GetAssignedTasksAsync(Guid assignedToId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery? query = null)
     {
         // For capabilities: Employees can only query their own tasks
         if (currentUserRole == RoleType.Employee.ToString() && currentUserId != assignedToId)
@@ -514,7 +514,7 @@ public class TaskCardService : ITaskCardService
             throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees can only view their own tasks.");
         }
 
-        var tasks = await _taskCardRepository.GetAssignedTasksAsync(assignedToId);
+        var tasks = await _taskCardRepository.GetAssignedTasksAsync(assignedToId, query);
 
         // HR can only see tasks in their department
         if (currentUserRole == RoleType.HR.ToString())

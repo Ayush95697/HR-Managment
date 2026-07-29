@@ -142,6 +142,13 @@ builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interface
 builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.EmployeeCapability>();
 builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.BoardCapability>();
 
+// Parameter Extractors
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IParameterExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.MainParameterExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IDepartmentExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.DepartmentExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.ITaskExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.TaskExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IEmployeeExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.EmployeeExtractor>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IBoardExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.BoardExtractor>();
+
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
 builder.Services.AddAuthorization(options =>

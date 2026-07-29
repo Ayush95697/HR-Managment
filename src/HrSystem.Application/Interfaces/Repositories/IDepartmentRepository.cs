@@ -12,6 +12,7 @@ public interface IDepartmentRepository
     Task<Dictionary<Guid, int>> GetActiveUserCountsAsync();
     Task<Department?> GetByIdAsync(Guid id);
     Task<Department?> GetByIdWithUsersAsync(Guid id);
+    Task<Guid?> FindIdByNameAsync(string name);
     Task<bool> ExistsByNameAsync(string name);
     Task<bool> ExistsByNameExceptIdAsync(string name, Guid excludeId);
     Task AddAsync(Department department);

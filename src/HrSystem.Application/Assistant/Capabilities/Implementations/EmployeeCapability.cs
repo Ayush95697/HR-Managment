@@ -21,14 +21,15 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
         public string Description => "Retrieves employee headcount and distribution metrics.";
         public AssistantIntent SupportedIntent => AssistantIntent.EmployeeInformation;
 
-        public async Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken)
+        public async Task<CapabilityResult> ExecuteAsync(CapabilityRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var userId = Guid.Parse(context.CurrentUser.UserId);
-                Guid? deptId = !string.IsNullOrEmpty(context.CurrentUser.DepartmentId) ? Guid.Parse(context.CurrentUser.DepartmentId) : null;
+                var userId = Guid.Parse(request.CurrentUser.UserId);
+                Guid? deptId = !string.IsNullOrEmpty(request.CurrentUser.DepartmentId) ? Guid.Parse(request.CurrentUser.DepartmentId) : null;
                 
-                var stats = await _userService.GetEmployeeStatisticsAsync(userId, context.CurrentUser.Role, deptId);
+                var query = request.Query as HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery;
+                var stats = await _userService.GetEmployeeStatisticsAsync(userId, request.CurrentUser.Role, deptId, query);
 
                 return new CapabilityResult
                 {
