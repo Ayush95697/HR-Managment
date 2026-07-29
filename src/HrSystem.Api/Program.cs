@@ -40,13 +40,13 @@ if (File.Exists(envPath))
 {
     foreach (var line in File.ReadAllLines(envPath))
     {
-        var span = line.AsSpan().Trim();
-        if (span.IsEmpty || span.StartsWith("#")) continue;
-        var index = span.IndexOf('=');
+        var trimmed = line.Trim();
+        if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith("#")) continue;
+        var index = trimmed.IndexOf('=');
         if (index > 0)
         {
-            var key = span.Slice(0, index).Trim().ToString();
-            var value = span.Slice(index + 1).Trim().Trim('"').ToString();
+            var key = trimmed.Substring(0, index).Trim();
+            var value = trimmed.Substring(index + 1).Trim().Trim('"');
             Environment.SetEnvironmentVariable(key, value);
         }
     }
