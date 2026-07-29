@@ -48,7 +48,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.BoardColumn", b =>
@@ -75,7 +75,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("BoardColumns");
+                    b.ToTable("BoardColumns", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Department", b =>
@@ -91,7 +91,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.EmailLog", b =>
@@ -137,7 +137,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("ToUserId");
 
-                    b.ToTable("EmailLogs");
+                    b.ToTable("EmailLogs", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.EmailTemplate", b =>
@@ -174,7 +174,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("EmailTemplates");
+                    b.ToTable("EmailTemplates", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Notification", b =>
@@ -218,7 +218,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("RecipientId", "IsRead", "CreatedAt");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.RefreshToken", b =>
@@ -253,7 +253,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Role", b =>
@@ -268,47 +268,47 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("HrSystem.Domain.Entities.SystemAuditLog", b =>
+            modelBuilder.Entity("HrSystem.Domain.Entities.TaskActivityLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EntityId")
+                    b.Property<Guid?>("FromColumnId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MetadataJson")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("TaskCardId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ToColumnId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActorId");
 
-                    b.HasIndex("EntityId");
+                    b.HasIndex("FromColumnId");
 
-                    b.HasIndex("EntityType");
+                    b.HasIndex("TaskCardId");
 
-                    b.ToTable("SystemAuditLogs");
+                    b.HasIndex("ToColumnId");
+
+                    b.ToTable("TaskActivityLogs", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskAttachment", b =>
@@ -342,7 +342,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("TaskAttachments");
+                    b.ToTable("TaskAttachments", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskCard", b =>
@@ -405,7 +405,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("BoardId", "ColumnId");
 
-                    b.ToTable("TaskCards");
+                    b.ToTable("TaskCards", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskComment", b =>
@@ -433,7 +433,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("TaskCardId");
 
-                    b.ToTable("TaskComments");
+                    b.ToTable("TaskComments", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.User", b =>
@@ -501,7 +501,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Board", b =>
@@ -613,7 +613,7 @@ namespace HrSystem.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HrSystem.Domain.Entities.SystemAuditLog", b =>
+            modelBuilder.Entity("HrSystem.Domain.Entities.TaskActivityLog", b =>
                 {
                     b.HasOne("HrSystem.Domain.Entities.User", "Actor")
                         .WithMany()
@@ -621,7 +621,29 @@ namespace HrSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("HrSystem.Domain.Entities.BoardColumn", "FromColumn")
+                        .WithMany()
+                        .HasForeignKey("FromColumnId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("HrSystem.Domain.Entities.TaskCard", "TaskCard")
+                        .WithMany("ActivityLogs")
+                        .HasForeignKey("TaskCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HrSystem.Domain.Entities.BoardColumn", "ToColumn")
+                        .WithMany()
+                        .HasForeignKey("ToColumnId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Actor");
+
+                    b.Navigation("FromColumn");
+
+                    b.Navigation("TaskCard");
+
+                    b.Navigation("ToColumn");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskAttachment", b =>
@@ -752,6 +774,8 @@ namespace HrSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskCard", b =>
                 {
+                    b.Navigation("ActivityLogs");
+
                     b.Navigation("Attachments");
 
                     b.Navigation("Comments");
