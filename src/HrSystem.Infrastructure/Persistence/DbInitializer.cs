@@ -250,15 +250,16 @@ public static class DbInitializer
             {
                 for (int k = 0; k < count; k++)
                 {
+                    bool isHrTask = (k % 2 != 0);
                     tasks.Add(new TaskCard
                     {
                         Id = Guid.NewGuid(),
-                        BoardId = board2Id,
-                        ColumnId = c2DoneId,
-                        AssignedToId = (k % 2 == 0) ? alexId : davidId,
-                        Title = $"Completed Sprint Task #{dayOffset * 10 + k}",
+                        BoardId = isHrTask ? board1Id : board2Id,
+                        ColumnId = isHrTask ? c1DoneId : c2DoneId,
+                        AssignedToId = isHrTask ? hrUserId : (k % 2 == 0 ? alexId : davidId),
+                        Title = $"Completed {(isHrTask ? "HR" : "Sprint")} Task #{dayOffset * 10 + k}",
                         Priority = TaskPriority.Medium,
-                        CreatedById = adminUserId,
+                        CreatedById = isHrTask ? hrUserId : adminUserId,
                         Position = 1000 + k,
                         CreatedAt = DateTime.UtcNow.AddDays(-dayOffset - 2),
                         UpdatedAt = DateTime.UtcNow.AddDays(-dayOffset),

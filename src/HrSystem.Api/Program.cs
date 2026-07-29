@@ -12,6 +12,7 @@ using HrSystem.Application.Security;
 using HrSystem.Application.Services;
 using HrSystem.Application.Validators;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Api.Converters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -21,6 +22,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Hangfire;
+using HrSystem.Application.Jobs;
+using HrSystem.Infrastructure.Email;
 
 using System.IO;
 
@@ -72,6 +76,19 @@ builder.Services.AddDbContext<HrDbContext>(options =>
         options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HrSystem.Infrastructure"));
     }
 });
+
+// Hangfire
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+
+// Gmail SMTP email provider
+builder.Services.AddScoped<IEmailSender, GmailSmtpEmailSender>();
+builder.Services.AddScoped<IEmailTemplateRenderer, EmailTemplateRenderer>();
+builder.Services.AddScoped<EmailDispatchJob>();
 
 // 3. Password Hasher & Token Generator
 builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
@@ -135,6 +152,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers(options => 
 {
     options.Filters.Add<GlobalExceptionFilter>();
+}).AddJsonOptions(options => 
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+    options.JsonSerializerOptions.Converters.Add(new NullableUtcDateTimeConverter());
 });
 builder.Services.AddResponseCaching();
 builder.Services.AddFluentValidationAutoValidation();
@@ -212,6 +234,11 @@ app.UseResponseCaching();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAdminAuthorizationFilter() }
+});
 
 app.MapControllers();
 

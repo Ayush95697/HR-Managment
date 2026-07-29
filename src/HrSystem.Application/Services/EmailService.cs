@@ -23,20 +23,25 @@ public class EmailService : IEmailService
         _notificationService = notificationService;
     }
 
-    public async Task<List<EmailTemplateDto>> GetTemplatesAsync()
+    public async Task<List<EmailTemplateDto>> GetTemplatesAsync(Guid currentUserId)
     {
-        return await _dbContext.EmailTemplates
-            .Select(t => new EmailTemplateDto(
-                t.Id,
-                t.Name,
-                t.Subject,
-                t.BodyHtml,
-                t.PlaceholderSchemaJson
-            ))
+        var entities = await _dbContext.EmailTemplates
+            .Where(t => t.CreatedByUserId == currentUserId)
             .ToListAsync();
+        return entities.Select(t => new EmailTemplateDto(
+            t.Id,
+            t.Name,
+            t.Subject,
+            t.BodyHtml,
+            string.IsNullOrEmpty(t.PlaceholderSchemaJson) 
+                ? null 
+                : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(t.PlaceholderSchemaJson, (System.Text.Json.JsonSerializerOptions?)null),
+            t.IsQuickAccess,
+            t.CreatedByUserId
+        )).ToList();
     }
 
-    public async Task<EmailTemplateDto> CreateTemplateAsync(CreateEmailTemplateRequest request)
+    public async Task<EmailTemplateDto> CreateTemplateAsync(CreateEmailTemplateRequest request, Guid currentUserId)
     {
         var template = new EmailTemplate
         {
@@ -44,7 +49,9 @@ public class EmailService : IEmailService
             Name = request.Name,
             Subject = request.Subject,
             BodyHtml = request.BodyHtml,
-            PlaceholderSchemaJson = request.PlaceholderSchemaJson
+            PlaceholderSchemaJson = request.PlaceholderSchema != null ? System.Text.Json.JsonSerializer.Serialize(request.PlaceholderSchema, (System.Text.Json.JsonSerializerOptions?)null) : null,
+            CreatedByUserId = currentUserId,
+            IsQuickAccess = true
         };
 
         _dbContext.EmailTemplates.Add(template);
@@ -55,80 +62,10 @@ public class EmailService : IEmailService
             template.Name,
             template.Subject,
             template.BodyHtml,
-            template.PlaceholderSchemaJson
+            request.PlaceholderSchema,
+            template.IsQuickAccess,
+            template.CreatedByUserId
         );
-    }
-
-    public async Task<EmailLogDto> SendEmailAsync(SendEmailRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
-    {
-        // 1. Idempotency Check
-        var existingLog = await _dbContext.EmailLogs
-            .Include(el => el.ToUser)
-            .Include(el => el.Template)
-            .Include(el => el.SentBy)
-            .FirstOrDefaultAsync(el => el.IdempotencyKey == request.IdempotencyKey);
-
-        if (existingLog != null)
-        {
-            return MapToDto(existingLog);
-        }
-
-        // 2. Target user check & Dept scope check
-        var toUser = await _dbContext.Users.FindAsync(request.ToUserId);
-        if (toUser == null)
-        {
-            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Recipient User with ID {request.ToUserId} not found.");
-        }
-
-        if (currentUserRole == RoleType.HR.ToString() && toUser.DepartmentId != currentUserDeptId)
-        {
-            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only send emails to users within their own department.");
-        }
-
-        var template = await _dbContext.EmailTemplates.FindAsync(request.TemplateId);
-        if (template == null)
-        {
-            throw new HrSystem.Application.Exceptions.AppNotFoundException($"Email Template with ID {request.TemplateId} not found.");
-        }
-
-        // I-03 FIX: Apply placeholders to the email subject and body before logging/sending
-        string renderedSubject = ApplyPlaceholders(template.Subject, request.Placeholders);
-        string renderedBody = ApplyPlaceholders(template.BodyHtml, request.Placeholders);
-
-        // For Phase 1 stubbing, mark status as Sent synchronously.
-        // In Phase 3, this would push to an email queue with the rendered body.
-        var log = new EmailLog
-        {
-            Id = Guid.NewGuid(),
-            ToUserId = request.ToUserId,
-            TemplateId = request.TemplateId,
-            SentById = currentUserId,
-            Status = EmailLogStatus.Sent,
-            IdempotencyKey = request.IdempotencyKey,
-            QueuedAt = DateTime.UtcNow,
-            SentAt = DateTime.UtcNow
-        };
-
-        _ = renderedSubject; // Reserved for Phase 3 SMTP integration
-        _ = renderedBody;    // Reserved for Phase 3 SMTP integration
-
-        // Simulated Failure Path (for testing Notification UI)
-        if (toUser.Email.Contains("fail", StringComparison.OrdinalIgnoreCase))
-        {
-            log.Status = EmailLogStatus.Failed;
-            log.ErrorMessage = "Simulated delivery failure";
-
-            await _notificationService.NotifyAsync(
-                recipientId: currentUserId,
-                actorId: null, // System generated
-                type: NotificationType.EmailFailed,
-                message: $"Email to {toUser.Name} failed to send");
-        }
-
-        _dbContext.EmailLogs.Add(log);
-        await _dbContext.SaveChangesAsync();
-
-        return await GetLogByIdAsync(log.Id);
     }
 
     public async Task<List<EmailLogDto>> GetLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -148,6 +85,7 @@ public class EmailService : IEmailService
             .Select(el => new EmailLogDto(
                 el.Id,
                 el.ToUserId,
+                el.ToUser.Name,
                 el.ToUser.Email,
                 el.TemplateId,
                 el.Template.Name,
@@ -162,7 +100,7 @@ public class EmailService : IEmailService
             .ToListAsync();
     }
 
-    private async Task<EmailLogDto> GetLogByIdAsync(Guid id)
+    public async Task<EmailLogDto> GetLogByIdAsync(Guid id)
     {
         var el = await _dbContext.EmailLogs
             .Include(l => l.ToUser)
@@ -178,6 +116,7 @@ public class EmailService : IEmailService
         return new EmailLogDto(
             el.Id,
             el.ToUserId,
+            el.ToUser.Name,
             el.ToUser.Email,
             el.TemplateId,
             el.Template.Name,
@@ -191,20 +130,26 @@ public class EmailService : IEmailService
         );
     }
 
-    /// <summary>
-    /// I-03 FIX: Replaces {{PlaceholderName}} tokens in a template string with the provided values.
-    /// Unmatched tokens are left as-is.
-    /// </summary>
-    private static string ApplyPlaceholders(string template, Dictionary<string, string>? placeholders)
+    public async Task DeleteTemplateAsync(Guid id)
     {
-        if (placeholders == null || placeholders.Count == 0)
-            return template;
-
-        return Regex.Replace(template, @"\{\{(\w+)\}\}", match =>
+        var template = await _dbContext.EmailTemplates.FindAsync(id);
+        if (template != null)
         {
-            string key = match.Groups[1].Value;
-            return placeholders.TryGetValue(key, out var value) ? value : match.Value;
-        });
+            _dbContext.EmailTemplates.Remove(template);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task ToggleQuickAccessAsync(Guid id, bool isQuickAccess, Guid currentUserId)
+    {
+        var entity = await _dbContext.EmailTemplates.FindAsync(id);
+        if (entity == null || entity.CreatedByUserId != currentUserId)
+        {
+            throw new KeyNotFoundException("Template not found or access denied.");
+        }
+
+        entity.IsQuickAccess = isQuickAccess;
+        await _dbContext.SaveChangesAsync();
     }
 }
 

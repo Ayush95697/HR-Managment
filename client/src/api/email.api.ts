@@ -16,6 +16,12 @@ export const emailApi = {
   createTemplate: (data: TemplateFormData) =>
     client.post<EmailTemplate>('/email/templates', data).then((r) => r.data),
 
+  deleteTemplate: (id: string) =>
+    client.delete(`/email/templates/${id}`),
+
+  toggleQuickAccess: (id: string, isQuickAccess: boolean) =>
+    client.put(`/email/templates/${id}/toggle-quick-access?isQuickAccess=${isQuickAccess}`),
+
   sendEmail: (data: SendEmailPayload) =>
     client.post<EmailLog>('/email/send', data).then((r) => r.data),
 

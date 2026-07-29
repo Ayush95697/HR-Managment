@@ -4,6 +4,7 @@ using HrSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HrSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(HrDbContext))]
-    partial class HrDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260729165514_AddEmailTemplateOwner")]
+    partial class AddEmailTemplateOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,9 +156,6 @@ namespace HrSystem.Infrastructure.Migrations
                     b.Property<Guid?>("CreatedByUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsQuickAccess")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -271,44 +271,44 @@ namespace HrSystem.Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("HrSystem.Domain.Entities.SystemAuditLog", b =>
+            modelBuilder.Entity("HrSystem.Domain.Entities.TaskActivityLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EntityId")
+                    b.Property<Guid?>("FromColumnId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MetadataJson")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("TaskCardId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ToColumnId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActorId");
 
-                    b.HasIndex("EntityId");
+                    b.HasIndex("FromColumnId");
 
-                    b.HasIndex("EntityType");
+                    b.HasIndex("TaskCardId");
 
-                    b.ToTable("SystemAuditLogs");
+                    b.HasIndex("ToColumnId");
+
+                    b.ToTable("TaskActivityLogs");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskAttachment", b =>
@@ -613,7 +613,7 @@ namespace HrSystem.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HrSystem.Domain.Entities.SystemAuditLog", b =>
+            modelBuilder.Entity("HrSystem.Domain.Entities.TaskActivityLog", b =>
                 {
                     b.HasOne("HrSystem.Domain.Entities.User", "Actor")
                         .WithMany()
@@ -621,7 +621,29 @@ namespace HrSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("HrSystem.Domain.Entities.BoardColumn", "FromColumn")
+                        .WithMany()
+                        .HasForeignKey("FromColumnId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("HrSystem.Domain.Entities.TaskCard", "TaskCard")
+                        .WithMany("ActivityLogs")
+                        .HasForeignKey("TaskCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HrSystem.Domain.Entities.BoardColumn", "ToColumn")
+                        .WithMany()
+                        .HasForeignKey("ToColumnId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Actor");
+
+                    b.Navigation("FromColumn");
+
+                    b.Navigation("TaskCard");
+
+                    b.Navigation("ToColumn");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskAttachment", b =>
@@ -752,6 +774,8 @@ namespace HrSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskCard", b =>
                 {
+                    b.Navigation("ActivityLogs");
+
                     b.Navigation("Attachments");
 
                     b.Navigation("Comments");

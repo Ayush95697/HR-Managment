@@ -23,6 +23,27 @@ export function useCreateEmailTemplate() {
   });
 }
 
+export function useDeleteEmailTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => emailApi.deleteTemplate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EMAIL_TEMPLATES_QUERY_KEY });
+    },
+  });
+}
+
+export function useToggleQuickAccess() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isQuickAccess }: { id: string; isQuickAccess: boolean }) => 
+      emailApi.toggleQuickAccess(id, isQuickAccess),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EMAIL_TEMPLATES_QUERY_KEY });
+    },
+  });
+}
+
 export function useSendEmail() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -37,6 +58,9 @@ export function useEmailLogs() {
   return useQuery({
     queryKey: EMAIL_LOGS_QUERY_KEY,
     queryFn: emailApi.getLogs,
-    refetchInterval: 10000, // auto poll logs
+    refetchInterval: (query) => {
+      const hasPending = query.state.data?.some(l => l.status === 'Queued');
+      return hasPending ? 5000 : false;
+    },
   });
 }

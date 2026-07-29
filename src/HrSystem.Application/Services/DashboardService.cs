@@ -36,15 +36,16 @@ public class DashboardService : IDashboardService
             .Select(g => new { Bucket = g.Key, Count = g.Count() })
             .ToListAsync();
 
-        var resultsDict = dbResults.ToDictionary(r => r.Bucket, r => r.Count);
+        var resultsDict = dbResults.ToDictionary(r => r.Bucket.ToString("yyyy-MM-dd"), r => r.Count);
         
         var finalResults = new List<TaskVelocityDto>();
         for (int i = 0; i <= range; i++)
         {
             var date = since.AddDays(i);
+            var dateStr = date.ToString("yyyy-MM-dd");
             finalResults.Add(new TaskVelocityDto(
                 Bucket: date,
-                Count: resultsDict.ContainsKey(date) ? resultsDict[date] : 0
+                Count: resultsDict.ContainsKey(dateStr) ? resultsDict[dateStr] : 0
             ));
         }
 

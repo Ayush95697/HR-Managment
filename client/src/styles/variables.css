@@ -4,6 +4,7 @@
   --surface:        rgba(0, 0, 0, 0.4);
   --surface-2:      rgba(0, 0, 0, 0.6);
   --surface-hover:  rgba(255, 255, 255, 0.05);
+  --surface-dropdown: #1a1d27;
   --border:         rgba(255, 255, 255, 0.05);
   --border-strong:  rgba(255, 255, 255, 0.1);
   --text-primary:   #f1f5f9;
