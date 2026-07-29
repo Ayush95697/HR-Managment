@@ -7,6 +7,7 @@ using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Models;
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
+using HrSystem.Application.Assistant.IntentRouting;
 
 namespace HrSystem.Application.Assistant.Services
 {
@@ -17,19 +18,22 @@ namespace HrSystem.Application.Assistant.Services
         private readonly IPromptBuilder _promptBuilder;
         private readonly ILLMClient _llmClient;
         private readonly ICapabilityResolver _capabilityResolver;
+        private readonly HrSystem.Application.Assistant.IntentRouting.IIntentRouter _intentRouter;
 
         public ChatService(
             IEnumerable<IContextBuilder> contextBuilders,
             IRetriever retriever,
             IPromptBuilder promptBuilder,
             ILLMClient llmClient,
-            ICapabilityResolver capabilityResolver)
+            ICapabilityResolver capabilityResolver,
+            HrSystem.Application.Assistant.IntentRouting.IIntentRouter intentRouter)
         {
             _contextBuilders = contextBuilders;
             _retriever = retriever;
             _promptBuilder = promptBuilder;
             _llmClient = llmClient;
             _capabilityResolver = capabilityResolver;
+            _intentRouter = intentRouter;
         }
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
@@ -48,19 +52,36 @@ namespace HrSystem.Application.Assistant.Services
                 context = new ChatContext { User = user };
             }
 
-            // 2. Capability Resolution
-            var matchContext = new CapabilityMatchContext { UserQuestion = request.Message };
-            var capability = _capabilityResolver.Resolve(matchContext);
-
+            // 2. Capability Resolution via Intent Routing
+            var intent = _intentRouter.Route(request.Message);
+            
             CapabilityResult? capabilityResult = null;
-            if (capability != null)
+            if (intent != AssistantIntent.GeneralConversation && intent != AssistantIntent.Unknown)
             {
-                var execContext = new CapabilityExecutionContext
+                var capability = _capabilityResolver.Resolve(intent);
+                if (capability != null)
                 {
-                    CurrentUser = user,
-                    UserQuestion = request.Message
-                };
-                capabilityResult = await capability.ExecuteAsync(execContext, cancellationToken);
+                    var execContext = new CapabilityExecutionContext
+                    {
+                        CurrentUser = user,
+                        UserQuestion = request.Message
+                    };
+                    
+                    try
+                    {
+                        capabilityResult = await capability.ExecuteAsync(execContext, cancellationToken);
+                    }
+                    catch
+                    {
+                        capabilityResult = new CapabilityResult
+                        {
+                            Success = false,
+                            CapabilityName = capability.Name,
+                            Summary = "I couldn't retrieve the requested information.",
+                            StructuredData = null
+                        };
+                    }
+                }
             }
 
             // 3. Call Retriever (placeholder)

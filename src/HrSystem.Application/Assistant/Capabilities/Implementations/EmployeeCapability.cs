@@ -3,31 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
+using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations
 {
-    public class GetDepartmentSummaryCapability : IAssistantCapability
+    public class EmployeeCapability : IAssistantCapability
     {
-        private readonly IDepartmentService _departmentService;
+        private readonly IUserService _userService;
 
-        public GetDepartmentSummaryCapability(IDepartmentService departmentService)
+        public EmployeeCapability(IUserService userService)
         {
-            _departmentService = departmentService;
+            _userService = userService;
         }
 
-        public string Name => "GetDepartmentSummary";
-        public string Description => "Retrieves a summary of all departments, including employee count and task status. Not available to regular employees.";
-
-        public CapabilityMatchResult CanHandle(CapabilityMatchContext context)
-        {
-            var q = context.UserQuestion.ToLowerInvariant();
-            if (q.Contains("department summary") || q.Contains("department status") || q.Contains("department metrics"))
-            {
-                return CapabilityMatchResult.Match(Name, 0.9);
-            }
-            return CapabilityMatchResult.NoMatch();
-        }
+        public string Name => "EmployeeDomainCapability";
+        public string Description => "Retrieves employee headcount and distribution metrics.";
+        public AssistantIntent SupportedIntent => AssistantIntent.EmployeeInformation;
 
         public async Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken)
         {
@@ -36,14 +28,14 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 var userId = Guid.Parse(context.CurrentUser.UserId);
                 Guid? deptId = !string.IsNullOrEmpty(context.CurrentUser.DepartmentId) ? Guid.Parse(context.CurrentUser.DepartmentId) : null;
                 
-                var stats = await _departmentService.GetDepartmentStatisticsAsync(userId, context.CurrentUser.Role, deptId);
+                var stats = await _userService.GetEmployeeStatisticsAsync(userId, context.CurrentUser.Role, deptId);
 
                 return new CapabilityResult
                 {
                     Success = true,
                     CapabilityName = Name,
                     StructuredData = stats,
-                    Summary = $"Retrieved statistics for {stats.Count} department(s)."
+                    Summary = $"Retrieved employee statistics."
                 };
             }
             catch (Exception)
@@ -52,7 +44,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 {
                     Success = false,
                     CapabilityName = Name,
-                    Summary = "I couldn't retrieve the requested information.",
+                    Summary = "I couldn't retrieve the requested employee information.",
                     StructuredData = null
                 };
             }

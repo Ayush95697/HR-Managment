@@ -135,12 +135,12 @@ builder.Services.AddScoped<IContextBuilder, HrContextBuilder>();
 builder.Services.AddScoped<IContextBuilder, AdminContextBuilder>();
 
 // Capability System
+builder.Services.AddScoped<HrSystem.Application.Assistant.IntentRouting.IIntentRouter, HrSystem.Application.Assistant.IntentRouting.IntentRouter>();
 builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.ICapabilityResolver, HrSystem.Application.Assistant.Capabilities.CapabilityResolver>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetMyTasksCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetCriticalTasksCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetDepartmentSummaryCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetEmployeeCountCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.GetBoardStatusCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.TaskCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.DepartmentCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.EmployeeCapability>();
+builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.BoardCapability>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();

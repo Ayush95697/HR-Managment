@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using HrSystem.Application.Assistant.Capabilities.Models;
+using HrSystem.Application.Assistant.IntentRouting;
 
 namespace HrSystem.Application.Assistant.Capabilities.Interfaces
 {
@@ -9,7 +10,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Interfaces
         string Name { get; }
         string Description { get; }
         
-        CapabilityMatchResult CanHandle(CapabilityMatchContext context);
+        AssistantIntent SupportedIntent { get; }
         
         Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken);
     }

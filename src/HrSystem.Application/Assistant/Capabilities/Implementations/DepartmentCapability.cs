@@ -3,31 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
+using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations
 {
-    public class GetEmployeeCountCapability : IAssistantCapability
+    public class DepartmentCapability : IAssistantCapability
     {
-        private readonly IUserService _userService;
+        private readonly IDepartmentService _departmentService;
 
-        public GetEmployeeCountCapability(IUserService userService)
+        public DepartmentCapability(IDepartmentService departmentService)
         {
-            _userService = userService;
+            _departmentService = departmentService;
         }
 
-        public string Name => "GetEmployeeCount";
-        public string Description => "Retrieves total employee count and headcount distribution by department. Not available to regular employees.";
-
-        public CapabilityMatchResult CanHandle(CapabilityMatchContext context)
-        {
-            var q = context.UserQuestion.ToLowerInvariant();
-            if (q.Contains("employee count") || q.Contains("how many employees") || q.Contains("headcount"))
-            {
-                return CapabilityMatchResult.Match(Name, 0.9);
-            }
-            return CapabilityMatchResult.NoMatch();
-        }
+        public string Name => "DepartmentDomainCapability";
+        public string Description => "Retrieves department metrics, headcount, and summary statistics.";
+        public AssistantIntent SupportedIntent => AssistantIntent.DepartmentInformation;
 
         public async Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken)
         {
@@ -36,14 +28,14 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 var userId = Guid.Parse(context.CurrentUser.UserId);
                 Guid? deptId = !string.IsNullOrEmpty(context.CurrentUser.DepartmentId) ? Guid.Parse(context.CurrentUser.DepartmentId) : null;
                 
-                var stats = await _userService.GetEmployeeStatisticsAsync(userId, context.CurrentUser.Role, deptId);
+                var stats = await _departmentService.GetDepartmentStatisticsAsync(userId, context.CurrentUser.Role, deptId);
 
                 return new CapabilityResult
                 {
                     Success = true,
                     CapabilityName = Name,
                     StructuredData = stats,
-                    Summary = $"Found {stats.TotalEmployees} total active employees."
+                    Summary = $"Retrieved department statistics."
                 };
             }
             catch (Exception)
@@ -52,7 +44,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 {
                     Success = false,
                     CapabilityName = Name,
-                    Summary = "I couldn't retrieve the requested information.",
+                    Summary = "I couldn't retrieve the requested department information.",
                     StructuredData = null
                 };
             }

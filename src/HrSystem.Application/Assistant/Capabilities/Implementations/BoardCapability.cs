@@ -3,31 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
+using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations
 {
-    public class GetCriticalTasksCapability : IAssistantCapability
+    public class BoardCapability : IAssistantCapability
     {
-        private readonly ITaskCardService _taskCardService;
+        private readonly IBoardService _boardService;
 
-        public GetCriticalTasksCapability(ITaskCardService taskCardService)
+        public BoardCapability(IBoardService boardService)
         {
-            _taskCardService = taskCardService;
+            _boardService = boardService;
         }
 
-        public string Name => "GetCriticalTasks";
-        public string Description => "Retrieves a summary of critical tasks, including the number of tasks and assigned employees. Not available to regular employees.";
-
-        public CapabilityMatchResult CanHandle(CapabilityMatchContext context)
-        {
-            var q = context.UserQuestion.ToLowerInvariant();
-            if (q.Contains("critical task"))
-            {
-                return CapabilityMatchResult.Match(Name, 0.9);
-            }
-            return CapabilityMatchResult.NoMatch();
-        }
+        public string Name => "BoardDomainCapability";
+        public string Description => "Retrieves board statuses, active projects, and completion metrics.";
+        public AssistantIntent SupportedIntent => AssistantIntent.BoardInformation;
 
         public async Task<CapabilityResult> ExecuteAsync(CapabilityExecutionContext context, CancellationToken cancellationToken)
         {
@@ -36,14 +28,14 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 var userId = Guid.Parse(context.CurrentUser.UserId);
                 Guid? deptId = !string.IsNullOrEmpty(context.CurrentUser.DepartmentId) ? Guid.Parse(context.CurrentUser.DepartmentId) : null;
                 
-                var stats = await _taskCardService.GetCriticalTasksSummaryAsync(userId, context.CurrentUser.Role, deptId);
+                var stats = await _boardService.GetBoardStatisticsAsync(userId, context.CurrentUser.Role, deptId);
 
                 return new CapabilityResult
                 {
                     Success = true,
                     CapabilityName = Name,
                     StructuredData = stats,
-                    Summary = $"Found {stats.CriticalTasksCount} critical tasks."
+                    Summary = $"Retrieved board statistics."
                 };
             }
             catch (Exception)
@@ -52,7 +44,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 {
                     Success = false,
                     CapabilityName = Name,
-                    Summary = "I couldn't retrieve the requested information.",
+                    Summary = "I couldn't retrieve the requested board information.",
                     StructuredData = null
                 };
             }

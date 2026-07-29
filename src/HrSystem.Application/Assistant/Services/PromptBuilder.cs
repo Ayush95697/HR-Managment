@@ -54,7 +54,13 @@ namespace HrSystem.Application.Assistant.Services
                 }
                 
                 sb.AppendLine();
-                sb.AppendLine("Please answer the user's question using the provided capability result. Explain the structured data in a professional, natural language answer. Do not invent new data.");
+                sb.AppendLine("=== STRICT INSTRUCTIONS FOR USING STRUCTURED DATA ===");
+                sb.AppendLine("- Use ONLY the provided structured data to answer the question.");
+                sb.AppendLine("- Never invent employees.");
+                sb.AppendLine("- Never invent departments.");
+                sb.AppendLine("- Never invent statistics.");
+                sb.AppendLine("- Never invent tasks.");
+                sb.AppendLine("- If data is missing, clearly state that the information is unavailable.");
                 sb.AppendLine();
             }
 
