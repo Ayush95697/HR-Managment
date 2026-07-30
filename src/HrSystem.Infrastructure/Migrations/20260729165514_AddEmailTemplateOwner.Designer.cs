@@ -4,6 +4,7 @@ using HrSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HrSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(HrDbContext))]
-    partial class HrDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260729165514_AddEmailTemplateOwner")]
+    partial class AddEmailTemplateOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Boards", (string)null);
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.BoardColumn", b =>
@@ -75,7 +78,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("BoardColumns", (string)null);
+                    b.ToTable("BoardColumns");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Department", b =>
@@ -91,7 +94,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.EmailLog", b =>
@@ -137,7 +140,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("ToUserId");
 
-                    b.ToTable("EmailLogs", (string)null);
+                    b.ToTable("EmailLogs");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.EmailTemplate", b =>
@@ -152,9 +155,6 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.Property<Guid?>("CreatedByUserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsQuickAccess")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -174,7 +174,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("EmailTemplates", (string)null);
+                    b.ToTable("EmailTemplates");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Notification", b =>
@@ -218,7 +218,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("RecipientId", "IsRead", "CreatedAt");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.RefreshToken", b =>
@@ -253,7 +253,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Role", b =>
@@ -268,7 +268,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskActivityLog", b =>
@@ -308,7 +308,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("ToColumnId");
 
-                    b.ToTable("TaskActivityLogs", (string)null);
+                    b.ToTable("TaskActivityLogs");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskAttachment", b =>
@@ -342,7 +342,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("TaskAttachments", (string)null);
+                    b.ToTable("TaskAttachments");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskCard", b =>
@@ -405,7 +405,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("BoardId", "ColumnId");
 
-                    b.ToTable("TaskCards", (string)null);
+                    b.ToTable("TaskCards");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.TaskComment", b =>
@@ -433,7 +433,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("TaskCardId");
 
-                    b.ToTable("TaskComments", (string)null);
+                    b.ToTable("TaskComments");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.User", b =>
@@ -501,7 +501,7 @@ namespace HrSystem.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Board", b =>

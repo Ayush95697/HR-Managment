@@ -20,16 +20,16 @@ public class DashboardService : IDashboardService
     public async Task<List<TaskVelocityDto>> GetTaskVelocityAsync(int range, string interval, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
         var since = DateTime.UtcNow.Date.AddDays(-range);
-        
         var resultsDict = await _dashboardRepository.GetTaskVelocityCountsAsync(range, currentUserId, currentUserRole, currentUserDeptId);
         
         var finalResults = new List<TaskVelocityDto>();
         for (int i = 0; i <= range; i++)
         {
             var date = since.AddDays(i);
+            var dateStr = date.ToString("yyyy-MM-dd");
             finalResults.Add(new TaskVelocityDto(
                 Bucket: date,
-                Count: resultsDict.ContainsKey(date) ? resultsDict[date] : 0
+                Count: resultsDict.ContainsKey(dateStr) ? resultsDict[dateStr] : 0
             ));
         }
 

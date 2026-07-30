@@ -76,7 +76,7 @@ export default function AuditLogPage() {
                         textTransform: 'uppercase',
                       }}
                     >
-                      {ActivityActionMap[log.action] || 'Unknown'}
+                      {typeof log.action === 'number' ? ActivityActionMap[log.action as number] || 'Unknown' : log.action}
                     </span>
                   </td>
                   <td style={{ padding: '14px 20px', color: 'var(--text-secondary)' }}>
@@ -142,8 +142,8 @@ export default function AuditLogPage() {
                 </>
               )}
               
-              <div style={{ color: 'var(--text-muted)' }}>Action ID:</div>
-              <div style={{ color: 'var(--text-primary)' }}>{selectedLog.action} ({ActivityActionMap[selectedLog.action] || 'Unknown'})</div>
+              <div style={{ color: 'var(--text-muted)' }}>Action:</div>
+              <div style={{ color: 'var(--text-primary)' }}>{typeof selectedLog.action === 'number' ? ActivityActionMap[selectedLog.action as number] || 'Unknown' : selectedLog.action}</div>
               
               <div style={{ color: 'var(--text-muted)' }}>Timestamp:</div>
               <div style={{ color: 'var(--text-primary)' }}>{selectedLog.timestamp}</div>

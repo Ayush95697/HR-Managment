@@ -9,14 +9,16 @@ public record EmailTemplateDto(
     string Name,
     string Subject,
     string BodyHtml,
-    string PlaceholderSchemaJson
+    Dictionary<string, string>? PlaceholderSchema,
+    bool IsQuickAccess,
+    Guid? CreatedByUserId
 );
 
 public record CreateEmailTemplateRequest(
     string Name,
     string Subject,
     string BodyHtml,
-    string PlaceholderSchemaJson
+    Dictionary<string, string>? PlaceholderSchema
 );
 
 public record SendEmailRequest(
@@ -29,6 +31,7 @@ public record SendEmailRequest(
 public record EmailLogDto(
     Guid Id,
     Guid ToUserId,
+    string ToUserName,
     string ToUserEmail,
     Guid TemplateId,
     string TemplateName,

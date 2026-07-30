@@ -24,21 +24,26 @@ public class EmailService : IEmailService
         _notificationService = notificationService;
     }
 
-    public async Task<List<EmailTemplateDto>> GetTemplatesAsync()
+    public async Task<List<EmailTemplateDto>> GetTemplatesAsync(Guid currentUserId)
     {
         var templates = await _emailRepository.GetTemplatesAsync();
         return templates
+            .Where(t => t.CreatedByUserId == currentUserId || t.CreatedByUserId == null)
             .Select(t => new EmailTemplateDto(
                 t.Id,
                 t.Name,
                 t.Subject,
                 t.BodyHtml,
-                t.PlaceholderSchemaJson
+                string.IsNullOrEmpty(t.PlaceholderSchemaJson) 
+                    ? null 
+                    : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(t.PlaceholderSchemaJson, (System.Text.Json.JsonSerializerOptions?)null),
+                t.IsQuickAccess,
+                t.CreatedByUserId
             ))
             .ToList();
     }
 
-    public async Task<EmailTemplateDto> CreateTemplateAsync(CreateEmailTemplateRequest request)
+    public async Task<EmailTemplateDto> CreateTemplateAsync(CreateEmailTemplateRequest request, Guid currentUserId)
     {
         var template = new EmailTemplate
         {
@@ -46,7 +51,9 @@ public class EmailService : IEmailService
             Name = request.Name,
             Subject = request.Subject,
             BodyHtml = request.BodyHtml,
-            PlaceholderSchemaJson = request.PlaceholderSchemaJson
+            PlaceholderSchemaJson = request.PlaceholderSchema != null ? System.Text.Json.JsonSerializer.Serialize(request.PlaceholderSchema, (System.Text.Json.JsonSerializerOptions?)null) : null,
+            CreatedByUserId = currentUserId,
+            IsQuickAccess = true
         };
 
         await _emailRepository.AddTemplateAsync(template);
@@ -57,9 +64,12 @@ public class EmailService : IEmailService
             template.Name,
             template.Subject,
             template.BodyHtml,
-            template.PlaceholderSchemaJson
+            request.PlaceholderSchema,
+            template.IsQuickAccess,
+            template.CreatedByUserId
         );
     }
+
 
     public async Task<EmailLogDto> SendEmailAsync(SendEmailRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
@@ -136,11 +146,18 @@ public class EmailService : IEmailService
         return logs.Select(MapToDto).ToList();
     }
 
+    public async Task<EmailLogDto> GetLogByIdAsync(Guid id)
+    {
+        var el = await _emailRepository.GetLogByIdWithDetailsAsync(id);
+        return MapToDto(el);
+    }
+
     private static EmailLogDto MapToDto(EmailLog el)
     {
         return new EmailLogDto(
             el.Id,
             el.ToUserId,
+            el.ToUser.Name,
             el.ToUser.Email,
             el.TemplateId,
             el.Template.Name,
@@ -154,19 +171,25 @@ public class EmailService : IEmailService
         );
     }
 
-    /// <summary>
-    /// I-03 FIX: Replaces {{PlaceholderName}} tokens in a template string with the provided values.
-    /// Unmatched tokens are left as-is.
-    /// </summary>
-    private static string ApplyPlaceholders(string template, Dictionary<string, string>? placeholders)
+    public async Task DeleteTemplateAsync(Guid id)
     {
-        if (placeholders == null || placeholders.Count == 0)
-            return template;
-
-        return Regex.Replace(template, @"\{\{(\w+)\}\}", match =>
+        var template = await _dbContext.EmailTemplates.FindAsync(id);
+        if (template != null)
         {
-            string key = match.Groups[1].Value;
-            return placeholders.TryGetValue(key, out var value) ? value : match.Value;
-        });
+            _dbContext.EmailTemplates.Remove(template);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task ToggleQuickAccessAsync(Guid id, bool isQuickAccess, Guid currentUserId)
+    {
+        var entity = await _dbContext.EmailTemplates.FindAsync(id);
+        if (entity == null || entity.CreatedByUserId != currentUserId)
+        {
+            throw new KeyNotFoundException("Template not found or access denied.");
+        }
+
+        entity.IsQuickAccess = isQuickAccess;
+        await _dbContext.SaveChangesAsync();
     }
 }

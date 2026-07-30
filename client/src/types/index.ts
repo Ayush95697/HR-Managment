@@ -116,6 +116,7 @@ export interface EmailTemplate {
   subject: string;
   bodyHtml: string;
   placeholderSchema: Record<string, string>;
+  isQuickAccess: boolean;
 }
 
 export interface EmailLog {
@@ -131,6 +132,7 @@ export interface EmailLog {
   idempotencyKey: string;
   queuedAt: string;
   sentAt: string | null;
+  errorMessage?: string;
 }
 
 export interface AuthResponse {
