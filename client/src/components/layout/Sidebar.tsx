@@ -15,19 +15,15 @@ export default function Sidebar() {
     alignItems: 'center',
     gap: '12px',
     padding: '12px 18px',
-    borderRadius: '9999px',
-    color: isActive ? '#ffffff' : 'var(--text-secondary, #94a3b8)',
-    background: isActive 
-      ? 'linear-gradient(135deg, var(--accent, #6366f1) 0%, #8b5cf6 100%)' 
+    borderRadius: isActive ? '0 9999px 9999px 0' : '9999px',
+    color: isActive ? '#ffffff' : '#A0A0B0',
+    background: isActive
+      ? 'linear-gradient(90deg, rgba(0, 255, 255, 0.1) 0%, transparent 100%)'
       : 'transparent',
-    border: isActive 
-      ? '1px solid rgba(255, 255, 255, 0.2)' 
-      : '1px solid transparent',
-    boxShadow: isActive 
-      ? '0 8px 24px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' 
-      : 'none',
+    borderLeft: isActive ? '3px solid #00FFFF' : '3px solid transparent',
+    boxShadow: isActive ? '-5px 0px 15px rgba(0, 255, 255, 0.5)' : 'none',
     textDecoration: 'none',
-    fontWeight: isActive ? 600 : 500,
+    fontWeight: isActive ? 700 : 500,
     fontSize: '0.875rem',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   });
@@ -35,31 +31,32 @@ export default function Sidebar() {
   return (
     <aside
       style={{
-        width: '240px',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        width: '260px',
+        backgroundColor: 'rgba(9, 10, 20, 0.85)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderRight: '1px solid rgba(255, 255, 255, 0.05)',
+        borderRight: '1px solid rgba(0, 255, 255, 0.15)',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
         position: 'sticky',
         top: 0,
         flexShrink: 0,
+        zIndex: 40,
       }}
     >
       {/* Brand Header */}
       <div
         style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+          padding: '22px 20px 18px',
+          borderBottom: '1px solid rgba(0, 255, 255, 0.12)',
         }}
       >
-        <Logo size="md" showText={true} />
+        <Logo size="md" showText={true} showTagline={true} />
       </div>
 
       {/* Nav Links */}
-      <nav style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+      <nav style={{ padding: '16px 12px 16px 0', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
         <RoleGate roles={['Admin', 'HR']}>
           <NavLink to="/" end style={linkStyle} className={({ isActive }) => `sidebar-item-glass ${isActive ? 'active' : ''}`}>
             <LayoutDashboard size={18} />
@@ -103,28 +100,28 @@ export default function Sidebar() {
         </NavLink>
       </nav>
 
-      {/* Footer User Info — click to go to settings */}
+      {/* Footer User Info */}
       <div
         onClick={() => navigate('/settings')}
         style={{
           padding: '16px 20px',
-          borderTop: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+          borderTop: '1px solid rgba(0, 255, 255, 0.12)',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           cursor: 'pointer',
-          transition: 'background 0.15s',
+          transition: 'background 0.2s',
         }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0, 255, 255, 0.05)')}
         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <div
           style={{
-            width: '36px',
-            height: '36px',
+            width: '38px',
+            height: '38px',
             borderRadius: '50%',
             overflow: 'hidden',
-            backgroundColor: 'var(--accent, #6366f1)',
+            background: 'linear-gradient(135deg, #7F00FF 0%, #00FFFF 100%)',
             color: '#fff',
             fontWeight: 700,
             display: 'flex',
@@ -132,6 +129,7 @@ export default function Sidebar() {
             justifyContent: 'center',
             fontSize: '0.9rem',
             flexShrink: 0,
+            boxShadow: '0 0 15px rgba(127, 0, 255, 0.6)',
           }}
         >
           {profile?.avatarUrl 
@@ -143,7 +141,7 @@ export default function Sidebar() {
           <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {user?.name || 'User'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted, #94a3b8)' }}>
+          <div style={{ fontSize: '0.75rem', color: '#00FFFF', opacity: 0.8 }}>
             {user?.role}
           </div>
         </div>

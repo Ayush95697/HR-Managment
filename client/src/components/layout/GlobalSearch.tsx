@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, Loader2, Building2, User, KanbanSquare, LayoutTemplate, X } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useSearch } from '../../hooks/useSearch';
 import type { SearchEmployeeDto } from '../../api/search.api';
@@ -77,16 +76,9 @@ export default function GlobalSearch() {
 
   return (
     <>
-      <div ref={containerRef} style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
+      <div ref={containerRef} style={{ position: 'relative', width: '340px', maxWidth: '100%' }}>
         <div className="relative group">
-          <div className="absolute -inset-[1px] rounded-full overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-500 z-0">
-            <motion.div className="absolute top-0 left-0 h-[2px] w-[50%] bg-gradient-to-r from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ left: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }} />
-            <motion.div className="absolute top-0 right-0 h-[100%] w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ top: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 0.6 }} />
-            <motion.div className="absolute bottom-0 right-0 h-[2px] w-[50%] bg-gradient-to-r from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ right: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 1.2 }} />
-            <motion.div className="absolute bottom-0 left-0 h-[100%] w-[2px] bg-gradient-to-b from-transparent via-white to-transparent opacity-70" initial={{ filter: "blur(1px)" }} animate={{ bottom: ["-50%", "100%"] }} transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 1.8 }} />
-          </div>
-
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', zIndex: 10 }} />
+          <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#00FFFF', zIndex: 10 }} />
           <input
             ref={inputRef}
             type="text"
@@ -102,31 +94,33 @@ export default function GlobalSearch() {
               position: 'relative',
               zIndex: 1,
               width: '100%',
-              padding: '8px 12px 8px 36px',
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              padding: '9px 14px 9px 38px',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderBottom: '1px solid rgba(0, 255, 255, 0.5)',
               borderRadius: '9999px',
               color: 'var(--text-primary)',
               fontSize: '0.875rem',
               outline: 'none',
-              transition: 'border-color 0.15s, box-shadow 0.15s, background-color 0.15s',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 0 10px rgba(0, 255, 255, 0.05)',
             }}
-            onFocusCapture={(e) => {
-               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderBottom = '1px solid rgba(0, 255, 255, 0.8)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 255, 0.3)';
             }}
-            onBlurCapture={(e) => {
-               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderBottom = '1px solid rgba(0, 255, 255, 0.5)';
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 255, 255, 0.05)';
             }}
           />
           {query && (
             <button
               type="button"
               onMouseDown={(e) => {
-                e.preventDefault(); // Prevents input from losing focus
+                e.preventDefault();
                 setQuery('');
                 inputRef.current?.focus();
               }}
@@ -144,7 +138,7 @@ export default function GlobalSearch() {
                 zIndex: 20
               }}
             >
-              <X size={14} />
+              <X size={14} color="#00FFFF" />
             </button>
           )}
         </div>
@@ -158,9 +152,9 @@ export default function GlobalSearch() {
             backgroundColor: 'rgba(8, 8, 12, 0.95)',
             backdropFilter: 'blur(32px)',
             WebkitBackdropFilter: 'blur(32px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(0, 255, 255, 0.3)',
             borderRadius: '16px',
-            boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.6)',
+            boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 255, 0.2)',
             maxHeight: '400px',
             overflowY: 'auto',
             zIndex: 50,
@@ -168,7 +162,7 @@ export default function GlobalSearch() {
             flexDirection: 'column'
           }}>
             {(isLoading || isFetching) && !data ? (
-              <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
+              <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', color: '#00FFFF' }}>
                 <Loader2 size={24} className="animate-spin" />
               </div>
             ) : flatResults.length === 0 ? (
@@ -179,7 +173,7 @@ export default function GlobalSearch() {
               <div style={{ padding: '8px 0' }}>
                 {data?.tasks.length! > 0 && (
                   <div style={{ marginBottom: '8px' }}>
-                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: '#00FFFF', textTransform: 'uppercase' }}>
                       Tasks
                     </div>
                     {data?.tasks.map((task) => {
@@ -194,11 +188,11 @@ export default function GlobalSearch() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            backgroundColor: focusedIndex === idx ? 'var(--surface-hover)' : 'transparent',
+                            backgroundColor: focusedIndex === idx ? 'rgba(0, 255, 255, 0.1)' : 'transparent',
                           }}
                           onMouseEnter={() => setFocusedIndex(idx)}
                         >
-                          <KanbanSquare size={16} color="var(--accent)" />
+                          <KanbanSquare size={16} color="#7F00FF" />
                           <div style={{ overflow: 'hidden' }}>
                             <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{task.title}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{task.boardName} • {task.status}</div>
@@ -211,7 +205,7 @@ export default function GlobalSearch() {
 
                 {data?.boards.length! > 0 && (
                   <div style={{ marginBottom: '8px' }}>
-                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: '#00FFFF', textTransform: 'uppercase' }}>
                       Boards
                     </div>
                     {data?.boards.map((board) => {
@@ -226,11 +220,11 @@ export default function GlobalSearch() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            backgroundColor: focusedIndex === idx ? 'var(--surface-hover)' : 'transparent',
+                            backgroundColor: focusedIndex === idx ? 'rgba(0, 255, 255, 0.1)' : 'transparent',
                           }}
                           onMouseEnter={() => setFocusedIndex(idx)}
                         >
-                          <LayoutTemplate size={16} color="var(--success)" />
+                          <LayoutTemplate size={16} color="#00FFFF" />
                           <div style={{ overflow: 'hidden' }}>
                             <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{board.name}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Owner: {board.ownerName} {board.departmentName ? `• ${board.departmentName}` : ''}</div>
@@ -243,7 +237,7 @@ export default function GlobalSearch() {
 
                 {data?.employees.length! > 0 && (
                   <div style={{ marginBottom: '8px' }}>
-                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: '#00FFFF', textTransform: 'uppercase' }}>
                       Employees
                     </div>
                     {data?.employees.map((emp) => {
@@ -258,14 +252,14 @@ export default function GlobalSearch() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            backgroundColor: focusedIndex === idx ? 'var(--surface-hover)' : 'transparent',
+                            backgroundColor: focusedIndex === idx ? 'rgba(0, 255, 255, 0.1)' : 'transparent',
                           }}
                           onMouseEnter={() => setFocusedIndex(idx)}
                         >
                           <div style={{
                             width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 700, color: '#fff', overflow: 'hidden', flexShrink: 0
                           }}>
-                            {emp.avatarUrl ? <img src={emp.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={12} />}
+                            {emp.avatarUrl ? <img src={emp.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={12} color="#00FFFF" />}
                           </div>
                           <div style={{ overflow: 'hidden' }}>
                             <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.name}</div>
@@ -279,7 +273,7 @@ export default function GlobalSearch() {
 
                 {data?.departments.length! > 0 && (
                   <div>
-                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    <div style={{ padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, color: '#00FFFF', textTransform: 'uppercase' }}>
                       Departments
                     </div>
                     {data?.departments.map((dept) => {
@@ -294,11 +288,11 @@ export default function GlobalSearch() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            backgroundColor: focusedIndex === idx ? 'var(--surface-hover)' : 'transparent',
+                            backgroundColor: focusedIndex === idx ? 'rgba(0, 255, 255, 0.1)' : 'transparent',
                           }}
                           onMouseEnter={() => setFocusedIndex(idx)}
                         >
-                          <Building2 size={16} color="var(--success)" />
+                          <Building2 size={16} color="#00FFFF" />
                           <div style={{ fontSize: '0.875rem', color: 'var(--text-primary)' }}>{dept.name}</div>
                         </div>
                       );

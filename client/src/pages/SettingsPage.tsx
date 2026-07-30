@@ -41,10 +41,10 @@ export default function SettingsPage() {
       {/* Page Header */}
       <div style={{ marginBottom: '32px' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-          Settings
+          Settings & Preferences
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
-          Manage your profile, appearance, and security settings.
+          Manage your account profile, security preferences, and active sessions.
         </p>
       </div>
 
@@ -75,8 +75,8 @@ export default function SettingsPage() {
                 cursor: 'pointer',
                 fontSize: '0.875rem',
                 fontWeight: activeTab === tab.id ? 700 : 500,
-                backgroundColor: activeTab === tab.id ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
-                color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-secondary)',
+                backgroundColor: activeTab === tab.id ? 'rgba(0, 255, 255, 0.15)' : 'transparent',
+                color: activeTab === tab.id ? '#00FFFF' : 'var(--text-secondary)',
                 transition: 'all 0.15s',
               }}
             >

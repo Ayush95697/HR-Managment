@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -39,48 +40,54 @@ export default function Modal({
       case 'sm': return '420px';
       case 'lg': return '840px';
       case 'md':
-      default: return '600px';
+      default: return '560px';
     }
   };
 
-  return (
+  const modalContent = (
     <div
       style={{
         position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.65)',
-        backdropFilter: 'blur(4px)',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(5, 5, 16, 0.85)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
-        padding: '20px',
+        zIndex: 99999,
+        padding: '24px',
       }}
       onClick={onClose}
     >
       <div
         style={{
-          backgroundColor: 'var(--surface, #1e293b)',
-          border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
-          borderRadius: 'var(--radius-xl, 12px)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          backgroundColor: '#0d0f1c',
+          border: '1px solid rgba(0, 255, 255, 0.3)',
+          borderRadius: '20px',
+          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 255, 255, 0.25)',
           width: '100%',
           maxWidth: getMaxWidth(),
-          maxHeight: '90vh',
+          maxHeight: '85vh',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div
           style={{
-            padding: '18px 24px',
-            borderBottom: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+            padding: '16px 24px',
+            borderBottom: '1px solid rgba(0, 255, 255, 0.15)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            backgroundColor: 'rgba(13, 15, 28, 0.95)',
           }}
         >
           <h2 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
@@ -89,17 +96,21 @@ export default function Modal({
           <button
             onClick={onClose}
             style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-muted)',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(0, 255, 255, 0.2)',
+              color: '#00FFFF',
               cursor: 'pointer',
-              padding: '4px',
-              borderRadius: '6px',
+              padding: '6px',
+              borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(0, 255, 255, 0.15)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)')}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
@@ -113,8 +124,8 @@ export default function Modal({
           <div
             style={{
               padding: '14px 24px',
-              borderTop: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
-              backgroundColor: 'var(--surface-2, #0f172a)',
+              borderTop: '1px solid rgba(0, 255, 255, 0.15)',
+              backgroundColor: 'rgba(9, 10, 20, 0.95)',
               display: 'flex',
               justifyContent: 'flex-end',
               gap: '10px',
@@ -126,4 +137,6 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

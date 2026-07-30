@@ -1,6 +1,7 @@
-import { X, Mail, Building2, User } from 'lucide-react';
+import { Mail, Building2, User } from 'lucide-react';
 import type { SearchEmployeeDto } from '../../api/search.api';
 import Modal from '../shared/Modal';
+import Button from '../shared/Button';
 
 interface Props {
   isOpen: boolean;
@@ -13,108 +14,124 @@ export default function EmployeeModal({ isOpen, onClose, employee }: Props) {
 
   const initials = employee.name
     .split(' ')
-    .map(n => n[0])
+    .map((n) => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Employee Details">
-      <div style={{ position: 'relative' }}>
-        <button
-          onClick={onClose}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Employee Profile Details"
+      footer={
+        <Button variant="secondary" onClick={onClose} style={{ borderRadius: '9999px', padding: '8px 24px' }}>
+          Close
+        </Button>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* Profile Avatar & Name Header */}
+        <div
           style={{
-            position: 'absolute',
-            top: '-45px',
-            right: '-10px',
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            cursor: 'pointer',
-            padding: '4px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '8px 0',
           }}
         >
-          <X size={20} />
-        </button>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '10px 0 20px' }}>
-          <div style={{
-            width: '96px',
-            height: '96px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            border: '3px solid var(--border)',
-            background: 'linear-gradient(135deg, var(--accent), #8b5cf6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.8rem',
-            fontWeight: 700,
-            color: '#fff',
-            flexShrink: 0
-          }}>
-            {employee.avatarUrl 
-              ? <img src={employee.avatarUrl} alt={employee.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : initials || <User size={40} />
-            }
+          <div
+            style={{
+              width: '76px',
+              height: '76px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '2px solid #00FFFF',
+              boxShadow: '0 0 16px rgba(0, 255, 255, 0.4)',
+              background: 'linear-gradient(135deg, #7F00FF, #00FFFF)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: '#fff',
+              flexShrink: 0,
+            }}
+          >
+            {employee.avatarUrl ? (
+              <img src={employee.avatarUrl} alt={employee.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              initials || <User size={32} />
+            )}
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               {employee.name}
             </h3>
-            <span style={{
-              display: 'inline-block',
-              marginTop: '6px',
-              padding: '2px 8px',
-              borderRadius: '12px',
-              backgroundColor: 'rgba(99, 102, 241, 0.1)',
-              color: 'var(--accent)',
-              fontSize: '0.75rem',
-              fontWeight: 600
-            }}>
-              {employee.role}
-            </span>
-            <span style={{
-              display: 'inline-block',
-              marginTop: '6px',
-              padding: '2px 8px',
-              borderRadius: '12px',
-              backgroundColor: employee.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-              color: employee.isActive ? 'var(--success)' : 'var(--danger)',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              marginLeft: '8px'
-            }}>
-              {employee.isActive ? 'Active' : 'Inactive'}
-            </span>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '6px' }}>
+              <span
+                style={{
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(127, 0, 255, 0.15)',
+                  border: '1px solid rgba(127, 0, 255, 0.4)',
+                  color: '#a855f7',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                }}
+              >
+                {employee.role}
+              </span>
+              <span
+                style={{
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  backgroundColor: employee.isActive ? 'rgba(0, 255, 255, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  border: employee.isActive ? '1px solid rgba(0, 255, 255, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
+                  color: employee.isActive ? '#00FFFF' : '#ef4444',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                }}
+              >
+                {employee.isActive ? 'Active' : 'Inactive'}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-          padding: '16px',
-          backgroundColor: 'var(--surface-hover)',
-          borderRadius: 'var(--radius-md)',
-          border: '1px solid var(--border)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            <Mail size={16} />
-            <a href={`mailto:${employee.email}`} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
+        {/* Detailed Info Card */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            padding: '16px 20px',
+            backgroundColor: 'rgba(9, 10, 20, 0.7)',
+            borderRadius: '14px',
+            border: '1px solid rgba(0, 255, 255, 0.15)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-primary)', fontSize: '0.9rem' }}>
+            <Mail size={16} color="#00FFFF" />
+            <a href={`mailto:${employee.email}`} style={{ color: '#00FFFF', textDecoration: 'none', fontWeight: 500 }}>
               {employee.email}
             </a>
           </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            <Building2 size={16} />
-            <span>{employee.departmentName || 'No Department'}</span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-primary)', fontSize: '0.9rem' }}>
+            <Building2 size={16} color="#7F00FF" />
+            <span>
+              <strong style={{ color: 'var(--text-muted)' }}>Department:</strong> {employee.departmentName || 'Human Resources'}
+            </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            <User size={16} />
-            <span>Manager: {employee.managerName || 'None'}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-primary)', fontSize: '0.9rem' }}>
+            <User size={16} color="#00FFFF" />
+            <span>
+              <strong style={{ color: 'var(--text-muted)' }}>Manager:</strong> {employee.managerName || 'None'}
+            </span>
           </div>
         </div>
       </div>

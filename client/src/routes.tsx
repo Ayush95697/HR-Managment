@@ -3,6 +3,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import AppShell from './components/layout/AppShell';
 import { useAuthStore } from './store/authStore';
 
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import BoardListPage from './pages/BoardListPage';
@@ -22,7 +23,19 @@ const RoleBasedHome = () => {
   return <DashboardPage />;
 };
 
+const RootRoute = () => {
+  const { isAuthenticated, user } = useAuthStore();
+  if (!isAuthenticated || !user) {
+    return <LandingPage />;
+  }
+  return <AppShell />;
+};
+
 export const router = createBrowserRouter([
+  {
+    path: '/landing',
+    element: <LandingPage />,
+  },
   {
     path: '/login',
     element: <LoginPage />,
@@ -33,11 +46,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: (
-      <ProtectedRoute>
-        <AppShell />
-      </ProtectedRoute>
-    ),
+    element: <RootRoute />,
     children: [
       {
         index: true,

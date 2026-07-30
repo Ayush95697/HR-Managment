@@ -62,13 +62,13 @@ builder.Services.AddSingleton(jwtSettings);
 // 2. DbContext
 builder.Services.AddDbContext<HrDbContext>(options =>
 {
-    if (builder.Environment.IsEnvironment("Testing"))
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (builder.Environment.IsEnvironment("Testing") || string.IsNullOrWhiteSpace(connectionString))
     {
-        options.UseInMemoryDatabase("HrTestingDb");
+        options.UseInMemoryDatabase("HrDb");
     }
     else
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HrSystem.Infrastructure"));
     }
 });

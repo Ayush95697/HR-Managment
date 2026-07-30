@@ -1,40 +1,51 @@
-/* ─── Dark Theme (default) ─────────────────────────────────────────────────────────── */
+/* ─── WorkTrail Brand Style Guide & Theme Tokens ────────────────────────────── */
 :root {
-  --bg:             #0f1117;
-  --surface:        rgba(0, 0, 0, 0.4);
-  --surface-2:      rgba(0, 0, 0, 0.6);
-  --surface-hover:  rgba(255, 255, 255, 0.05);
-  --border:         rgba(255, 255, 255, 0.05);
-  --border-strong:  rgba(255, 255, 255, 0.1);
-  --text-primary:   #f1f5f9;
+  /* Brand Core Colors */
+  --purple-deep:    #7F00FF;
+  --purple-glow:    #b042ff;
+  --purple-light:   rgba(127, 0, 255, 0.18);
+  --cyan-radiant:   #00FFFF;
+  --cyan-glow:      #38bdf8;
+  --cyan-light:     rgba(0, 255, 255, 0.18);
+
+  /* Application Base Theme */
+  --bg:             #090a14;
+  --surface:        rgba(13, 15, 28, 0.65);
+  --surface-2:      rgba(19, 23, 42, 0.85);
+  --surface-hover:  rgba(0, 255, 255, 0.06);
+  --border:         rgba(0, 255, 255, 0.12);
+  --border-strong:  rgba(127, 0, 255, 0.35);
+  
+  --text-primary:   #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted:     #94a3b8;
-  --text-inverse:   #0f1117;
+  --text-inverse:   #090a14;
 
-  --accent:         #6366f1;
-  --accent-hover:   #818cf8;
-  --accent-light:   rgba(99, 102, 241, 0.15);
-  --accent-text:    #a5b4fc;
+  --accent:         #7F00FF;
+  --accent-cyan:    #00FFFF;
+  --accent-hover:   #9333ea;
+  --accent-light:   rgba(127, 0, 255, 0.2);
+  --accent-text:    #c084fc;
 
-  --success:        #22c55e;
-  --success-light:  rgba(34, 197, 94, 0.1);
+  --success:        #10b981;
+  --success-light:  rgba(16, 185, 129, 0.15);
   --warning:        #f59e0b;
-  --warning-light:  rgba(245, 158, 11, 0.1);
+  --warning-light:  rgba(245, 158, 11, 0.15);
   --danger:         #ef4444;
-  --danger-light:   rgba(239, 68, 68, 0.1);
-  --info:           #3b82f6;
-  --info-light:     rgba(59, 130, 246, 0.1);
+  --danger-light:   rgba(239, 68, 68, 0.15);
+  --info:           #00FFFF;
+  --info-light:     rgba(0, 255, 255, 0.15);
 
-  --sidebar-bg:     #13151f;
+  --sidebar-bg:     rgba(9, 10, 20, 0.85);
   --sidebar-text:   #e2e8f0;
   --sidebar-muted:  #64748b;
-  --sidebar-active: #6366f1;
-  --sidebar-hover:  rgba(99, 102, 241, 0.12);
+  --sidebar-active: #7F00FF;
+  --sidebar-hover:  rgba(0, 255, 255, 0.08);
 
-  --shadow-sm:      0 1px 2px rgba(0,0,0,0.3);
-  --shadow-md:      0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
-  --shadow-lg:      0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -4px rgba(0,0,0,0.3);
-  --shadow-xl:      0 20px 25px -5px rgba(0,0,0,0.6), 0 8px 10px -6px rgba(0,0,0,0.4);
+  --shadow-sm:      0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md:      0 8px 16px -2px rgba(0, 0, 0, 0.6), 0 0 12px rgba(127, 0, 255, 0.2);
+  --shadow-lg:      0 16px 32px -4px rgba(0, 0, 0, 0.7), 0 0 24px rgba(0, 255, 255, 0.25);
+  --shadow-xl:      0 24px 48px -8px rgba(0, 0, 0, 0.8), 0 0 36px rgba(127, 0, 255, 0.35);
 
   --radius-sm:      6px;
   --radius-md:      10px;
@@ -42,5 +53,5 @@
   --radius-xl:      24px;
   --radius-full:    9999px;
 
-  --transition:     0.2s ease;
+  --transition:     0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }

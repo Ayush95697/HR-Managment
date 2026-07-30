@@ -2,13 +2,13 @@ import { useDepartmentDistribution } from '../../hooks/useDashboardData';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useAuthStore } from '../../store/authStore';
 
-const MONO_COLORS = [
-  '#6366f1', // Primary Indigo
-  '#818cf8', // Soft Indigo
-  '#a5b4fc', // Light Indigo
-  '#475569', // Slate Dark
-  '#64748b', // Slate Medium
-  '#94a3b8', // Slate Light
+const VIBRANT_GRADIENT_SPECTRUM = [
+  '#00FFFF', // Radiant Cyan
+  '#38bdf8', // Sky Blue
+  '#6366f1', // Deep Indigo
+  '#a855f7', // Vivid Purple
+  '#7F00FF', // Deep Purple
+  '#d946ef', // Neon Fuchsia
 ];
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
@@ -27,7 +27,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       dominantBaseline="central"
       fontSize="11px"
       fontWeight="700"
-      style={{ pointerEvents: 'none' }}
+      style={{ pointerEvents: 'none', filter: 'drop-shadow(0 0 4px rgba(0, 0, 0, 0.8))' }}
     >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
@@ -46,20 +46,15 @@ export function DepartmentDistributionChart() {
 
   return (
     <div 
+      className="glass-card-antigravity hover-scale-subtle"
       style={{
-        background: 'var(--surface)',
-        borderRadius: '12px 32px 12px 32px',
-        border: '1px solid var(--border)',
         padding: '24px 32px',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
         height: '380px',
         maxHeight: '380px',
-        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.04)',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease'
       }}
-      className="hover-scale-subtle"
     >
       <div>
         <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.125rem', fontWeight: 700 }}>Department Distribution</h3>
@@ -67,7 +62,7 @@ export function DepartmentDistributionChart() {
       </div>
       
       {isLoading ? (
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00FFFF' }}>
           Loading department metrics...
         </div>
       ) : (
@@ -83,10 +78,10 @@ export function DepartmentDistributionChart() {
               pointerEvents: 'none'
             }}
           >
-            <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
+            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#00FFFF', lineHeight: 1, textShadow: '0 0 12px rgba(0, 255, 255, 0.6)' }}>
               {totalHeadcount}
             </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginTop: '2px' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, marginTop: '4px', letterSpacing: '0.05em' }}>
               TOTAL USERS
             </div>
           </div>
@@ -101,14 +96,18 @@ export function DepartmentDistributionChart() {
                 cy="42%"
                 innerRadius={55}
                 outerRadius={90}
-                paddingAngle={3}
-                cornerRadius={4}
+                paddingAngle={4}
+                cornerRadius={6}
                 stroke="none"
                 label={renderCustomizedLabel}
                 labelLine={false}
               >
                 {data?.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={MONO_COLORS[index % MONO_COLORS.length]} />
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={VIBRANT_GRADIENT_SPECTRUM[index % VIBRANT_GRADIENT_SPECTRUM.length]} 
+                    style={{ filter: `drop-shadow(0 0 8px ${VIBRANT_GRADIENT_SPECTRUM[index % VIBRANT_GRADIENT_SPECTRUM.length]}66)` }}
+                  />
                 ))}
               </Pie>
               <Tooltip 
@@ -120,18 +119,18 @@ export function DepartmentDistributionChart() {
                     
                     return (
                       <div style={{
-                        background: 'var(--surface)', 
-                        border: '1px solid var(--border)', 
-                        borderRadius: '8px', 
+                        background: 'rgba(9, 10, 20, 0.95)', 
+                        border: '1px solid #00FFFF', 
+                        borderRadius: '10px', 
                         padding: '12px 16px',
-                        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)'
+                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 255, 0.3)'
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                          <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: payload[0].payload.fill || MONO_COLORS[0] }} />
+                          <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: payload[0].payload.fill || VIBRANT_GRADIENT_SPECTRUM[0], boxShadow: `0 0 8px ${payload[0].payload.fill}` }} />
                           <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{itemData.department}</span>
                         </div>
                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginLeft: '18px' }}>
-                          {count} Members <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>({pct}%)</span>
+                          {count} Members <span style={{ fontWeight: 700, color: '#00FFFF' }}>({pct}%)</span>
                         </div>
                       </div>
                     );
@@ -139,7 +138,6 @@ export function DepartmentDistributionChart() {
                   return null;
                 }}
               />
-
             </PieChart>
           </ResponsiveContainer>
         </div>
