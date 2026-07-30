@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 
 export default function AnimatedBackground() {
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-zinc-900 overflow-hidden pointer-events-none z-[-50]">
+    <div className="fixed inset-0 w-screen h-screen bg-zinc-800 overflow-hidden pointer-events-none z-[-50]">
       {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-zinc-800/30 via-zinc-900/50 to-zinc-900" />
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-600/30 via-zinc-700/40 to-zinc-800" />
       
       {/* Subtle noise texture overlay */}
       <div className="absolute inset-0 opacity-[0.03] mix-blend-soft-light" 
