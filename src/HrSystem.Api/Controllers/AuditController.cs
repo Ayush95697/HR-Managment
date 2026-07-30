@@ -24,4 +24,12 @@ public class AuditController : BaseApiController
         var logs = await _auditService.GetAuditLogsAsync(CurrentUserId, CurrentUserRole, CurrentUserDeptId);
         return Ok(logs);
     }
+
+    [HttpDelete("clear")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ClearLogs()
+    {
+        await _auditService.ClearLogsAsync();
+        return Ok();
+    }
 }

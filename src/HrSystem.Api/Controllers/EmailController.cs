@@ -136,6 +136,14 @@ public class EmailController : BaseApiController
         return Ok(logs);
     }
 
+    [HttpDelete("logs/clear")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> ClearLogs()
+    {
+        await _emailService.ClearLogsAsync();
+        return Ok();
+    }
+
     private static bool IsUniqueConstraintViolation(DbUpdateException ex)
         => ex.InnerException?.Message.Contains("UNIQUE") == true
         || ex.InnerException?.Message.Contains("unique") == true

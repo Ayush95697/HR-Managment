@@ -8,4 +8,5 @@ namespace HrSystem.Application.Interfaces;
 public interface IAuditService
 {
     Task<List<TaskActivityLogDto>> GetAuditLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task ClearLogsAsync();
 }

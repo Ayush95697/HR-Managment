@@ -27,4 +27,7 @@ export const emailApi = {
 
   getLogs: () =>
     client.get<EmailLog[]>('/email/logs').then((r) => r.data),
+
+  clearLogs: () =>
+    client.delete('/email/logs/clear').then((r) => r.data),
 };

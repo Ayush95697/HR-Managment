@@ -38,4 +38,9 @@ public class AuditService : IAuditService
             ))
             .ToList();
     }
+
+    public async Task ClearLogsAsync()
+    {
+        await _auditRepository.ClearLogsAsync();
+    }
 }

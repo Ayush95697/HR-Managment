@@ -1,13 +1,26 @@
 import { useState } from 'react';
-import { ShieldAlert } from 'lucide-react';
-import { useAuditLogs } from '../hooks/useAudit';
+import { ShieldAlert, Trash2 } from 'lucide-react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useAuditLogs, AUDIT_LOGS_QUERY_KEY } from '../hooks/useAudit';
+import { auditApi } from '../api/audit.api';
 import Spinner from '../components/shared/Spinner';
 import ErrorBanner from '../components/shared/ErrorBanner';
+import Modal from '../components/shared/Modal';
 import { ActivityActionMap } from '../types';
 
 export default function AuditLogPage() {
+  const queryClient = useQueryClient();
   const { data: logs = [], isLoading, error } = useAuditLogs();
   const [selectedLog, setSelectedLog] = useState<any>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const clearLogsMutation = useMutation({
+    mutationFn: auditApi.clearLogs,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: AUDIT_LOGS_QUERY_KEY });
+      setIsConfirmModalOpen(false);
+    },
+  });
 
   if (isLoading) {
     return (
@@ -32,7 +45,68 @@ export default function AuditLogPage() {
             System-wide security and action event activity timeline
           </p>
         </div>
+        <button
+          onClick={() => setIsConfirmModalOpen(true)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: 'var(--danger)',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+          }}
+        >
+          <Trash2 size={16} />
+          Clear Logs
+        </button>
       </div>
+
+      <Modal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        title="Confirm Clear Logs"
+      >
+        <div style={{ color: 'var(--text-secondary)' }}>
+          <p>Are you sure you want to permanently delete all audit logs? This action cannot be undone.</p>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+            <button
+              onClick={() => setIsConfirmModalOpen(false)}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: 600,
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => clearLogsMutation.mutate()}
+              disabled={clearLogsMutation.isPending}
+              style={{
+                backgroundColor: 'var(--danger)',
+                border: 'none',
+                color: '#fff',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                cursor: clearLogsMutation.isPending ? 'not-allowed' : 'pointer',
+                fontWeight: 600,
+                opacity: clearLogsMutation.isPending ? 0.7 : 1,
+              }}
+            >
+              {clearLogsMutation.isPending ? 'Clearing...' : 'Yes, Clear All Logs'}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Logs Table */}
       <div style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>

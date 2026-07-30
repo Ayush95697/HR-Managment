@@ -13,4 +13,5 @@ public interface IEmailService
     Task<EmailLogDto> GetLogByIdAsync(Guid id);
     Task DeleteTemplateAsync(Guid id);
     Task ToggleQuickAccessAsync(Guid id, bool isQuickAccess, Guid currentUserId);
+    Task ClearLogsAsync();
 }

@@ -146,6 +146,11 @@ public class EmailService : IEmailService
         return logs.Select(MapToDto).ToList();
     }
 
+    public async Task ClearLogsAsync()
+    {
+        await _emailRepository.ClearLogsAsync();
+    }
+
     public async Task<EmailLogDto> GetLogByIdAsync(Guid id)
     {
         var el = await _emailRepository.GetLogByIdWithDetailsAsync(id);

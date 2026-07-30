@@ -66,14 +66,19 @@ public class EmailRepository : IEmailRepository
         }
 
         return await query
-            .OrderByDescending(el => el.QueuedAt)
+            .OrderByDescending(l => l.SentAt)
             .ToListAsync();
     }
 
-    public Task AddLogAsync(EmailLog log)
+    public async Task ClearLogsAsync()
     {
-        _dbContext.EmailLogs.Add(log);
-        return Task.CompletedTask;
+        _dbContext.EmailLogs.RemoveRange(_dbContext.EmailLogs);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddLogAsync(EmailLog log)
+    {
+        await _dbContext.EmailLogs.AddAsync(log);
     }
 
     public void RemoveTemplate(EmailTemplate template)

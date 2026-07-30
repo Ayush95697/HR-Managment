@@ -13,6 +13,7 @@ public interface IEmailRepository
     Task<EmailLog?> GetLogByIdempotencyKeyAsync(string idempotencyKey);
     Task<EmailLog> GetLogByIdWithDetailsAsync(Guid id);
     Task<List<EmailLog>> GetLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
+    Task ClearLogsAsync();
     Task AddLogAsync(EmailLog log);
     void RemoveTemplate(EmailTemplate template);
     Task SaveChangesAsync();

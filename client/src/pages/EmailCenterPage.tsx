@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Plus, Send, Clock, CheckCircle, AlertTriangle, LayoutTemplate, Search, Minus, Trash2 } from 'lucide-react';
-import { useEmailTemplates, useCreateEmailTemplate, useSendEmail, useEmailLogs, useDeleteEmailTemplate, useToggleQuickAccess } from '../hooks/useEmail';
+import { useEmailTemplates, useCreateEmailTemplate, useSendEmail, useEmailLogs, useDeleteEmailTemplate, useToggleQuickAccess, EMAIL_LOGS_QUERY_KEY } from '../hooks/useEmail';
 import { useUsers } from '../hooks/useUsers';
 import { useAuthStore } from '../store/authStore';
 import { templateSchema, sendEmailSchema, type TemplateFormData, type SendEmailFormData } from '../types/schemas';
@@ -11,6 +11,8 @@ import type { EmailTemplate } from '../types';
 import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
 import Modal from '../components/shared/Modal';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { emailApi } from '../api/email.api';
 
 const PREDEFINED_TEMPLATES = [
   {
@@ -192,6 +194,16 @@ export default function EmailCenterPage() {
   const deleteTemplateMutation = useDeleteEmailTemplate();
   const toggleQuickAccessMutation = useToggleQuickAccess();
   const sendEmailMutation = useSendEmail();
+
+  const queryClient = useQueryClient();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const clearLogsMutation = useMutation({
+    mutationFn: emailApi.clearLogs,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EMAIL_LOGS_QUERY_KEY });
+      setIsConfirmModalOpen(false);
+    },
+  });
 
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   
@@ -447,9 +459,74 @@ export default function EmailCenterPage() {
 
       {/* Email Dispatch Logs */}
       <div>
-        <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '16px' }}>
-          Recent Delivery Logs ({logs.length})
-        </h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            Recent Delivery Logs ({logs.length})
+          </h2>
+          {isAdmin && (
+            <button
+              onClick={() => setIsConfirmModalOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: 'var(--danger)',
+                color: '#fff',
+                border: 'none',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+              }}
+            >
+              <Trash2 size={14} />
+              Clear Logs
+            </button>
+          )}
+        </div>
+
+        <Modal
+          isOpen={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          title="Confirm Clear Logs"
+        >
+          <div style={{ color: 'var(--text-secondary)' }}>
+            <p>Are you sure you want to permanently delete all email logs? This action cannot be undone.</p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+              <button
+                onClick={() => setIsConfirmModalOpen(false)}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => clearLogsMutation.mutate()}
+                disabled={clearLogsMutation.isPending}
+                style={{
+                  backgroundColor: 'var(--danger)',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  cursor: clearLogsMutation.isPending ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  opacity: clearLogsMutation.isPending ? 0.7 : 1,
+                }}
+              >
+                {clearLogsMutation.isPending ? 'Clearing...' : 'Yes, Clear All Logs'}
+              </button>
+            </div>
+          </div>
+        </Modal>
 
         <div style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>

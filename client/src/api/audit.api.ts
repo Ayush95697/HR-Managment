@@ -18,4 +18,6 @@ export interface AuditLog {
 export const auditApi = {
   getLogs: () =>
     client.get<AuditLog[]>('/audit/logs').then((r) => r.data),
+  clearLogs: () =>
+    client.delete('/audit/clear').then((r) => r.data),
 };

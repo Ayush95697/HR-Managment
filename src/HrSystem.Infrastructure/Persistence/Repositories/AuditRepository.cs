@@ -38,4 +38,10 @@ public class AuditRepository : IAuditRepository
             .OrderByDescending(al => al.Timestamp)
             .ToListAsync();
     }
+
+    public async Task ClearLogsAsync()
+    {
+        _dbContext.TaskActivityLogs.RemoveRange(_dbContext.TaskActivityLogs);
+        await _dbContext.SaveChangesAsync();
+    }
 }
