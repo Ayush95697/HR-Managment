@@ -78,7 +78,8 @@ export default function AnimatedBackground() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.globalAlpha = Math.max(0.05, currentAlpha);
+        const alphaMultiplier = themeRef.current === 'light' ? 1.0 : 0.5;
+        ctx.globalAlpha = Math.max(0.05, currentAlpha * alphaMultiplier);
         ctx.shadowBlur = 10;
         ctx.shadowColor = this.color;
         ctx.fill();
@@ -107,7 +108,7 @@ export default function AnimatedBackground() {
 
       // Draw background
       const isLight = themeRef.current === 'light';
-      ctx.fillStyle = isLight ? '#F8FAFC' : '#0F172A';
+      ctx.fillStyle = isLight ? '#F8FAFC' : '#172033';
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillRect(0, 0, width, height);
 
@@ -174,7 +175,7 @@ export default function AnimatedBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      className="fixed inset-0 w-full h-full pointer-events-none z-0"
       style={{ display: 'block' }}
     />
   );

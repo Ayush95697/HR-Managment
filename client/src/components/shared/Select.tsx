@@ -143,12 +143,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               transition={{ duration: 0.15 }}
               style={{
                 ...dropdownStyles,
-                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                backgroundColor: 'var(--surface-2)',
                 backdropFilter: 'blur(32px)',
                 WebkitBackdropFilter: 'blur(32px)',
                 border: '1px solid var(--border)',
                 borderRadius: '12px',
-                boxShadow: '0 20px 40px -12px var(--surface)',
+                boxShadow: 'var(--shadow-xl)',
                 zIndex: 999999,
                 maxHeight: '250px',
                 overflowY: 'auto',
@@ -168,7 +168,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     color: option.value === currentValue ? 'var(--accent)' : 'var(--text-primary)',
-                    backgroundColor: option.value === currentValue ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                    backgroundColor: option.value === currentValue ? 'var(--accent-light)' : 'transparent',
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => {

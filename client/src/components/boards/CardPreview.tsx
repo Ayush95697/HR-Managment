@@ -25,7 +25,7 @@ export default function CardPreview({ card, onClick, showDragHandle = false, isD
         marginBottom: '8px',
         cursor: onClick ? 'pointer' : 'default',
         opacity: isDragging ? 0.4 : 1,
-        boxShadow: isDragging ? '0 10px 25px -5px rgba(0, 0, 0, 0.5)' : 'none',
+        boxShadow: isDragging ? 'var(--shadow-lg)' : 'none',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>

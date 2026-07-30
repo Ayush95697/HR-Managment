@@ -62,8 +62,8 @@ export default function TopBar() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-        <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-          HR Management Portal
+        <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', letterSpacing: '0.5px', fontWeight: 600 }}>
+          WorkTrail Portal
         </span>
         {user?.role && <RoleBadge role={user.role} />}
       </div>
@@ -116,10 +116,10 @@ export default function TopBar() {
         {dropdownOpen && (
           <div style={{
             position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-            minWidth: '180px', backgroundColor: 'var(--glass-menu, rgba(0, 0, 0, 0.6))',
+            minWidth: '180px', backgroundColor: 'var(--surface-2)',
             backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))', borderRadius: 'var(--radius-lg)',
-            boxShadow: '0 20px 40px -12px rgba(0,0,0,0.5)',
+            border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-xl)',
             overflow: 'hidden', zIndex: 200,
           }} >
             <button

@@ -82,7 +82,7 @@ export default function CardColumnContainer({
                   backgroundColor: 'var(--surface, var(--surface))',
                   border: '1px solid var(--border, var(--border))',
                   borderRadius: 'var(--radius-md, 8px)',
-                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                  boxShadow: 'var(--shadow-lg)',
                   zIndex: 100,
                   minWidth: '130px',
                   padding: '4px',

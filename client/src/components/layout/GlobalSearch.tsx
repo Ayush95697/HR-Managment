@@ -103,10 +103,10 @@ export default function GlobalSearch() {
               zIndex: 1,
               width: '100%',
               padding: '8px 12px 8px 36px',
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              backgroundColor: 'var(--input-bg)',
               backdropFilter: 'blur(24px)',
               WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--input-border)',
               borderRadius: '9999px',
               color: 'var(--text-primary)',
               fontSize: '0.875rem',
@@ -114,12 +114,12 @@ export default function GlobalSearch() {
               transition: 'border-color 0.15s, box-shadow 0.15s, background-color 0.15s',
             }}
             onFocusCapture={(e) => {
-               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+               e.currentTarget.style.borderColor = 'var(--accent)';
+               e.currentTarget.style.backgroundColor = 'var(--surface)';
             }}
             onBlurCapture={(e) => {
-               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-               e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+               e.currentTarget.style.borderColor = 'var(--input-border)';
+               e.currentTarget.style.backgroundColor = 'var(--input-bg)';
             }}
           />
           {query && (
@@ -155,12 +155,12 @@ export default function GlobalSearch() {
             top: 'calc(100% + 8px)',
             left: 0,
             right: 0,
-            backgroundColor: 'rgba(8, 8, 12, 0.95)',
+            backgroundColor: 'var(--surface-2)',
             backdropFilter: 'blur(32px)',
             WebkitBackdropFilter: 'blur(32px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid var(--border)',
             borderRadius: '16px',
-            boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.6)',
+            boxShadow: 'var(--shadow-xl)',
             maxHeight: '400px',
             overflowY: 'auto',
             zIndex: 50,
@@ -263,7 +263,7 @@ export default function GlobalSearch() {
                           onMouseEnter={() => setFocusedIndex(idx)}
                         >
                           <div style={{
-                            width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 700, color: '#fff', overflow: 'hidden', flexShrink: 0
+                            width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 700, color: '#fff', overflow: 'hidden', flexShrink: 0
                           }}>
                             {emp.avatarUrl ? <img src={emp.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={12} />}
                           </div>

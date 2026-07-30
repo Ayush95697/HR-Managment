@@ -198,11 +198,11 @@ export default function LoginPage() {
               <div className="relative z-10" style={{ padding: '0 20px' }}>
                 {/* Title */}
                 <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
-                    <Logo size="lg" showText={false} />
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                    <Logo size="xl" showText={true} />
                   </div>
-                  <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 6px' }}>
-                    Welcome to WorkTrail
+                  <h1 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>
+                    Sign in to your account
                   </h1>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                     Follow the work. Trust the trail.

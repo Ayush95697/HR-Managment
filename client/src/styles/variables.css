@@ -1,11 +1,11 @@
 /* ─── Premium SaaS Blue + Cyan Theme ───────────────────────────────────────── */
 :root {
-    --bg: #0F172A;
-    --surface: rgba(30, 41, 59, 0.75);
-    --surface-2: rgba(30, 41, 59, 0.9);
-    --surface-hover: rgba(59, 130, 246, 0.1);
-    --border: rgba(148, 163, 184, 0.15);
-    --border-strong: rgba(148, 163, 184, 0.3);
+    --bg: #172033;
+    --surface: #263449;
+    --surface-2: #1E293B;
+    --surface-hover: rgba(59, 130, 246, 0.15);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.15);
     --text-primary: #F8FAFC;
     --text-secondary: #CBD5E1;
     --text-muted: #94A3B8;
@@ -34,8 +34,8 @@
 
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
-    --shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 24px -8px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 24px 48px -12px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2);
 
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -46,12 +46,18 @@
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Fallbacks for hardcoded colors in Dark theme */
-    --glass-bg: rgba(0, 0, 0, 0.4);
+    --glass-bg: rgba(22, 33, 51, 0.85); /* Matches #162133 */
     --glass-border: rgba(255, 255, 255, 0.05);
-    --glass-hover: rgba(255, 255, 255, 0.05);
-    --glass-menu: rgba(0, 0, 0, 0.6);
+    --glass-hover: rgba(255, 255, 255, 0.08);
+    --glass-menu: rgba(30, 41, 59, 0.95); /* Matches #1E293B Content Bg */
     --input-bg: rgba(255, 255, 255, 0.03);
     --input-border: rgba(255, 255, 255, 0.08);
+
+    /* Hero Section specific variables */
+    --hero-bg: rgba(32, 45, 68, 0.75);
+    --hero-border: rgba(255, 255, 255, 0.08);
+    --hero-glow: rgba(59, 130, 246, 0.15);
+    --hero-shadow: 0 0 30px var(--hero-glow), 0 20px 40px -12px rgba(0, 0, 0, 0.3);
 }
 
 /* ─── Premium Light Theme Overrides ────────────────────────────────────────── */
@@ -91,4 +97,10 @@
     --glass-menu: rgba(255, 255, 255, 0.9);
     --input-bg: rgba(0, 0, 0, 0.03);
     --input-border: rgba(0, 0, 0, 0.1);
+
+    /* Hero Section specific variables for Light Mode */
+    --hero-bg: rgba(255, 255, 255, 0.6);
+    --hero-border: rgba(255, 255, 255, 0.8);
+    --hero-glow: rgba(59, 130, 246, 0.05);
+    --hero-shadow: 0 0 30px var(--hero-glow), 0 20px 40px -12px rgba(0, 0, 0, 0.1);
 }

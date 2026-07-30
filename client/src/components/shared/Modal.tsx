@@ -63,7 +63,7 @@ export default function Modal({
           backgroundColor: 'var(--surface, #1e293b)',
           border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
           borderRadius: 'var(--radius-xl, 12px)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          boxShadow: 'var(--shadow-xl)',
           width: '100%',
           maxWidth: getMaxWidth(),
           maxHeight: '90vh',

@@ -56,16 +56,16 @@ export default function DashboardPage() {
             {/* Actual Card Content */}
             <div
               style={{
-                background: 'var(--glass-bg, rgba(0, 0, 0, 0.4))',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))',
+                background: 'var(--hero-bg)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                border: '1px solid var(--hero-border)',
                 borderRadius: '24px 80px 24px 24px',
                 padding: '40px 48px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.5)',
+                boxShadow: 'var(--hero-shadow)',
                 position: 'relative',
                 overflow: 'hidden'
               }}

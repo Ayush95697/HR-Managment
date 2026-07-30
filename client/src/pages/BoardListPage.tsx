@@ -64,14 +64,15 @@ export default function BoardListPage() {
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
-    <WaterfallContainer staggerDelay={0.08}>
+    <WaterfallContainer staggerDelay={0.08} style={{ paddingTop: '36px' }}>
       {user?.role === 'Employee' ? (
         /* Header Banner - Organic Shape with Glassmorphism & Animated Borders */
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative group mb-8"
+          className="relative group"
+          style={{ marginBottom: '40px' }}
         >
           {/* Traveling light beam effect container */}
           <div 
@@ -91,16 +92,16 @@ export default function BoardListPage() {
           {/* Actual Card Content */}
           <div
             style={{
-              background: 'rgba(0, 0, 0, 0.4)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              background: 'var(--hero-bg)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
+              border: '1px solid var(--hero-border)',
               borderRadius: '24px 80px 24px 24px',
               padding: '40px 48px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.5)',
+              boxShadow: 'var(--hero-shadow)',
               position: 'relative',
               overflow: 'hidden'
             }}
@@ -149,7 +150,7 @@ export default function BoardListPage() {
         </motion.div>
       ) : (
         /* Standard Header for Admin and HR */
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
           <div>
             <h1 style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 8px' }}>
               Boards
@@ -178,13 +179,13 @@ export default function BoardListPage() {
 
       {/* Search Input */}
       <WaterfallItem>
-        <div style={{ position: 'relative', marginBottom: '24px', maxWidth: '360px' }}>
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <div style={{ position: 'relative', marginBottom: '32px', maxWidth: '400px' }}>
+          <Search size={16} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input
             type="text"
             className="form-input"
-            style={{ paddingLeft: '38px' }}
-            placeholder="Search boards..."
+            style={{ paddingLeft: '44px', paddingRight: '16px', height: '44px', fontSize: '0.95rem', borderRadius: '12px' }}
+            placeholder="Search boards by name or department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
