@@ -276,7 +276,7 @@ export default function UserManagementPage() {
             <label className="form-label">Department</label>
             <Select 
               {...register('departmentId')} 
-              value={watch('departmentId')}
+              value={watch('departmentId') || ''}
               options={[
                 { value: '', label: 'Unassigned' },
                 ...departments.map(d => ({ value: d.id, label: d.name }))
@@ -322,7 +322,7 @@ export default function UserManagementPage() {
             <label className="form-label">Department</label>
             <Select 
               {...register('departmentId')} 
-              value={watch('departmentId')}
+              value={watch('departmentId') || ''}
               options={[
                 { value: '', label: 'Unassigned' },
                 ...departments.map(d => ({ value: d.id, label: d.name }))

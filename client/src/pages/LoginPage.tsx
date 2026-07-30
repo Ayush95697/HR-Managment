@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { Eye, EyeOff, LogIn, Mail, Lock } from 'lucide-react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import { cn } from '../lib/utils';
 
@@ -23,7 +23,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
     <input
       type={type}
       className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-10 w-full min-w-0 rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "form-input file:text-foreground selection:bg-primary selection:text-primary-foreground border-input flex h-10 w-full min-w-0 rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         className
@@ -64,8 +64,7 @@ export default function LoginPage() {
   const globalMouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
   const globalMouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
 
-  const smoothMouseX = useSpring(globalMouseX, { stiffness: 50, damping: 20 });
-  const smoothMouseY = useSpring(globalMouseY, { stiffness: 50, damping: 20 });
+
 
   useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
@@ -76,11 +75,7 @@ export default function LoginPage() {
     return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
   }, [globalMouseX, globalMouseY]);
 
-  // Parallax calculations
-  const parallaxX1 = useTransform(smoothMouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [15, -15]);
-  const parallaxY1 = useTransform(smoothMouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [15, -15]);
-  const parallaxX2 = useTransform(smoothMouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [-25, 25]);
-  const parallaxY2 = useTransform(smoothMouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [-25, 25]);
+
 
   const from = '/';
 
@@ -186,7 +181,10 @@ export default function LoginPage() {
             <div className="absolute -inset-[0.5px] rounded-[14px] bg-gradient-to-r from-white/3 via-white/7 to-white/3 opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
             
             {/* The old login form inside the new glassmorphism card */}
-            <div className="relative bg-black/40 backdrop-blur-xl rounded-xl p-[48px] sm:px-[64px] border border-white/[0.05] shadow-2xl">
+            <div 
+              className="relative backdrop-blur-xl rounded-xl p-[48px] sm:px-[64px] shadow-2xl"
+              style={{ background: 'var(--glass-bg, rgba(0, 0, 0, 0.4))', border: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))' }}
+            >
               
               {/* Subtle card inner patterns */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-xl" 
@@ -218,7 +216,7 @@ export default function LoginPage() {
                   <label className="form-label" style={{ textAlign: 'center', display: 'block', marginBottom: '12px', color: 'var(--text-secondary)' }}>
                     Login As
                   </label>
-                  <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '6px', borderRadius: 'var(--radius-lg, 12px)' }}>
+                  <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--input-bg)', padding: '6px', borderRadius: 'var(--radius-lg, 12px)', border: '1px solid var(--input-border)' }}>
                     {(['Admin', 'HR', 'Employee'] as Role[]).map((role) => (
                       <button
                         key={role}
@@ -229,8 +227,8 @@ export default function LoginPage() {
                           padding: '10px',
                           borderRadius: 'var(--radius-md, 8px)',
                           border: 'none',
-                          backgroundColor: selectedRole === role ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                          color: selectedRole === role ? '#ffffff' : 'rgba(255, 255, 255, 0.6)',
+                          backgroundColor: selectedRole === role ? 'var(--accent)' : 'transparent',
+                          color: selectedRole === role ? '#ffffff' : 'var(--text-secondary)',
                           fontWeight: selectedRole === role ? 700 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
@@ -257,7 +255,10 @@ export default function LoginPage() {
                       <div className="absolute -inset-[0.5px] bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300" />
                       
                       <div className="relative flex items-center overflow-hidden rounded-lg">
-                        <Mail className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "email" ? 'text-white' : 'text-white/40'}`} />
+                        <Mail 
+                          className="absolute left-3 w-5 h-5 transition-all duration-300" 
+                          style={{ color: focusedInput === "email" ? 'var(--text-primary)' : 'var(--text-muted)' }}
+                        />
                         
                         <Input
                           type="email"
@@ -265,8 +266,14 @@ export default function LoginPage() {
                           {...register('email')}
                           onFocus={(e) => { setFocusedInput("email"); e.target.select(); }}
                           onBlur={() => setFocusedInput(null)}
-                          className="w-full bg-white/5 border-transparent focus:border-white/20 text-white placeholder:text-white/30 h-12 transition-all duration-300 focus:bg-white/10 text-sm"
-                          style={{ paddingLeft: '44px', paddingRight: '16px' }}
+                          className="w-full h-12 transition-all duration-300 text-sm"
+                          style={{
+                            background: 'var(--input-bg)',
+                            borderColor: 'var(--input-border)',
+                            color: 'var(--text-primary)',
+                            paddingLeft: '44px', 
+                            paddingRight: '16px'
+                          }}
                         />
                       </div>
                     </motion.div>
@@ -288,7 +295,10 @@ export default function LoginPage() {
                       <div className="absolute -inset-[0.5px] bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300" />
                       
                       <div className="relative flex items-center overflow-hidden rounded-lg">
-                        <Lock className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "password" ? 'text-white' : 'text-white/40'}`} />
+                        <Lock 
+                          className="absolute left-3 w-5 h-5 transition-all duration-300" 
+                          style={{ color: focusedInput === "password" ? 'var(--text-primary)' : 'var(--text-muted)' }}
+                        />
                         
                         <Input
                           type={showPassword ? 'text' : 'password'}
@@ -296,8 +306,14 @@ export default function LoginPage() {
                           {...register('password')}
                           onFocus={(e) => { setFocusedInput("password"); e.target.select(); }}
                           onBlur={() => setFocusedInput(null)}
-                          className="w-full bg-white/5 border-transparent focus:border-white/20 text-white placeholder:text-white/30 h-12 transition-all duration-300 focus:bg-white/10 text-sm"
-                          style={{ paddingLeft: '44px', paddingRight: '44px' }}
+                          className="w-full h-12 transition-all duration-300 text-sm"
+                          style={{
+                            background: 'var(--input-bg)',
+                            borderColor: 'var(--input-border)',
+                            color: 'var(--text-primary)',
+                            paddingLeft: '44px', 
+                            paddingRight: '44px'
+                          }}
                         />
                         
                         <button
@@ -306,7 +322,10 @@ export default function LoginPage() {
                           className="absolute right-3 cursor-pointer p-1 bg-transparent border-none"
                           tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff size={20} className="text-white/40 hover:text-white transition-colors" /> : <Eye size={20} className="text-white/40 hover:text-white transition-colors" />}
+                          {showPassword 
+                            ? <EyeOff size={20} style={{ color: 'var(--text-muted)', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'} /> 
+                            : <Eye size={20} style={{ color: 'var(--text-muted)', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'} />
+                          }
                         </button>
                       </div>
                     </motion.div>
@@ -317,24 +336,24 @@ export default function LoginPage() {
                     )}
                   </div>
 
-                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', background: '#ffffff', color: '#000000', borderRadius: '9999px', border: 'none' }}>
+                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', background: 'var(--text-primary)', color: 'var(--bg)', borderRadius: '9999px', border: 'none' }}>
                     Sign In
                   </Button>
                 </form>
 
                 {/* Quick Fill Demo Roles */}
-                <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.4)', display: 'block', marginBottom: '10px' }}>
+                <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
                     Quick-fill demo account:
                   </span>
                   <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('admin@hrsystem.com', 'Admin')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('admin@hrsystem.com', 'Admin')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       Admin
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('hr@hrsystem.com', 'HR')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('hr@hrsystem.com', 'HR')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       HR
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('employee@hrsystem.com', 'Employee')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('employee@hrsystem.com', 'Employee')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       Employee
                     </Button>
                   </div>

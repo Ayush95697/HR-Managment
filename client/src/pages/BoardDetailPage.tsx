@@ -428,7 +428,7 @@ export default function BoardDetailPage() {
             <label className="form-label">Assignee</label>
             <Select 
               {...registerCard('assignedToId')} 
-              value={watchCard('assignedToId')}
+              value={watchCard('assignedToId') || ''}
               options={[
                 { value: '', label: 'Unassigned' },
                 ...users.map(u => ({ value: u.id, label: u.name }))

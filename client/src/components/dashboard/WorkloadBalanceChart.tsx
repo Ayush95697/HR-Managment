@@ -5,7 +5,7 @@ import { BarChart2, LayoutList, AlertTriangle, ShieldCheck, User } from 'lucide-
 
 const CHART_MARGIN = { top: 5, right: 20, left: 35, bottom: 5 };
 const TOOLTIP_CURSOR = { fill: 'var(--border)' };
-const TOOLTIP_CONTENT_STYLE = { background: 'var(--surface)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
+const TOOLTIP_CONTENT_STYLE = { background: 'var(--surface)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', color: 'var(--text-inverse)', fontSize: '12px' };
 const LEGEND_WRAPPER_STYLE = { fontSize: '0.75rem', paddingTop: '6px', color: 'var(--text-secondary)' };
 const BAR_RADIUS: [number, number, number, number] = [0, 4, 4, 0];
 

@@ -8,6 +8,7 @@ import { authApi } from '../../api/auth.api';
 import { useProfile } from '../../hooks/useProfile';
 import GlobalSearch from './GlobalSearch';
 import NotificationBell from './NotificationBell';
+import ThemeToggle from '../shared/ThemeToggle';
 
 export default function TopBar() {
   const navigate = useNavigate();
@@ -47,10 +48,10 @@ export default function TopBar() {
     <header
       style={{
         height: '60px',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'var(--glass-bg, rgba(0, 0, 0, 0.4))',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        borderBottom: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))',
         padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
@@ -72,6 +73,7 @@ export default function TopBar() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, justifyContent: 'flex-end' }}>
+        <ThemeToggle />
         <NotificationBell />
         {/* User menu */}
         <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -89,7 +91,7 @@ export default function TopBar() {
             cursor: 'pointer',
             transition: 'background 0.15s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--glass-hover, rgba(255,255,255,0.05))')}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           {/* Avatar */}
@@ -114,12 +116,12 @@ export default function TopBar() {
         {dropdownOpen && (
           <div style={{
             position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-            minWidth: '180px', backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            minWidth: '180px', backgroundColor: 'var(--glass-menu, rgba(0, 0, 0, 0.6))',
             backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))', borderRadius: 'var(--radius-lg)',
             boxShadow: '0 20px 40px -12px rgba(0,0,0,0.5)',
             overflow: 'hidden', zIndex: 200,
-          }}>
+          }} >
             <button
               type="button"
               onClick={() => { setDropdownOpen(false); navigate('/settings'); }}
@@ -129,7 +131,7 @@ export default function TopBar() {
                 alignItems: 'center', gap: '10px', fontSize: '0.875rem', fontWeight: 500,
                 textAlign: 'left', transition: 'background 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--glass-hover, rgba(255,255,255,0.06))')}
               onMouseLeave={e => (e.currentTarget.style.background = 'none')}
             >
               <Settings size={15} />

@@ -1,7 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useUIStore } from '../../store/uiStore';
 
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useUIStore();
+  const themeRef = useRef(theme);
+  
+  useEffect(() => { themeRef.current = theme; }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -56,7 +61,9 @@ export default function AnimatedBackground() {
         this.vy = (Math.random() - 0.5) * 2;
         this.radius = Math.random() * 3 + 1.5;
         this.density = (Math.random() * 30) + 1;
-        const colors = ['#3B82F6', '#06B6D4', '#60A5FA']; // Blue, Cyan, Bright Blue
+        const colors = themeRef.current === 'light'
+          ? ['#3B82F6', '#06B6D4', '#93C5FD'] 
+          : ['#3B82F6', '#06B6D4', '#60A5FA'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -130,15 +137,16 @@ export default function AnimatedBackground() {
     };
 
     const animate = () => {
-      // Clear with dark navy background
-      ctx.fillStyle = 'var(--bg)';
+      const isLight = themeRef.current === 'light';
+      ctx.fillStyle = isLight ? '#F8FAFC' : '#0F172A';
+      ctx.globalCompositeOperation = 'source-over';
       ctx.fillRect(0, 0, width, height);
       
-      // Draw a subtle radial glow in the center
       const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/1.5);
-      gradient.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+      gradient.addColorStop(0, isLight ? 'rgba(59, 130, 246, 0.08)' : 'rgba(59, 130, 246, 0.15)');
       gradient.addColorStop(1, 'transparent');
       ctx.fillStyle = gradient;
+      ctx.globalCompositeOperation = isLight ? 'source-over' : 'screen';
       ctx.fillRect(0, 0, width, height);
 
       particles.forEach(p => {

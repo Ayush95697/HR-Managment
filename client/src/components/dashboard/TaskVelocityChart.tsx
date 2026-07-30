@@ -73,7 +73,7 @@ export function TaskVelocityChart() {
                   background: 'var(--surface)', 
                   border: '1px solid rgba(59, 130, 246, 0.3)', 
                   borderRadius: '8px', 
-                  color: '#f8fafc',
+                  color: 'var(--text-inverse)',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
                 }}
                 itemStyle={{ color: '#06B6D4', fontWeight: 600 }}

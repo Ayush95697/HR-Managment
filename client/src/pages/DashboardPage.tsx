@@ -56,10 +56,10 @@ export default function DashboardPage() {
             {/* Actual Card Content */}
             <div
               style={{
-                background: 'rgba(0, 0, 0, 0.4)',
+                background: 'var(--glass-bg, rgba(0, 0, 0, 0.4))',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))',
                 borderRadius: '24px 80px 24px 24px',
                 padding: '40px 48px',
                 display: 'flex',
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                   }}>
                     {user?.role}
                   </span>
-                  <span style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.6)', lineHeight: 1.5 }}>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted, rgba(255, 255, 255, 0.6))', lineHeight: 1.5 }}>
                     Your command center is ready. Manage boards, track performance, and oversee operations.
                   </span>
                 </div>

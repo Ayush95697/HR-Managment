@@ -11,9 +11,10 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  background-color: var(--bg);
 }
 
-body {
+body, #root {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: var(--bg);
   color: var(--text-primary);
@@ -70,10 +71,10 @@ input, textarea, select {
 .form-textarea {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--input-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--input-border);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-size: 0.9rem;
@@ -222,11 +223,11 @@ input, textarea, select {
 }
 
 .sidebar-item-glass:not(.active):hover {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--sidebar-hover) !important;
   transform: translateX(6px);
-  color: #fff !important;
-  box-shadow: -4px 4px 15px rgba(0,0,0,0.1);
-  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  color: var(--sidebar-hover-text) !important;
+  box-shadow: var(--shadow-sm);
+  border-left: 2px solid var(--accent);
 }
 
 .sidebar-item-glass > * {
