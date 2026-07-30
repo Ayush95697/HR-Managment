@@ -14,5 +14,6 @@ public interface IEmailRepository
     Task<EmailLog> GetLogByIdWithDetailsAsync(Guid id);
     Task<List<EmailLog>> GetLogsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task AddLogAsync(EmailLog log);
+    void RemoveTemplate(EmailTemplate template);
     Task SaveChangesAsync();
 }

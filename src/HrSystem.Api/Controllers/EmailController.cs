@@ -8,7 +8,7 @@ using HrSystem.Application.Exceptions;
 using HrSystem.Application.Interfaces;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using HrSystem.Application.Jobs;
+using HrSystem.Infrastructure.Jobs;
 using HrSystem.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

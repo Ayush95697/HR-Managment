@@ -76,6 +76,11 @@ public class EmailRepository : IEmailRepository
         return Task.CompletedTask;
     }
 
+    public void RemoveTemplate(EmailTemplate template)
+    {
+        _dbContext.EmailTemplates.Remove(template);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _dbContext.SaveChangesAsync();

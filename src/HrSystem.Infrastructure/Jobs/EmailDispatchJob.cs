@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Polly;
 
-namespace HrSystem.Application.Jobs;
+namespace HrSystem.Infrastructure.Jobs;
 
 public class EmailDispatchJob
 {

@@ -30,7 +30,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Hangfire;
-using HrSystem.Application.Jobs;
+using HrSystem.Infrastructure.Jobs;
 using HrSystem.Infrastructure.Email;
 
 using System.IO;

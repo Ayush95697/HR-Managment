@@ -173,23 +173,35 @@ public class EmailService : IEmailService
 
     public async Task DeleteTemplateAsync(Guid id)
     {
-        var template = await _dbContext.EmailTemplates.FindAsync(id);
+        var template = await _emailRepository.GetTemplateByIdAsync(id);
         if (template != null)
         {
-            _dbContext.EmailTemplates.Remove(template);
-            await _dbContext.SaveChangesAsync();
+            _emailRepository.RemoveTemplate(template);
+            await _emailRepository.SaveChangesAsync();
         }
     }
 
     public async Task ToggleQuickAccessAsync(Guid id, bool isQuickAccess, Guid currentUserId)
     {
-        var entity = await _dbContext.EmailTemplates.FindAsync(id);
+        var entity = await _emailRepository.GetTemplateByIdAsync(id);
         if (entity == null || entity.CreatedByUserId != currentUserId)
         {
             throw new KeyNotFoundException("Template not found or access denied.");
         }
 
         entity.IsQuickAccess = isQuickAccess;
-        await _dbContext.SaveChangesAsync();
+        await _emailRepository.SaveChangesAsync();
+    }
+
+    private static string ApplyPlaceholders(string text, Dictionary<string, string>? placeholders)
+    {
+        if (string.IsNullOrWhiteSpace(text) || placeholders == null || placeholders.Count == 0)
+            return text;
+
+        foreach (var ph in placeholders)
+        {
+            text = text.Replace($"{{{{{ph.Key}}}}}", ph.Value);
+        }
+        return text;
     }
 }

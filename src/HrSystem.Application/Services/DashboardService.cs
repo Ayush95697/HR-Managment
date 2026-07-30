@@ -26,10 +26,9 @@ public class DashboardService : IDashboardService
         for (int i = 0; i <= range; i++)
         {
             var date = since.AddDays(i);
-            var dateStr = date.ToString("yyyy-MM-dd");
             finalResults.Add(new TaskVelocityDto(
                 Bucket: date,
-                Count: resultsDict.ContainsKey(dateStr) ? resultsDict[dateStr] : 0
+                Count: resultsDict.ContainsKey(date) ? resultsDict[date] : 0
             ));
         }
 
