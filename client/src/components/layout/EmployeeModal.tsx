@@ -20,23 +20,7 @@ export default function EmployeeModal({ isOpen, onClose, employee }: Props) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Employee Details">
-      <div style={{ position: 'relative' }}>
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '-45px',
-            right: '-10px',
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            cursor: 'pointer',
-            padding: '4px',
-          }}
-        >
-          <X size={20} />
-        </button>
-
+      <div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '10px 0 20px' }}>
           <div style={{
             width: '96px',

@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -43,7 +44,7 @@ export default function Modal({
     }
   };
 
-  return (
+  const modalContent = (
     <div
       style={{
         position: 'fixed',
@@ -60,7 +61,7 @@ export default function Modal({
     >
       <div
         style={{
-          backgroundColor: 'var(--surface, #1e293b)',
+          backgroundColor: 'var(--bg, #0f1117)',
           border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
           borderRadius: 'var(--radius-xl, 12px)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
@@ -126,4 +127,6 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
