@@ -146,9 +146,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 backgroundColor: 'rgba(0, 0, 0, 0.85)',
                 backdropFilter: 'blur(32px)',
                 WebkitBackdropFilter: 'blur(32px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid var(--border)',
                 borderRadius: '12px',
-                boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.6)',
+                boxShadow: '0 20px 40px -12px var(--surface)',
                 zIndex: 999999,
                 maxHeight: '250px',
                 overflowY: 'auto',
@@ -172,7 +172,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => {
-                    if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                    if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'var(--surface-hover)';
                   }}
                   onMouseLeave={e => {
                     if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'transparent';

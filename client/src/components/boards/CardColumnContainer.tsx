@@ -33,8 +33,8 @@ export default function CardColumnContainer({
   return (
     <div
       style={{
-        backgroundColor: 'var(--surface-2, #0f172a)',
-        border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+        backgroundColor: 'var(--surface-2, var(--bg))',
+        border: '1px solid var(--border, var(--border))',
         borderRadius: 'var(--radius-lg, 12px)',
         width: '300px',
         flexShrink: 0,
@@ -47,7 +47,7 @@ export default function CardColumnContainer({
       <div
         style={{
           padding: '14px 16px',
-          borderBottom: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+          borderBottom: '1px solid var(--border, var(--border))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -57,7 +57,7 @@ export default function CardColumnContainer({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-primary)' }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent, #3B82F6)' }} />
           {column.name}
-          <span style={{ backgroundColor: 'var(--surface, #1e293b)', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+          <span style={{ backgroundColor: 'var(--surface, var(--surface))', padding: '2px 8px', borderRadius: '9999px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
             {cards.length}
           </span>
         </div>
@@ -79,8 +79,8 @@ export default function CardColumnContainer({
                   top: '100%',
                   right: 0,
                   marginTop: '4px',
-                  backgroundColor: 'var(--surface, #1e293b)',
-                  border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+                  backgroundColor: 'var(--surface, var(--surface))',
+                  border: '1px solid var(--border, var(--border))',
                   borderRadius: 'var(--radius-md, 8px)',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
                   zIndex: 100,
@@ -126,7 +126,7 @@ export default function CardColumnContainer({
           {cards.length === 0 && (
             <div
               style={{
-                border: '2px dashed var(--border, rgba(255, 255, 255, 0.1))',
+                border: '2px dashed var(--border, var(--border))',
                 borderRadius: 'var(--radius-md, 8px)',
                 height: '80px',
                 display: 'flex',
@@ -161,7 +161,7 @@ export default function CardColumnContainer({
             width: '100%',
             padding: '12px',
             border: 'none',
-            borderTop: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+            borderTop: '1px solid var(--border, var(--border))',
             backgroundColor: 'transparent',
             color: 'var(--text-muted)',
             fontSize: '0.8125rem',

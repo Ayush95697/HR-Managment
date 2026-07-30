@@ -156,9 +156,9 @@ export function Component() {
               className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-70 transition-opacity duration-700"
               animate={{
                 boxShadow: [
-                  "0 0 10px 2px rgba(255,255,255,0.03)",
-                  "0 0 15px 5px rgba(255,255,255,0.05)",
-                  "0 0 10px 2px rgba(255,255,255,0.03)"
+                  "0 0 10px 2px var(--border)",
+                  "0 0 15px 5px var(--surface-hover)",
+                  "0 0 10px 2px var(--border)"
                 ],
                 opacity: [0.2, 0.4, 0.2]
               }}

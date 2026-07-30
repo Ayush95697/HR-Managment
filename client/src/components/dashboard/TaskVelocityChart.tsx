@@ -50,7 +50,7 @@ export function TaskVelocityChart() {
                   <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-hover)" vertical={false} />
               <XAxis 
                 dataKey="bucket" 
                 tickFormatter={formatDateShort} 
@@ -70,7 +70,7 @@ export function TaskVelocityChart() {
                 labelFormatter={(label) => new Date(label as string).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 formatter={(value: any) => [`${value} tasks completed`, 'Velocity']}
                 contentStyle={{ 
-                  background: '#1e293b', 
+                  background: 'var(--surface)', 
                   border: '1px solid rgba(59, 130, 246, 0.3)', 
                   borderRadius: '8px', 
                   color: '#f8fafc',

@@ -85,7 +85,7 @@ export default function ActiveSessions() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div style={{
                   width: '40px', height: '40px', borderRadius: '10px',
-                  background: session.isCurrent ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.05)',
+                  background: session.isCurrent ? 'rgba(59, 130, 246, 0.15)' : 'var(--surface-hover)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 }}>
                   <Monitor size={20} color={session.isCurrent ? 'var(--accent)' : 'var(--text-muted)'} />

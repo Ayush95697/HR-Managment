@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { Eye, EyeOff, LogIn, Mail, Lock } from 'lucide-react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
 import { cn } from '../lib/utils';
 
@@ -16,6 +16,7 @@ import { loginSchema, type LoginFormData } from '../types/schemas';
 import Button from '../components/shared/Button';
 import ErrorBanner from '../components/shared/ErrorBanner';
 import Logo from '../components/shared/Logo';
+import AnimatedBackground from '../components/shared/AnimatedBackground';
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -58,6 +59,28 @@ export default function LoginPage() {
     mouseX.set(0);
     mouseY.set(0);
   };
+
+  // Global Mouse tracking for Parallax and Cursor Glow
+  const globalMouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const globalMouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
+
+  const smoothMouseX = useSpring(globalMouseX, { stiffness: 50, damping: 20 });
+  const smoothMouseY = useSpring(globalMouseY, { stiffness: 50, damping: 20 });
+
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      globalMouseX.set(e.clientX);
+      globalMouseY.set(e.clientY);
+    };
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, [globalMouseX, globalMouseY]);
+
+  // Parallax calculations
+  const parallaxX1 = useTransform(smoothMouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [15, -15]);
+  const parallaxY1 = useTransform(smoothMouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [15, -15]);
+  const parallaxX2 = useTransform(smoothMouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [-25, 25]);
+  const parallaxY2 = useTransform(smoothMouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [-25, 25]);
 
   const from = '/';
 
@@ -102,7 +125,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 relative">
+    <div className="min-h-screen w-full flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Refined Cinematic Enterprise Animated Background */}
+      {/* New Canvas API Animated Background Component */}
+      <AnimatedBackground />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -118,6 +145,17 @@ export default function LoginPage() {
           whileHover={{ z: 10 }}
         >
           <div className="relative group">
+            {/* Slow Glass Reflection Sweep */}
+            <motion.div 
+              className="absolute inset-0 z-50 pointer-events-none rounded-xl overflow-hidden"
+            >
+              <motion.div 
+                className="absolute top-0 bottom-0 w-[150%] bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12"
+                animate={{ left: ["-150%", "150%"] }}
+                transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatDelay: 12 }}
+              />
+            </motion.div>
+
             {/* Card hover border glow effect */}
             <motion.div 
               className="absolute -inset-[1px] rounded-[14px] opacity-0 group-hover:opacity-70 transition-opacity duration-700"

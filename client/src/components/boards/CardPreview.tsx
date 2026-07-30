@@ -17,8 +17,8 @@ export default function CardPreview({ card, onClick, showDragHandle = false, isD
     <div
       onClick={onClick}
       style={{
-        backgroundColor: 'var(--surface, #1e293b)',
-        border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
+        backgroundColor: 'var(--surface, var(--surface))',
+        border: '1px solid var(--border, var(--border))',
         borderLeft: `4px solid ${priorityColor}`,
         borderRadius: 'var(--radius-md, 8px)',
         padding: '12px',

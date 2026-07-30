@@ -4,8 +4,8 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cart
 import { BarChart2, LayoutList, AlertTriangle, ShieldCheck, User } from 'lucide-react';
 
 const CHART_MARGIN = { top: 5, right: 20, left: 35, bottom: 5 };
-const TOOLTIP_CURSOR = { fill: 'rgba(255, 255, 255, 0.03)' };
-const TOOLTIP_CONTENT_STYLE = { background: '#1e293b', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
+const TOOLTIP_CURSOR = { fill: 'var(--border)' };
+const TOOLTIP_CONTENT_STYLE = { background: 'var(--surface)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
 const LEGEND_WRAPPER_STYLE = { fontSize: '0.75rem', paddingTop: '6px', color: 'var(--text-secondary)' };
 const BAR_RADIUS: [number, number, number, number] = [0, 4, 4, 0];
 
@@ -54,7 +54,7 @@ export function WorkloadBalanceChart() {
         </div>
 
         {/* View Switcher Controls */}
-        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px', border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', background: 'var(--surface-hover)', borderRadius: '8px', padding: '3px', border: '1px solid var(--border)' }}>
           <button
             onClick={() => setViewMode('meters')}
             style={{
@@ -152,7 +152,7 @@ export function WorkloadBalanceChart() {
               <div 
                 key={item.userId || item.userName}
                 style={{
-                  background: 'rgba(255,255,255,0.02)',
+                  background: 'var(--surface-hover)',
                   border: '1px solid var(--border)',
                   borderRadius: '10px',
                   padding: '10px 14px',
@@ -219,7 +219,7 @@ export function WorkloadBalanceChart() {
                       flex: 1,
                       height: '6px',
                       borderRadius: '3px',
-                      background: 'rgba(255,255,255,0.06)',
+                      background: 'var(--surface-hover)',
                       overflow: 'hidden',
                       display: 'flex'
                     }}
@@ -259,7 +259,7 @@ export function WorkloadBalanceChart() {
         <div style={{ height: '220px', width: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
           <ResponsiveContainer width="99%" height={Math.max(220, data.length * 45)}>
             <BarChart data={data} layout="vertical" margin={CHART_MARGIN}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--surface-hover)" horizontal={false} />
               <XAxis type="number" allowDecimals={false} stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="userName" width={110} stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
               <Tooltip 

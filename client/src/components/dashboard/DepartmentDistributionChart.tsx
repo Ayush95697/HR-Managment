@@ -124,7 +124,7 @@ export function DepartmentDistributionChart() {
                         border: '1px solid var(--border)', 
                         borderRadius: '8px', 
                         padding: '12px 16px',
-                        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)'
+                        boxShadow: '0 10px 25px -5px var(--surface)'
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                           <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: payload[0].payload.fill || MONO_COLORS[0] }} />

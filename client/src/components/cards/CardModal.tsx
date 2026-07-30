@@ -192,7 +192,7 @@ export default function CardModal({ cardId, boardId, onClose }: CardModalProps) 
               </div>
 
               {/* Editable Fields Grid */}
-              <div style={{ backgroundColor: 'var(--surface-2, #0f172a)', padding: '16px', borderRadius: 'var(--radius-md, 8px)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ backgroundColor: 'var(--surface-2, var(--bg))', padding: '16px', borderRadius: 'var(--radius-md, 8px)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Priority */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
                   <span style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -292,7 +292,7 @@ export default function CardModal({ cardId, boardId, onClose }: CardModalProps) 
                     <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No comments yet.</span>
                   ) : (
                     comments.map((c) => (
-                      <div key={c.id} style={{ backgroundColor: 'var(--surface-2, #0f172a)', padding: '10px 12px', borderRadius: '8px', fontSize: '0.8125rem' }}>
+                      <div key={c.id} style={{ backgroundColor: 'var(--surface-2, var(--bg))', padding: '10px 12px', borderRadius: '8px', fontSize: '0.8125rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontWeight: 600, color: 'var(--text-primary)' }}>
                           <span>{c.authorName}</span>
                           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>
