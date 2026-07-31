@@ -6,6 +6,7 @@ import {
   ShieldCheck, Server, Database, Monitor, Wrench, FileText, Settings, Key,
   LogIn, ChevronLeft, ChevronRight,
 } from 'lucide-react';
+import Logo from '../components/shared/Logo';
 import styles from './LandingPage.module.css';
 
 // ─── Scroll-reveal helper ─────────────────────────────────────────────────────
@@ -287,14 +288,10 @@ export default function LandingPage() {
       {/* ── Navbar ──────────────────────────────────────────────────────── */}
       <header className={styles.navbar}>
         <button className={styles.navBrand} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className={styles.navBadge}>W</div>
-          <span className={styles.navWordmark}>
-            <span className={styles.navWork}>Work</span>
-            <span className={styles.navTrail}>Trail</span>
-          </span>
+          <Logo size="md" showText={true} />
         </button>
         <nav className={styles.nav}>
-          <button className={styles.navLink} onClick={() => scrollTo('how-to-use')}>How to Use</button>
+          <button className={styles.navLink} onClick={() => scrollTo('how-to-use')}>How it Works</button>
           <button className={styles.navLink} onClick={() => scrollTo('technologies')}>Technologies</button>
           <button className={styles.navLink} onClick={() => scrollTo('overview')}>Overview</button>
         </nav>
@@ -313,7 +310,7 @@ export default function LandingPage() {
           animate={badgeCtrl}
         >
           <div className={styles.heroBadgeGlow} />
-          <div className={styles.heroBadge}>W</div>
+          <Logo size="xxl" showText={false} />
         </motion.div>
 
         {/* Wordmark: Work ← → Trail */}
@@ -359,21 +356,46 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── How to Use ──────────────────────────────────────────────────── */}
+      {/* ── How to Use ──────────────────────────────────────────────────────── */}
       <section id="how-to-use" className={styles.section}>
         <FadeInWhenVisible>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>How It Works</h2>
-            <p className={styles.sectionSubtitle}>Get up and running in minutes with our streamlined workflow.</p>
+            <p className={styles.sectionSubtitle}>From login to full workforce management — six simple steps.</p>
           </div>
         </FadeInWhenVisible>
         <div className={styles.stepsGrid}>
           {[
-            { title: 'Login',            desc: 'Sign in securely with your designated role (Admin, HR, or Employee).', icon: Key },
-            { title: 'Explore Dashboard',desc: "Get a bird's-eye view of organizational stats and recent activity.", icon: BarChart3 },
-            { title: 'Manage Boards',    desc: 'Create Kanban boards, assign tasks, and track project progress visually.', icon: LayoutDashboard },
-            { title: 'Collaborate',      desc: 'Use the built-in Email Center to communicate effectively across the platform.', icon: MessageSquare },
-            { title: 'Track & Audit',    desc: 'Monitor changes and review comprehensive audit logs for compliance.', icon: ShieldCheck },
+            {
+              title: 'Sign In as Your Role',
+              desc: 'JWT-secured login with role-based access.',
+              icon: Key,
+            },
+            {
+              title: 'Explore Live Analytics',
+              desc: 'Real-time charts and live activity feed.',
+              icon: BarChart3,
+            },
+            {
+              title: 'Create Boards & Columns',
+              desc: 'Manage tasks in customizable department boards.',
+              icon: LayoutDashboard,
+            },
+            {
+              title: 'Assign Tasks & Collaborate',
+              desc: 'Assign tasks with priorities, due dates, and comments.',
+              icon: MessageSquare,
+            },
+            {
+              title: 'Send Emails',
+              desc: 'Send HR emails using predefined or custom templates.',
+              icon: ShieldCheck,
+            },
+            {
+              title: 'Monitor with Audit Logs',
+              desc: 'Track and query all system actions for compliance.',
+              icon: FileText,
+            },
           ].map((step, i) => (
             <FadeInWhenVisible key={i} delay={i * 0.1}>
               <div className={styles.stepCard}>
@@ -387,52 +409,93 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Technologies ────────────────────────────────────────────────── */}
+      {/* ── Technologies ────────────────────────────────────────────────────── */}
       <section id="technologies" className={styles.section}>
         <FadeInWhenVisible>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Built With Modern Tech</h2>
-            <p className={styles.sectionSubtitle}>Powered by a robust and scalable technology stack.</p>
+            <p className={styles.sectionSubtitle}>A production-grade full-stack architecture from frontend to AI.</p>
           </div>
         </FadeInWhenVisible>
         <div className={styles.techGrid}>
-          {[
-            { name: 'React 18',          cat: 'Frontend', catClass: styles.catFrontend, icon: Monitor },
-            { name: 'TypeScript',         cat: 'Frontend', catClass: styles.catFrontend, icon: Monitor },
-            { name: 'ASP.NET Core',       cat: 'Backend',  catClass: styles.catBackend,  icon: Server },
-            { name: 'Entity Framework',   cat: 'Backend',  catClass: styles.catBackend,  icon: Database },
-            { name: 'SQL Server',         cat: 'Database', catClass: styles.catDatabase, icon: Database },
-            { name: 'Vite',               cat: 'Tooling',  catClass: styles.catTooling,  icon: Wrench },
-            { name: 'Tailwind CSS',       cat: 'Styling',  catClass: styles.catStyling,  icon: Monitor },
-            { name: 'Zustand',            cat: 'State',    catClass: styles.catFrontend, icon: Settings },
-          ].map((tech, i) => (
-            <FadeInWhenVisible key={i} delay={i * 0.05} yOffset={20}>
-              <div className={styles.techCard}>
-                <div className={styles.techIconWrapper}><tech.icon size={20} /></div>
-                <div className={styles.techInfo}>
-                  <div className={styles.techName}>{tech.name}</div>
-                  <div className={`${styles.techCategory} ${tech.catClass}`}>{tech.cat}</div>
-                </div>
+          <FadeInWhenVisible delay={0.1} yOffset={20}>
+            <div className={styles.techCategoryCard}>
+              <div className={styles.techCategoryHeader}>
+                <div className={styles.techCategoryIcon}><Monitor size={24} /></div>
+                <h3>Frontend Ecosystem</h3>
               </div>
-            </FadeInWhenVisible>
-          ))}
+              <div className={styles.techMiniGrid}>
+                <div className={styles.techMiniCard}>React 18 + Vite</div>
+                <div className={styles.techMiniCard}>TypeScript</div>
+                <div className={styles.techMiniCard}>Framer Motion</div>
+                <div className={styles.techMiniCard}>@dnd-kit/core</div>
+                <div className={styles.techMiniCard}>TanStack Query</div>
+                <div className={styles.techMiniCard}>Tailwind CSS + Modules</div>
+                <div className={styles.techMiniCard}>Zustand (State Management)</div>
+                <div className={styles.techMiniCard}>Zod + React Hook Form</div>
+              </div>
+            </div>
+          </FadeInWhenVisible>
+
+          <FadeInWhenVisible delay={0.2} yOffset={20}>
+            <div className={styles.techCategoryCard}>
+              <div className={styles.techCategoryHeader}>
+                <div className={styles.techCategoryIcon}><Server size={24} /></div>
+                <h3>Backend & Infrastructure</h3>
+              </div>
+              <div className={styles.techMiniGrid}>
+                <div className={styles.techMiniCard}>ASP.NET Core 8</div>
+                <div className={styles.techMiniCard}>Entity Framework Core</div>
+                <div className={styles.techMiniCard}>SQL Server Database</div>
+                <div className={styles.techMiniCard}>JWT Auth (HMACSHA256)</div>
+                <div className={styles.techMiniCard}>NVIDIA LLaMA 3.1 70B (AI)</div>
+                <div className={styles.techMiniCard}>Azure Blob Storage</div>
+              </div>
+            </div>
+          </FadeInWhenVisible>
         </div>
       </section>
 
-      {/* ── Overview ────────────────────────────────────────────────────── */}
+      {/* ── Overview ────────────────────────────────────────────────────────── */}
       <section id="overview" className={styles.section}>
         <FadeInWhenVisible>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Platform Overview</h2>
-            <p className={styles.sectionSubtitle}>Everything you need to manage your workforce efficiently.</p>
+            <p className={styles.sectionSubtitle}>Six purpose-built modules, one unified HR platform.</p>
           </div>
         </FadeInWhenVisible>
         <div className={styles.featuresGrid}>
           {[
-            { title: 'Kanban Boards',    desc: 'Visual task tracking with drag & drop for seamless project management.', icon: LayoutDashboard },
-            { title: 'User Management', desc: 'Role-based access control for Admins, HR personnel, and Employees.', icon: LogIn },
-            { title: 'Email Center',    desc: 'Built-in communication hub to send, receive, and manage internal messages.', icon: MessageSquare },
-            { title: 'Audit Logs',      desc: 'Full activity trail tracking events, logins, and data changes for compliance.', icon: FileText },
+            {
+              title: 'Kanban Boards',
+              desc: 'Drag-and-drop task tracking with priorities.',
+              icon: LayoutDashboard,
+            },
+            {
+              title: 'Analytics Dashboard',
+              desc: '4 real-time filterable HR charts.',
+              icon: BarChart3,
+            },
+            {
+              title: 'Email Center',
+              desc: '15+ HR templates with dynamic placeholders.',
+              icon: MessageSquare,
+            },
+            {
+              title: 'Role-Based Access',
+              desc: 'Admin, HR, and Employee protected routes.',
+              icon: LogIn,
+            },
+            {
+              title: 'Audit Logs',
+              desc: 'Timestamped logging of all system events.',
+              icon: FileText,
+            },
+            {
+              title: 'AI Chat Assistant',
+              desc: 'In-app LLaMA 3.1 AI for quick navigation.',
+              icon: Server,
+            },
           ].map((feat, i) => (
             <FadeInWhenVisible key={i} delay={i * 0.1}>
               <div className={styles.featureCard}>
@@ -443,16 +506,6 @@ export default function LandingPage() {
             </FadeInWhenVisible>
           ))}
         </div>
-        <FadeInWhenVisible delay={0.4}>
-          <div className={styles.statsRow}>
-            {[{ v: '3', l: 'Distinct Roles' }, { v: '∞', l: 'Unlimited Boards' }, { v: '100%', l: 'Audit Coverage' }].map(s => (
-              <div key={s.l} className={styles.statItem}>
-                <div className={styles.statValue}>{s.v}</div>
-                <div className={styles.statLabel}>{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </FadeInWhenVisible>
       </section>
 
       <footer className={styles.footer}>

@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 
-export default function Logo({ size = 'md', showText = false }: { size?: 'sm' | 'md' | 'lg' | 'xl', showText?: boolean }) {
+export default function Logo({ size = 'md', showText = false }: { size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl', showText?: boolean }) {
   // Reduced icon size by ~15% from previous values
   const dimensions = {
     sm: { container: 20, text: '0.9rem', gap: '8px' },
     md: { container: 28, text: '1.05rem', gap: '10px' },
     lg: { container: 42, text: '1.5rem', gap: '12px' },
     xl: { container: 54, text: '2rem', gap: '16px' },
+    xxl: { container: 88, text: '3rem', gap: '24px' },
   }[size];
 
   return (
