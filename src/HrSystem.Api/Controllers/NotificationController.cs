@@ -2,10 +2,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
-using HrSystem.Infrastructure.Persistence;
+using HrSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Api.Controllers;
 
@@ -14,82 +13,38 @@ namespace HrSystem.Api.Controllers;
 [Authorize]
 public class NotificationController : BaseApiController
 {
-    private readonly HrDbContext _dbContext;
+    private readonly INotificationService _notificationService;
 
-    public NotificationController(HrDbContext dbContext)
+    public NotificationController(INotificationService notificationService)
     {
-        _dbContext = dbContext;
+        _notificationService = notificationService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetNotifications([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var userId = CurrentUserId;
-
-        var query = _dbContext.Notifications
-            .Where(n => n.RecipientId == userId && !n.IsRead);
-
-        var totalCount = await query.CountAsync();
-
-        var items = await query
-            .OrderByDescending(n => n.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(n => new NotificationDto(
-                n.Id,
-                n.Type,
-                n.Message,
-                n.TaskCardId,
-                n.BoardId,
-                n.IsRead,
-                n.CreatedAt
-            ))
-            .ToListAsync();
-
-        return Ok(new PaginatedList<NotificationDto>(items, totalCount, page, pageSize));
+        var result = await _notificationService.GetNotificationsAsync(CurrentUserId, page, pageSize);
+        return Ok(result);
     }
 
     [HttpGet("unread-count")]
     public async Task<IActionResult> GetUnreadCount()
     {
-        var userId = CurrentUserId;
-        var count = await _dbContext.Notifications
-            .CountAsync(n => n.RecipientId == userId && !n.IsRead);
-
+        var count = await _notificationService.GetUnreadCountAsync(CurrentUserId);
         return Ok(new { count });
     }
 
     [HttpPatch("{id}/read")]
     public async Task<IActionResult> MarkAsRead(Guid id)
     {
-        var userId = CurrentUserId;
-        var notification = await _dbContext.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id && n.RecipientId == userId);
-
-        if (notification == null)
-        {
-            return NotFound();
-        }
-
-        if (!notification.IsRead)
-        {
-            notification.IsRead = true;
-            await _dbContext.SaveChangesAsync();
-        }
-
+        await _notificationService.MarkAsReadAsync(id, CurrentUserId);
         return NoContent();
     }
 
     [HttpPost("mark-all-read")]
     public async Task<IActionResult> MarkAllAsRead()
     {
-        var userId = CurrentUserId;
-
-        // ExecuteUpdate is highly efficient for this case in EF Core 7+
-        await _dbContext.Notifications
-            .Where(n => n.RecipientId == userId && !n.IsRead)
-            .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
-
+        await _notificationService.MarkAllAsReadAsync(CurrentUserId);
         return NoContent();
     }
 }
