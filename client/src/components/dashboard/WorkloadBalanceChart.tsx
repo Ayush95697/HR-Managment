@@ -4,8 +4,8 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cart
 import { BarChart2, LayoutList, AlertTriangle, ShieldCheck, User } from 'lucide-react';
 
 const CHART_MARGIN = { top: 5, right: 20, left: 35, bottom: 5 };
-const TOOLTIP_CURSOR = { fill: 'rgba(255, 255, 255, 0.03)' };
-const TOOLTIP_CONTENT_STYLE = { background: '#1e293b', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' };
+const TOOLTIP_CURSOR = { fill: 'var(--surface-hover, rgba(255, 255, 255, 0.03))' };
+const TOOLTIP_CONTENT_STYLE = { background: 'var(--surface-2, #1e293b)', border: '1px solid var(--accent, rgba(99, 102, 241, 0.3))', borderRadius: '8px', color: 'var(--text-primary, #f8fafc)', fontSize: '12px' };
 const LEGEND_WRAPPER_STYLE = { fontSize: '0.75rem', paddingTop: '6px', color: 'var(--text-secondary)' };
 const BAR_RADIUS: [number, number, number, number] = [0, 4, 4, 0];
 

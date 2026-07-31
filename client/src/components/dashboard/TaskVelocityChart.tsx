@@ -67,13 +67,15 @@ export function TaskVelocityChart() {
                 axisLine={false} 
               />
               <Tooltip 
+                cursor={{ fill: 'var(--surface-hover, rgba(255, 255, 255, 0.03))' }}
                 labelFormatter={(label) => new Date(label as string).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 formatter={(value: any) => [`${value} tasks completed`, 'Velocity']}
                 contentStyle={{ 
-                  background: '#1e293b', 
-                  border: '1px solid rgba(99, 102, 241, 0.3)', 
+                  background: 'var(--surface-2, #1e293b)', 
+                  border: '1px solid var(--accent, rgba(99, 102, 241, 0.3))', 
                   borderRadius: '8px', 
-                  color: '#f8fafc',
+                  color: 'var(--text-primary, #f8fafc)',
+                  fontSize: '12px',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
                 }}
                 itemStyle={{ color: '#818cf8', fontWeight: 600 }}

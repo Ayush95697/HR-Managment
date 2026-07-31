@@ -41,8 +41,8 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'var(--surface-hover, rgba(255,255,255,0.05))',
+          border: '1px solid var(--border, rgba(255,255,255,0.1))',
           borderRadius: '16px',
           padding: '8px 8px 8px 8px',
         }}
@@ -58,7 +58,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            color: 'rgba(255,255,255,0.25)',
+            color: 'var(--text-muted, rgba(255,255,255,0.25))',
             border: 'none',
             background: 'none',
             cursor: 'not-allowed',
@@ -106,7 +106,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            color: 'rgba(255,255,255,0.25)',
+            color: 'var(--text-muted, rgba(255,255,255,0.25))',
             border: 'none',
             background: 'none',
             cursor: 'not-allowed',
@@ -127,8 +127,8 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            background: canSend ? '#7c3aed' : 'rgba(255,255,255,0.06)',
-            color: canSend ? 'white' : 'rgba(255,255,255,0.2)',
+            background: canSend ? 'var(--accent, #7c3aed)' : 'var(--surface-hover, rgba(255,255,255,0.06))',
+            color: canSend ? 'white' : 'var(--text-muted, rgba(255,255,255,0.2))',
             border: 'none',
             borderRadius: '10px',
             cursor: canSend ? 'pointer' : 'not-allowed',
@@ -140,18 +140,9 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
       </div>
 
       {/* Disclaimer */}
-      <p
-        style={{
-          textAlign: 'center',
-          marginTop: '8px',
-          fontSize: '10.5px',
-          color: 'rgba(255,255,255,0.2)',
-          letterSpacing: '0.02em',
-          lineHeight: 1,
-        }}
-      >
-        Nexus can make mistakes. Verify important information.
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'center', fontSize: '10px', color: 'var(--text-muted, rgba(255,255,255,0.2))', marginTop: '10px' }}>
+        AI can make mistakes. Consider verifying critical information.
+      </div>
     </div>
   );
 }

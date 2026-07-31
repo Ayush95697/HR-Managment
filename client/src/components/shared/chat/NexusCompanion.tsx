@@ -57,7 +57,7 @@ export function NexusCompanion({ isOpen, onOpen, userName }: NexusCompanionProps
             initial={{ opacity: 0, y: 10, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 10, scale: 0.9, x: 20 }}
-            className="bg-[var(--surface-1)]/90 backdrop-blur-md border border-purple-500/30 px-5 py-3.5 rounded-2xl rounded-br-sm shadow-[0_8px_30px_-4px_rgba(168,85,247,0.3)] cursor-pointer group"
+            className="bg-[var(--surface)]/90 backdrop-blur-md border border-purple-500/30 px-5 py-3.5 rounded-2xl rounded-br-sm shadow-[0_8px_30px_-4px_rgba(168,85,247,0.3)] cursor-pointer group"
             onClick={handleClick}
           >
             <p className="text-[14px] font-medium text-[var(--text-primary)] flex items-center gap-2.5">

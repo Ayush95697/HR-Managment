@@ -1,4 +1,4 @@
-import { Bot, Expand, X, Minimize2 } from 'lucide-react';
+import { Bot, X } from 'lucide-react';
 
 interface ChatHeaderProps {
   onClose: () => void;
@@ -30,14 +30,7 @@ export function ChatHeader({ onClose, isExpanded, onToggleExpand }: ChatHeaderPr
         </div>
       </div>
       <div className="flex items-center gap-1.5">
-        <button
-          onClick={onToggleExpand}
-          className="p-2 hover:bg-[var(--surface-3)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
-          title={isExpanded ? "Collapse chat" : "Expand chat"}
-          aria-label={isExpanded ? "Collapse chat" : "Expand chat"}
-        >
-          {isExpanded ? <Minimize2 size={18} /> : <Expand size={18} />}
-        </button>
+
         <button
           onClick={onClose}
           className="p-2 hover:bg-[var(--surface-3)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"

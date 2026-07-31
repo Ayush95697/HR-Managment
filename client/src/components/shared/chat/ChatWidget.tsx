@@ -49,16 +49,16 @@ export default function ChatWidget() {
     display: 'flex',
     flexDirection: 'column',
     borderRadius: '20px',
-    background: '#0d0e18',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--surface-dropdown, #0d0e18)',
+    border: '1px solid var(--border, rgba(255,255,255,0.08))',
     overflow: 'hidden',
   };
 
   const Sidebar = () => (
     <div style={{
       width: '240px', flexShrink: 0, height: '100%',
-      borderRight: '1px solid rgba(255,255,255,0.06)',
-      background: 'rgba(255,255,255,0.015)',
+      borderRight: '1px solid var(--border, rgba(255,255,255,0.06))',
+      background: 'var(--surface, rgba(255,255,255,0.015))',
       overflowY: 'auto', display: 'flex', flexDirection: 'column',
       padding: '20px 12px', gap: '24px',
     }}>
@@ -67,15 +67,15 @@ export default function ChatWidget() {
         { label: 'Recent', items: ['Q3 Sprint Planning', 'Engineering Department Stats'], clickable: false },
       ].map(section => (
         <div key={section.label}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', paddingLeft: '8px' }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted, rgba(255,255,255,0.25))', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px', paddingLeft: '8px' }}>
             {section.label}
           </div>
           {section.items.map(cmd => (
             <button key={cmd}
               onClick={section.clickable ? () => handleCommandPaletteSubmit(cmd) : undefined}
-              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', fontSize: '13px', color: 'rgba(255,255,255,0.45)', background: 'none', border: 'none', borderRadius: '8px', cursor: section.clickable ? 'pointer' : 'default', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'inherit' }}
-              onMouseEnter={e => { if (section.clickable) { e.currentTarget.style.color = '#a78bfa'; e.currentTarget.style.background = 'rgba(124,58,237,0.08)'; } }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; e.currentTarget.style.background = 'none'; }}
+              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', fontSize: '13px', color: 'var(--text-secondary, rgba(255,255,255,0.45))', background: 'none', border: 'none', borderRadius: '8px', cursor: section.clickable ? 'pointer' : 'default', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'inherit' }}
+              onMouseEnter={e => { if (section.clickable) { e.currentTarget.style.color = 'var(--accent, #a78bfa)'; e.currentTarget.style.background = 'var(--accent-light, rgba(124,58,237,0.08))'; } }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary, rgba(255,255,255,0.45))'; e.currentTarget.style.background = 'none'; }}
             >{cmd}</button>
           ))}
         </div>
@@ -84,7 +84,7 @@ export default function ChatWidget() {
   );
 
   const ContextBar = () => (
-    <div style={{ flexShrink: 0, padding: '5px 16px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>
+    <div style={{ flexShrink: 0, padding: '5px 16px', borderBottom: '1px solid var(--border, rgba(255,255,255,0.05))', display: 'flex', gap: '16px', fontSize: '11px', color: 'var(--text-muted, rgba(255,255,255,0.3))' }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#60a5fa', display: 'inline-block' }} />
         Role: {user?.role || 'Admin'}
@@ -117,9 +117,9 @@ export default function ChatWidget() {
               right: '1.5rem',
               width: '400px',
               maxWidth: 'calc(100vw - 3rem)',
-              height: 'min(660px, calc(100vh - 9rem))',
+              height: 'min(580px, calc(100vh - 12rem))',
               zIndex: 60,
-              boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+              boxShadow: 'var(--shadow-xl, 0 25px 60px rgba(0,0,0,0.6))',
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>

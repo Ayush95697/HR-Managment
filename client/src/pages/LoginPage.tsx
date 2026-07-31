@@ -148,7 +148,7 @@ export default function LoginPage() {
             <div className="absolute -inset-[0.5px] rounded-[14px] bg-gradient-to-r from-white/3 via-white/7 to-white/3 opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
             
             {/* The old login form inside the new glassmorphism card */}
-            <div className="relative bg-black/40 backdrop-blur-xl rounded-xl p-[48px] sm:px-[64px] border border-white/[0.05] shadow-2xl">
+            <div className="relative bg-[var(--surface-2)]/80 backdrop-blur-xl rounded-xl p-8 sm:px-12 pt-12 border border-[var(--border)] shadow-2xl">
               
               {/* Subtle card inner patterns */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-xl" 
@@ -161,7 +161,7 @@ export default function LoginPage() {
               {/* Added padding here to give margin inside the card to fields, buttons, etc. */}
               <div className="relative z-10" style={{ padding: '0 20px' }}>
                 {/* Title */}
-                <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '28px', marginTop: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
                     <Logo size="lg" showText={false} />
                   </div>
@@ -180,7 +180,7 @@ export default function LoginPage() {
                   <label className="form-label" style={{ textAlign: 'center', display: 'block', marginBottom: '12px', color: 'var(--text-secondary)' }}>
                     Login As
                   </label>
-                  <div style={{ display: 'flex', gap: '8px', backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '6px', borderRadius: 'var(--radius-lg, 12px)' }}>
+                  <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--surface-hover)', padding: '6px', borderRadius: 'var(--radius-lg, 12px)' }}>
                     {(['Admin', 'HR', 'Employee'] as Role[]).map((role) => (
                       <button
                         key={role}
@@ -191,8 +191,8 @@ export default function LoginPage() {
                           padding: '10px',
                           borderRadius: 'var(--radius-md, 8px)',
                           border: 'none',
-                          backgroundColor: selectedRole === role ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                          color: selectedRole === role ? '#ffffff' : 'rgba(255, 255, 255, 0.6)',
+                          backgroundColor: selectedRole === role ? 'var(--accent)' : 'transparent',
+                          color: selectedRole === role ? '#ffffff' : 'var(--text-secondary)',
                           fontWeight: selectedRole === role ? 700 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
@@ -219,7 +219,7 @@ export default function LoginPage() {
                       <div className="absolute -inset-[0.5px] bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300" />
                       
                       <div className="relative flex items-center overflow-hidden rounded-lg">
-                        <Mail className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "email" ? 'text-white' : 'text-white/40'}`} />
+                        <Mail className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "email" ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'}`} />
                         
                         <Input
                           type="email"
@@ -227,7 +227,7 @@ export default function LoginPage() {
                           {...register('email')}
                           onFocus={(e) => { setFocusedInput("email"); e.target.select(); }}
                           onBlur={() => setFocusedInput(null)}
-                          className="w-full bg-white/5 border-transparent focus:border-white/20 text-white placeholder:text-white/30 h-12 transition-all duration-300 focus:bg-white/10 text-sm"
+                          className="w-full bg-[var(--surface-hover)] border-transparent focus:border-[var(--accent)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] h-12 transition-all duration-300 focus:bg-[var(--surface)] text-sm"
                           style={{ paddingLeft: '44px', paddingRight: '16px' }}
                         />
                       </div>
@@ -250,7 +250,7 @@ export default function LoginPage() {
                       <div className="absolute -inset-[0.5px] bg-gradient-to-r from-white/10 via-white/5 to-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300" />
                       
                       <div className="relative flex items-center overflow-hidden rounded-lg">
-                        <Lock className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "password" ? 'text-white' : 'text-white/40'}`} />
+                        <Lock className={`absolute left-3 w-5 h-5 transition-all duration-300 ${focusedInput === "password" ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'}`} />
                         
                         <Input
                           type={showPassword ? 'text' : 'password'}
@@ -258,7 +258,7 @@ export default function LoginPage() {
                           {...register('password')}
                           onFocus={(e) => { setFocusedInput("password"); e.target.select(); }}
                           onBlur={() => setFocusedInput(null)}
-                          className="w-full bg-white/5 border-transparent focus:border-white/20 text-white placeholder:text-white/30 h-12 transition-all duration-300 focus:bg-white/10 text-sm"
+                          className="w-full bg-[var(--surface-hover)] border-transparent focus:border-[var(--accent)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] h-12 transition-all duration-300 focus:bg-[var(--surface)] text-sm"
                           style={{ paddingLeft: '44px', paddingRight: '44px' }}
                         />
                         
@@ -268,7 +268,7 @@ export default function LoginPage() {
                           className="absolute right-3 cursor-pointer p-1 bg-transparent border-none"
                           tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff size={20} className="text-white/40 hover:text-white transition-colors" /> : <Eye size={20} className="text-white/40 hover:text-white transition-colors" />}
+                          {showPassword ? <EyeOff size={20} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors" /> : <Eye size={20} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors" />}
                         </button>
                       </div>
                     </motion.div>
@@ -279,24 +279,24 @@ export default function LoginPage() {
                     )}
                   </div>
 
-                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', background: '#ffffff', color: '#000000', borderRadius: '9999px', border: 'none' }}>
+                  <Button type="submit" isLoading={isSubmitting} leftIcon={<LogIn size={16} />} style={{ width: '100%', marginTop: '6px', background: 'var(--text-primary)', color: 'var(--text-inverse)', borderRadius: '9999px', border: 'none' }}>
                     Sign In
                   </Button>
                 </form>
 
                 {/* Quick Fill Demo Roles */}
-                <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.4)', display: 'block', marginBottom: '10px' }}>
+                <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
                     Quick-fill demo account:
                   </span>
                   <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('admin@hrsystem.com', 'Admin')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('admin@hrsystem.com', 'Admin')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       Admin
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('hr@hrsystem.com', 'HR')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('hr@hrsystem.com', 'HR')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       HR
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('employee@hrsystem.com', 'Employee')} style={{ color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => quickFill('employee@hrsystem.com', 'Employee')} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
                       Employee
                     </Button>
                   </div>

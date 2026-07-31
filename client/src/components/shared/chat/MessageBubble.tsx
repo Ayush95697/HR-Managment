@@ -23,7 +23,7 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
 
   if (isSystem) {
     return (
-      <div style={{ display: 'flex', gap: '8px', padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '12px', alignItems: 'center', color: '#f87171', fontSize: '12px' }}>
+      <div style={{ display: 'flex', gap: '8px', padding: '10px 14px', background: 'var(--danger-light, rgba(239,68,68,0.08))', border: '1px solid var(--danger, rgba(239,68,68,0.2))', borderRadius: '12px', alignItems: 'center', color: 'var(--danger, #f87171)', fontSize: '12px' }}>
         <AlertCircle size={13} style={{ flexShrink: 0 }} />
         <span>{message.content}</span>
       </div>
@@ -57,8 +57,8 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
         alignItems: 'center',
         justifyContent: 'center',
         ...(isUser
-          ? { background: '#7c3aed', color: 'white' }
-          : { background: 'rgba(124,58,237,0.15)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)' }),
+          ? { background: 'var(--accent, #7c3aed)', color: 'white' }
+          : { background: 'var(--accent-light, rgba(124,58,237,0.15))', color: 'var(--accent, #a78bfa)', border: '1px solid var(--accent, rgba(124,58,237,0.3))' }),
       }}>
         {isUser ? <User size={13} strokeWidth={2.5} /> : <Bot size={13} strokeWidth={2} />}
       </div>
@@ -85,7 +85,7 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
           /* User bubble: only as wide as its content, not full-width */
           ...(isUser
             ? {
-                background: '#7c3aed',
+                background: 'var(--accent, #7c3aed)',
                 color: 'white',
                 borderBottomRightRadius: '5px',
                 /* Constrain user bubble so avatar stays visible */
@@ -93,9 +93,9 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
                 display: 'inline-block',
               }
             : {
-                background: '#1d1e2c',
-                border: '1px solid rgba(255,255,255,0.08)',
-                color: '#d1d5e0',
+                background: 'var(--surface, #1d1e2c)',
+                border: '1px solid var(--border, rgba(255,255,255,0.08))',
+                color: 'var(--text-primary, #d1d5e0)',
                 borderBottomLeftRadius: '5px',
                 /* Bot bubble can be wider */
                 width: '100%',
@@ -114,23 +114,23 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
                 li: ({ node, ...props }) => <li style={{ marginBottom: '3px' }} {...props} />,
                 strong: ({ node, ...props }) => <strong style={{ fontWeight: 600, color: '#c4b5fd' }} {...props} />,
                 table: ({ node, ...props }) => (
-                  <div style={{ overflowX: 'auto', margin: '10px 0', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', background: '#13141f' }}>
+                  <div style={{ overflowX: 'auto', margin: '10px 0', border: '1px solid var(--border, rgba(255,255,255,0.08))', borderRadius: '10px', background: 'var(--surface-2, #13141f)' }}>
                     <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse' }} {...props} />
                   </div>
                 ),
-                th: ({ node, ...props }) => <th style={{ padding: '8px 12px', background: '#1d1e2c', borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left' }} {...props} />,
-                td: ({ node, ...props }) => <td style={{ padding: '8px 12px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#d1d5e0' }} {...props} />,
+                th: ({ node, ...props }) => <th style={{ padding: '8px 12px', background: 'var(--surface-hover, #1d1e2c)', borderBottom: '1px solid var(--border, rgba(255,255,255,0.08))', color: 'var(--text-muted, rgba(255,255,255,0.4))', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left' }} {...props} />,
+                td: ({ node, ...props }) => <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border, rgba(255,255,255,0.05))', color: 'var(--text-primary, #d1d5e0)' }} {...props} />,
                 code: ({ node, inline, className, children, ...props }: any) => {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline ? (
-                    <div style={{ borderRadius: '8px', overflow: 'hidden', margin: '8px 0', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      <div style={{ background: '#282c34', color: 'rgba(255,255,255,0.35)', padding: '3px 12px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div style={{ borderRadius: '8px', overflow: 'hidden', margin: '8px 0', border: '1px solid var(--border, rgba(255,255,255,0.08))' }}>
+                      <div style={{ background: 'var(--surface-2, #282c34)', color: 'var(--text-muted, rgba(255,255,255,0.35))', padding: '3px 12px', fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border, rgba(255,255,255,0.08))' }}>
                         {match?.[1] || 'code'}
                       </div>
                       <code className={className} {...props}>{children}</code>
                     </div>
                   ) : (
-                    <code style={{ background: 'rgba(255,255,255,0.08)', color: '#f9a8d4', padding: '1px 5px', borderRadius: '4px', fontSize: '13px', fontFamily: 'monospace' }} {...props}>
+                    <code style={{ background: 'var(--surface-hover, rgba(255,255,255,0.08))', color: 'var(--accent, #f9a8d4)', padding: '1px 5px', borderRadius: '4px', fontSize: '13px', fontFamily: 'monospace' }} {...props}>
                       {children}
                     </code>
                   );
@@ -144,14 +144,14 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
 
         {/* Timestamp + badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.22)' }}>{time}</span>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted, rgba(255,255,255,0.22))' }}>{time}</span>
           {!isUser && isInstant && (
-            <span style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', color: '#34d399', background: 'rgba(52,211,153,0.1)', padding: '1px 8px', borderRadius: '100px', border: '1px solid rgba(52,211,153,0.2)' }}>
+            <span style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--success, #34d399)', background: 'var(--success-light, rgba(52,211,153,0.1))', padding: '1px 8px', borderRadius: '100px', border: '1px solid var(--success-light, rgba(52,211,153,0.2))' }}>
               <Zap size={9} /> Instant
             </span>
           )}
           {!isUser && !isInstant && (
-            <span style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', color: '#a78bfa', background: 'rgba(124,58,237,0.1)', padding: '1px 8px', borderRadius: '100px', border: '1px solid rgba(124,58,237,0.2)' }}>
+            <span style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent, #a78bfa)', background: 'var(--accent-light, rgba(124,58,237,0.1))', padding: '1px 8px', borderRadius: '100px', border: '1px solid var(--accent-light, rgba(124,58,237,0.2))' }}>
               <Sparkles size={9} /> AI Generated
             </span>
           )}
@@ -167,9 +167,9 @@ export function MessageBubble({ message, onSuggestionClick }: MessageBubbleProps
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.07 }}
                 onClick={() => onSuggestionClick(s)}
-                style={{ fontSize: '11.5px', fontWeight: 500, padding: '5px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '100px', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontFamily: 'inherit', outline: 'none' }}
-                onMouseEnter={e => { const el = e.currentTarget; el.style.color = '#a78bfa'; el.style.borderColor = 'rgba(124,58,237,0.4)'; el.style.background = 'rgba(124,58,237,0.08)'; }}
-                onMouseLeave={e => { const el = e.currentTarget; el.style.color = 'rgba(255,255,255,0.4)'; el.style.borderColor = 'rgba(255,255,255,0.1)'; el.style.background = 'rgba(255,255,255,0.04)'; }}
+                style={{ fontSize: '11.5px', fontWeight: 500, padding: '5px 12px', background: 'var(--surface-hover, rgba(255,255,255,0.04))', border: '1px solid var(--border, rgba(255,255,255,0.1))', borderRadius: '100px', color: 'var(--text-secondary, rgba(255,255,255,0.4))', cursor: 'pointer', fontFamily: 'inherit', outline: 'none' }}
+                onMouseEnter={e => { const el = e.currentTarget; el.style.color = 'var(--accent, #a78bfa)'; el.style.borderColor = 'var(--accent, rgba(124,58,237,0.4))'; el.style.background = 'var(--accent-light, rgba(124,58,237,0.08))'; }}
+                onMouseLeave={e => { const el = e.currentTarget; el.style.color = 'var(--text-secondary, rgba(255,255,255,0.4))'; el.style.borderColor = 'var(--border, rgba(255,255,255,0.1))'; el.style.background = 'var(--surface-hover, rgba(255,255,255,0.04))'; }}
               >
                 {s}
               </motion.button>

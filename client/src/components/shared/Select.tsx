@@ -143,12 +143,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               transition={{ duration: 0.15 }}
               style={{
                 ...dropdownStyles,
-                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                backgroundColor: 'var(--surface-2, rgba(0, 0, 0, 0.85))',
                 backdropFilter: 'blur(32px)',
                 WebkitBackdropFilter: 'blur(32px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid var(--border, rgba(255, 255, 255, 0.1))',
                 borderRadius: '12px',
-                boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.6)',
+                boxShadow: 'var(--shadow-xl, 0 20px 40px -12px rgba(0, 0, 0, 0.6))',
                 zIndex: 999999,
                 maxHeight: '250px',
                 overflowY: 'auto',
@@ -168,11 +168,11 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     color: option.value === currentValue ? 'var(--accent)' : 'var(--text-primary)',
-                    backgroundColor: option.value === currentValue ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                    backgroundColor: option.value === currentValue ? 'var(--accent-light, rgba(99, 102, 241, 0.1))' : 'transparent',
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => {
-                    if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                    if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'var(--surface-hover, rgba(255,255,255,0.05))';
                   }}
                   onMouseLeave={e => {
                     if (option.value !== currentValue) e.currentTarget.style.backgroundColor = 'transparent';
