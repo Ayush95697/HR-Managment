@@ -13,6 +13,7 @@ import EmailCenterPage from './pages/EmailCenterPage';
 import AuditLogPage from './pages/AuditLogPage';
 import ForbiddenPage from './pages/ForbiddenPage';
 import SettingsPage from './pages/SettingsPage';
+import LandingPage from './pages/LandingPage';
 
 const RoleBasedHome = () => {
   const { user } = useAuthStore();
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/landing',
+    element: <LandingPage />,
   },
   {
     path: '/403',
