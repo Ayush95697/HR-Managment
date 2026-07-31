@@ -49,10 +49,10 @@ public class BoardsController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "HR,Admin")]
     public async Task<IActionResult> DeleteBoard(Guid id)
     {
-        await _boardService.DeleteBoardAsync(id);
+        await _boardService.DeleteBoardAsync(id, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
         return NoContent();
     }
 

@@ -20,7 +20,7 @@ interface CardModalProps {
 export default function CardModal({ cardId, boardId, onClose }: CardModalProps) {
   const { user: currentUser } = useAuthStore();
   const canEdit = currentUser?.role === 'Admin' || currentUser?.role === 'HR';
-  const canDelete = currentUser?.role === 'Admin';
+  const canDelete = currentUser?.role === 'Admin' || currentUser?.role === 'HR';
 
   // TanStack Query Hooks
   const { data: card, isLoading: cardLoading, error: cardError } = useCard(cardId);

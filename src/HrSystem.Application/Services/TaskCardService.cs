@@ -348,17 +348,22 @@ public class TaskCardService : ITaskCardService
         return await GetCardDtoByIdInternal(card.Id);
     }
 
-    public async Task DeleteCardAsync(Guid cardId, Guid currentUserId, string currentUserRole)
+    public async Task DeleteCardAsync(Guid cardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
-        if (currentUserRole != RoleType.Admin.ToString())
+        if (currentUserRole == RoleType.Employee.ToString())
         {
-            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Only Admins can delete cards.");
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("Employees cannot delete cards.");
         }
 
-        var card = await _taskCardRepository.GetCardByIdAsync(cardId);
+        var card = await _taskCardRepository.GetCardByIdWithBoardAndColumnAsync(cardId);
         if (card == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Task Card with ID {cardId} not found.");
+        }
+
+        if (currentUserRole == RoleType.HR.ToString() && card.Board.DepartmentId != currentUserDeptId)
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only delete cards in their department.");
         }
 
         await _taskCardRepository.DeleteAsync(card);

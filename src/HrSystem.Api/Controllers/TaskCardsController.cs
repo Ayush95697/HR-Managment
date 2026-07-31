@@ -50,10 +50,10 @@ public class TaskCardsController : BaseApiController
     }
 
     [HttpDelete("cards/{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "HR,Admin")]
     public async Task<IActionResult> DeleteCard(Guid id)
     {
-        await _cardService.DeleteCardAsync(id, CurrentUserId, CurrentUserRole);
+        await _cardService.DeleteCardAsync(id, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
         return NoContent();
     }
 

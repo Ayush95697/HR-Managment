@@ -46,7 +46,6 @@ export default function BoardDetailPage() {
   const { user } = useAuthStore();
   const role = user?.role;
   const canEdit = role === 'Admin' || role === 'HR';
-  const isAdmin = role === 'Admin';
 
   // TanStack Query Hooks
   const { data: board, isLoading, error: boardError } = useBoard(id!);
@@ -176,7 +175,11 @@ export default function BoardDetailPage() {
 
   const handleAddColumn = async (data: ColumnFormData) => {
     try {
-      await createColumnMutation.mutateAsync(data);
+      const maxOrder = board && board.columns.length > 0 
+        ? Math.max(...board.columns.map(c => c.order)) 
+        : -1;
+      const nextOrder = maxOrder + 1;
+      await createColumnMutation.mutateAsync({ ...data, order: nextOrder });
       setShowAddColumnModal(false);
       resetColForm();
     } catch (err: any) {
@@ -297,7 +300,7 @@ export default function BoardDetailPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          {isAdmin && (
+          {canEdit && (
             <Button variant="danger" size="sm" leftIcon={<Trash2 size={14} />} onClick={() => setDeleteBoardConfirm(true)}>
               Delete Board
             </Button>

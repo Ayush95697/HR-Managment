@@ -88,10 +88,14 @@ public class BoardRepository : IBoardRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(Board board)
+    public async Task DeleteAsync(Board board)
     {
+        var notifications = await _dbContext.Notifications
+            .Where(n => n.BoardId == board.Id || (n.TaskCardId != null && n.TaskCard.BoardId == board.Id))
+            .ToListAsync();
+        _dbContext.Notifications.RemoveRange(notifications);
+
         _dbContext.Boards.Remove(board);
-        return Task.CompletedTask;
     }
 
     public async Task<BoardColumn?> GetColumnByIdWithBoardAsync(Guid columnId)
@@ -118,10 +122,24 @@ public class BoardRepository : IBoardRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteColumnAsync(BoardColumn column)
+    public async Task DeleteColumnAsync(BoardColumn column)
     {
+        var notifications = await _dbContext.Notifications
+            .Where(n => n.TaskCardId != null && n.TaskCard.ColumnId == column.Id)
+            .ToListAsync();
+        _dbContext.Notifications.RemoveRange(notifications);
+
+        var activityLogs = await _dbContext.TaskActivityLogs
+            .Where(al => al.FromColumnId == column.Id || al.ToColumnId == column.Id)
+            .ToListAsync();
+            
+        foreach (var log in activityLogs)
+        {
+            if (log.FromColumnId == column.Id) log.FromColumnId = null;
+            if (log.ToColumnId == column.Id) log.ToColumnId = null;
+        }
+
         _dbContext.BoardColumns.Remove(column);
-        return Task.CompletedTask;
     }
 
     public async Task SaveChangesAsync()
