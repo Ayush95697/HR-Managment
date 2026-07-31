@@ -1,234 +1,214 @@
+/* ─── Split-screen login layout ──────────────────────────────────────────────── */
 .page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
+  background: #0b0b0f;
   position: relative;
   overflow: hidden;
-  padding: 24px;
+  /* Break out of #root fixed-width container */
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  align-items: center;
+  justify-content: center;
 }
 
-/* ─── Animated orbs ─────────────────────────────────────────────────────── */
-.orb1, .orb2 {
+/* ─── Background Layer (Single continuous scene) ─────────────────────────────── */
+.backgroundLayer {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  animation: float 8s ease-in-out infinite;
+  overflow: hidden;
 }
 
-.orb1 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%);
-  top: -100px;
-  left: -100px;
+/* Single light source: large radial-gradient glow centered around ~70% */
+.primaryGlow {
+  position: absolute;
+  width: 120vw;
+  height: 120vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, transparent 70%);
+  top: -10vh;
+  left: 10vw; /* Center is at 10vw + 60vw (half width) = 70vw */
+  animation: primaryDrift 15s ease-in-out infinite;
 }
 
-.orb2 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(139,92,246,0.2), transparent 70%);
-  bottom: -80px;
-  right: -80px;
-  animation-delay: -4s;
+/* Second, smaller cooler glow lower and further right */
+.secondaryGlow {
+  position: absolute;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 124, 246, 0.1) 0%, transparent 70%);
+  bottom: -20vh;
+  right: -10vw;
+  animation: secondaryDrift 18s ease-in-out infinite reverse;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%       { transform: translateY(-30px) scale(1.05); }
+@keyframes primaryDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-2vw, 3vh) scale(1.05); }
 }
 
-/* ─── Card ───────────────────────────────────────────────────────────────── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
+@keyframes secondaryDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3vw, -2vh) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryGlow,
+  .secondaryGlow {
+    animation: none;
+  }
+}
+
+/* ─── Ambient dashboard cards ────────────────────────────────────────────────── */
+.ambientCardsWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.ambientCard {
+  position: absolute;
+}
+
+/* Scattered to bridge the gap between form and glass panel */
+.ambientCard1 {
+  top: 15%;
+  left: 45%;
+  transform: rotate(-6deg);
+}
+
+.ambientCard2 {
+  bottom: 20%;
+  right: 5%;
+  transform: rotate(4deg);
+}
+
+.ambientCard3 {
+  top: 55%;
+  left: 52%;
+  transform: rotate(-2deg);
+}
+
+/* ─── Foreground Content Layer ───────────────────────────────────────────────── */
+.contentLayer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8vw; /* Gap ~8-10% of viewport */
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 40px;
+}
+
+/* ─── Left side: login form ──────────────────────────────────────────────────── */
+.formSection {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 480px;
+}
+
+.formWrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ─── Right side: info panel ─────────────────────────────────────────────────── */
+.infoSection {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  max-width: 520px;
+}
+
+/* ─── Glass panel ────────────────────────────────────────────────────────────── */
+.glassPanel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 440px;
-  position: relative;
-  z-index: 1;
-  animation: fadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+.glassHeadline {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #F5F5F7;
+  letter-spacing: -0.02em;
+  margin: 20px 0 8px;
+  line-height: 1.3;
 }
 
-/* ─── Header ─────────────────────────────────────────────────────────────── */
-.header {
-  text-align: center;
+.glassSubtext {
+  font-size: 0.875rem;
+  color: #A0A0AA;
   margin-bottom: 32px;
 }
 
-.logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #fff;
-  font-weight: 800;
-  font-size: 1.1rem;
+/* ─── Feature rows ───────────────────────────────────────────────────────────── */
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.featureRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.featureIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(108, 99, 255, 0.12);
+  color: #8B7CF6;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
-  box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-  letter-spacing: -0.03em;
-}
-
-.title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  margin-bottom: 6px;
-}
-
-.subtitle {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
-/* ─── Form ───────────────────────────────────────────────────────────────── */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.label {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.inputWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.inputIcon {
-  position: absolute;
-  left: 14px;
-  color: var(--text-muted);
-  pointer-events: none;
   flex-shrink: 0;
 }
 
-.input {
-  width: 100%;
-  padding: 11px 14px 11px 40px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
-  font-family: inherit;
-}
-
-.input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
-  background: var(--surface);
-}
-
-.input::placeholder { color: var(--text-muted); }
-
-.eyeBtn {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  transition: color var(--transition);
-}
-.eyeBtn:hover { color: var(--text-primary); }
-
-.error {
-  background: var(--danger-light);
-  color: var(--danger);
-  border: 1px solid rgba(239,68,68,0.25);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-/* ─── Demo credentials ───────────────────────────────────────────────────── */
-.demo {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-}
-
-.demoTitle {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.demoGrid {
+.featureText {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 
-.demoBtn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: background var(--transition), border-color var(--transition);
-  text-align: left;
-  font-family: inherit;
-}
-
-.demoBtn:hover {
-  background: var(--surface-hover);
-  border-color: var(--accent);
-}
-
-.demoRole {
-  font-size: 0.72rem;
+.featureLabel {
+  font-size: 0.9rem;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  min-width: 70px;
-  text-align: center;
+  color: #F5F5F7;
 }
 
-.roleAdmin    { background: rgba(99,102,241,0.15); color: #a5b4fc; }
-.roleHR       { background: rgba(20,184,166,0.15); color: #5eead4; }
-.roleEmployee { background: rgba(100,116,139,0.15); color: #94a3b8; }
-
-.demoEmail {
+.featureDesc {
   font-size: 0.8rem;
-  color: var(--text-muted);
-  font-family: 'Courier New', monospace;
+  color: #A0A0AA;
+  line-height: 1.4;
+}
+
+/* ─── Responsive: collapse below 900px ───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .contentLayer {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .infoSection {
+    display: none;
+  }
+
+  .formSection {
+    justify-content: center;
+    max-width: none;
+    padding: 40px 24px;
+  }
 }
