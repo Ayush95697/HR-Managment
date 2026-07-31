@@ -35,8 +35,8 @@ export default function TopBar() {
     try { await authApi.logout(); } catch { }
     finally {
       queryClient.clear();
-      logout();
-      navigate('/login');
+      sessionStorage.removeItem('accessToken');
+      window.location.href = '/login';
     }
   };
 
