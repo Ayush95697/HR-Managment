@@ -45,3 +45,48 @@
 
   --transition:     0.2s ease;
 }
+
+/* ─── Premium Light Theme Overrides ────────────────────────────────────────── */
+[data-theme="light"] {
+    --bg: #F8FAFC;
+    --surface: rgba(255, 255, 255, 0.85);
+    --surface-2: #FFFFFF;
+    --surface-hover: rgba(59, 130, 246, 0.08);
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --text-inverse: #F8FAFC;
+
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --accent-light: rgba(59, 130, 246, 0.15);
+    --accent-text: #2563EB;
+
+    --sidebar-bg: #FFFFFF;
+    --sidebar-text: #0F172A;
+    --sidebar-muted: #64748B;
+    --sidebar-active: #3B82F6;
+    --sidebar-hover: rgba(59, 130, 246, 0.1);
+    --sidebar-hover-text: #0F172A;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Overrides for hardcoded colors in Light theme */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-hover: rgba(0, 0, 0, 0.04);
+    --glass-menu: rgba(255, 255, 255, 0.9);
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-border: rgba(0, 0, 0, 0.1);
+
+    /* Hero Section specific variables for Light Mode */
+    --hero-bg: rgba(255, 255, 255, 0.6);
+    --hero-border: rgba(255, 255, 255, 0.8);
+    --hero-glow: rgba(59, 130, 246, 0.05);
+    --hero-shadow: 0 0 30px var(--hero-glow), 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+}

@@ -1,7 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useUIStore } from '../../store/uiStore';
 
 export default function AnimatedBackground() {
+  const { theme } = useUIStore();
+  const isLight = theme === 'light';
+
+  if (isLight) {
+    return <div className="fixed inset-0 w-screen h-screen pointer-events-none z-[-50]" style={{ backgroundColor: 'var(--bg)' }} />;
+  }
   return (
     <div className="fixed inset-0 w-screen h-screen bg-zinc-800 overflow-hidden pointer-events-none z-[-50]">
       {/* Background gradient effect */}

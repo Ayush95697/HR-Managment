@@ -36,10 +36,10 @@ export default function Sidebar() {
     <aside
       style={{
         width: '240px',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'var(--glass-bg, rgba(0, 0, 0, 0.4))',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderRight: '1px solid rgba(255, 255, 255, 0.05)',
+        borderRight: '1px solid var(--glass-border, rgba(255, 255, 255, 0.05))',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
@@ -115,7 +115,7 @@ export default function Sidebar() {
           cursor: 'pointer',
           transition: 'background 0.15s',
         }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--glass-hover, rgba(255,255,255,0.04))')}
         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <div
