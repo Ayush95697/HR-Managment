@@ -11,7 +11,7 @@ using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Application.Services;
-using HrSystem.Application.Validators;
+using HrSystem.Application.Validators.Auth;
 using HrSystem.Infrastructure.Persistence;
 using HrSystem.Infrastructure.Persistence.Repositories;
 using HrSystem.Application.Assistant.Interfaces;
