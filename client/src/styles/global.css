@@ -221,11 +221,11 @@ input, textarea, select {
 }
 
 .sidebar-item-glass:not(.active):hover {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--sidebar-hover, rgba(255, 255, 255, 0.05)) !important;
   transform: translateX(6px);
-  color: #fff !important;
+  color: var(--sidebar-hover-text, #fff) !important;
   box-shadow: -4px 4px 15px rgba(0,0,0,0.1);
-  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid var(--sidebar-active, rgba(255, 255, 255, 0.2));
 }
 
 .sidebar-item-glass > * {
