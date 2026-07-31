@@ -33,9 +33,10 @@ public class GlobalExceptionFilter : IExceptionFilter
         switch (exception)
         {
             case DbUpdateConcurrencyException:
+            case AppConflictException:
                 problemDetails.Status = (int)HttpStatusCode.Conflict;
                 problemDetails.Title = "Concurrency Conflict";
-                problemDetails.Detail = "Stale write detected. The resource has been updated by another user.";
+                problemDetails.Detail = exception.Message;
                 break;
 
             case UnauthorizedAccessException:
