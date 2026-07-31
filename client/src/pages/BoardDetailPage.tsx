@@ -176,7 +176,11 @@ export default function BoardDetailPage() {
 
   const handleAddColumn = async (data: ColumnFormData) => {
     try {
-      await createColumnMutation.mutateAsync(data);
+      const maxOrder = board && board.columns.length > 0 
+        ? Math.max(...board.columns.map(c => c.order)) 
+        : -1;
+      const nextOrder = maxOrder + 1;
+      await createColumnMutation.mutateAsync({ ...data, order: nextOrder });
       setShowAddColumnModal(false);
       resetColForm();
     } catch (err: any) {
