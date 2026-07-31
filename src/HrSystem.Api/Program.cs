@@ -143,6 +143,7 @@ builder.Services.AddScoped<ITaskCardService, TaskCardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailDispatchService, EmailDispatchService>();
 builder.Services.AddScoped<IEmailDispatchQueue, HangfireEmailDispatchQueue>();
+builder.Services.AddScoped<HrSystem.Infrastructure.Interfaces.ITestDataSeeder, TestDataSeeder>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();
