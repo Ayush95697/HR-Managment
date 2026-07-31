@@ -7,14 +7,7 @@ namespace HrSystem.Application.Validators;
 
 
 
-public class CreateTaskCardRequestValidator : AbstractValidator<CreateTaskCardRequest>
-{
-    public CreateTaskCardRequestValidator()
-    {
-        RuleFor(x => x.ColumnId).NotEmpty();
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
-    }
-}
+
 
 public class SendEmailRequestValidator : AbstractValidator<SendEmailRequest>
 {
