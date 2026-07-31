@@ -81,10 +81,11 @@ public class EmailDispatchJob
                 }
             });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Polly exhausted all retries and rethrew the last exception.
             // We intentionally swallow it here so we can update the database to Failed.
+            _logger.LogError(ex, "Polly exhausted all retries for email log {Id}", emailLogId);
             success = false;
         }
 

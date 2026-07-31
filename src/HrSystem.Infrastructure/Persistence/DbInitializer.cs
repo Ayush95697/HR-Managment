@@ -24,7 +24,10 @@ public static class DbInitializer
                 {
                     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [Roles] ON;");
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // Intentionally swallowed: Some environments may not support or need identity insert
+                }
             }
 
             if (!await context.Roles.AnyAsync(r => r.Id == (int)RoleType.Admin))
@@ -42,7 +45,10 @@ public static class DbInitializer
                 {
                     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [Roles] OFF;");
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // Intentionally swallowed: Some environments may not support or need identity insert
+                }
             }
         }
 

@@ -7,16 +7,19 @@ using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
 public class DepartmentService : IDepartmentService
 {
     private readonly IDepartmentRepository _departmentRepository;
+    private readonly Microsoft.Extensions.Logging.ILogger<DepartmentService> _logger;
 
-    public DepartmentService(IDepartmentRepository departmentRepository)
+    public DepartmentService(IDepartmentRepository departmentRepository, Microsoft.Extensions.Logging.ILogger<DepartmentService> logger)
     {
         _departmentRepository = departmentRepository;
+        _logger = logger;
     }
 
     public async Task<List<DepartmentDto>> GetDepartmentsAsync()
@@ -48,6 +51,8 @@ public class DepartmentService : IDepartmentService
 
         await _departmentRepository.AddAsync(department);
         await _departmentRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Department created successfully: {DepartmentId} with name '{DepartmentName}'", department.Id, department.Name);
 
         return new DepartmentDto(department.Id, department.Name, 0);
     }

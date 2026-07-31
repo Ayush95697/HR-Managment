@@ -5,16 +5,19 @@ using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations
 {
     public class BoardCapability : IAssistantCapability
     {
         private readonly IBoardService _boardService;
+        private readonly Microsoft.Extensions.Logging.ILogger<BoardCapability> _logger;
 
-        public BoardCapability(IBoardService boardService)
+        public BoardCapability(IBoardService boardService, Microsoft.Extensions.Logging.ILogger<BoardCapability> logger)
         {
             _boardService = boardService;
+            _logger = logger;
         }
 
         public string Name => "BoardDomainCapability";
@@ -39,8 +42,9 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                     Summary = $"Retrieved board statistics."
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogWarning(ex, "BoardCapability failed for user {UserId}", request.CurrentUser.UserId);
                 return new CapabilityResult
                 {
                     Success = false,

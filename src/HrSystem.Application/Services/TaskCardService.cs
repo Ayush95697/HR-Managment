@@ -10,6 +10,7 @@ using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore; // For DbUpdateConcurrencyException
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
@@ -19,17 +20,20 @@ public class TaskCardService : ITaskCardService
     private readonly IBoardRepository _boardRepository;
     private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
+    private readonly Microsoft.Extensions.Logging.ILogger<TaskCardService> _logger;
 
     public TaskCardService(
         ITaskCardRepository taskCardRepository,
         IBoardRepository boardRepository,
         IUserRepository userRepository,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        Microsoft.Extensions.Logging.ILogger<TaskCardService> logger)
     {
         _taskCardRepository = taskCardRepository;
         _boardRepository = boardRepository;
         _userRepository = userRepository;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     public async Task<List<TaskCardDto>> GetCardsByBoardIdAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -205,6 +209,8 @@ public class TaskCardService : ITaskCardService
         await _taskCardRepository.AddActivityLogAsync(activityLog);
 
         await _taskCardRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Task created successfully: {TaskId} with title '{TaskTitle}' on Board {BoardId}", card.Id, card.Title, boardId);
 
         return await GetCardDtoByIdInternal(card.Id);
     }

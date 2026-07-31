@@ -8,6 +8,7 @@ using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
@@ -16,12 +17,14 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly Microsoft.Extensions.Logging.ILogger<UserService> _logger;
 
-    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, IPasswordHasher passwordHasher)
+    public UserService(IUserRepository userRepository, IDepartmentRepository departmentRepository, IPasswordHasher passwordHasher, Microsoft.Extensions.Logging.ILogger<UserService> logger)
     {
         _userRepository = userRepository;
         _departmentRepository = departmentRepository;
         _passwordHasher = passwordHasher;
+        _logger = logger;
     }
 
     public async Task<List<UserSummaryDto>> GetUsersAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -133,6 +136,8 @@ public class UserService : IUserService
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
+
+        _logger.LogInformation("User created successfully: {UserId} with role {RoleId}", user.Id, user.RoleId);
 
         return await GetUserByIdAsync(user.Id, user.Id, RoleType.Admin.ToString(), null);
     }

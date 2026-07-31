@@ -10,6 +10,7 @@ using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Assistant.ParameterExtraction.Interfaces;
 using HrSystem.Application.Assistant.ResponseStrategies.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Assistant.Services
 {
@@ -21,6 +22,7 @@ namespace HrSystem.Application.Assistant.Services
         private readonly HrSystem.Application.Assistant.IntentRouting.IIntentRouter _intentRouter;
         private readonly IParameterExtractor _parameterExtractor;
         private readonly IResponseStrategyResolver _strategyResolver;
+        private readonly Microsoft.Extensions.Logging.ILogger<ChatService> _logger;
 
         public ChatService(
             IEnumerable<IContextBuilder> contextBuilders,
@@ -28,7 +30,8 @@ namespace HrSystem.Application.Assistant.Services
             ICapabilityResolver capabilityResolver,
             HrSystem.Application.Assistant.IntentRouting.IIntentRouter intentRouter,
             IParameterExtractor parameterExtractor,
-            IResponseStrategyResolver strategyResolver)
+            IResponseStrategyResolver strategyResolver,
+            Microsoft.Extensions.Logging.ILogger<ChatService> logger)
         {
             _contextBuilders = contextBuilders;
             _retriever = retriever;
@@ -36,6 +39,7 @@ namespace HrSystem.Application.Assistant.Services
             _intentRouter = intentRouter;
             _parameterExtractor = parameterExtractor;
             _strategyResolver = strategyResolver;
+            _logger = logger;
         }
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
@@ -56,7 +60,9 @@ namespace HrSystem.Application.Assistant.Services
 
             // 2. Capability Resolution via Intent Routing
             var intent = _intentRouter.Route(request.Message);
+            _logger.LogInformation("AI Assistant request processed for User {UserId}. Intent determined: {Intent}", user.UserId, intent);
 
+            // 3. Capability Execution
             CapabilityResult? capabilityResult = null;
             if (intent != AssistantIntent.GeneralConversation && intent != AssistantIntent.Unknown)
             {
@@ -68,9 +74,11 @@ namespace HrSystem.Application.Assistant.Services
                     try
                     {
                         capabilityResult = await capability.ExecuteAsync(capabilityRequest, cancellationToken);
+                        _logger.LogInformation("AI Assistant capability {CapabilityName} executed successfully for User {UserId}.", capability.Name, user.UserId);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        _logger.LogWarning(ex, "AI Assistant capability {CapabilityName} failed for User {UserId}.", capability.Name, user.UserId);
                         capabilityResult = new CapabilityResult
                         {
                             Success = false,

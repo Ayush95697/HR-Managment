@@ -88,6 +88,8 @@ public class AuthService : IAuthService
             user.IsActive
         );
 
+        _logger.LogInformation("User {UserId} logged in successfully.", user.Id);
+
         return new LoginResponse(accessToken, rawRefreshToken, expiresAt, userSummary);
     }
 
@@ -133,6 +135,8 @@ public class AuthService : IAuthService
             tokenEntity.User.IsActive
         );
 
+        _logger.LogInformation("Token refreshed successfully for User {UserId}.", tokenEntity.User.Id);
+
         return new LoginResponse(accessToken, newRawRefreshToken, expiresAt, userSummary);
     }
 
@@ -145,6 +149,7 @@ public class AuthService : IAuthService
         {
             tokenEntity.RevokedAt = DateTime.UtcNow;
             await _userRepository.SaveChangesAsync();
+            _logger.LogInformation("Token revoked successfully for User {UserId}.", tokenEntity.UserId);
         }
     }
 }

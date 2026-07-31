@@ -8,6 +8,7 @@ using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
@@ -16,12 +17,14 @@ public class EmailService : IEmailService
     private readonly IEmailRepository _emailRepository;
     private readonly IUserRepository _userRepository;
     private readonly INotificationService _notificationService;
+    private readonly Microsoft.Extensions.Logging.ILogger<EmailService> _logger;
 
-    public EmailService(IEmailRepository emailRepository, IUserRepository userRepository, INotificationService notificationService)
+    public EmailService(IEmailRepository emailRepository, IUserRepository userRepository, INotificationService notificationService, Microsoft.Extensions.Logging.ILogger<EmailService> logger)
     {
         _emailRepository = emailRepository;
         _userRepository = userRepository;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     public async Task<List<EmailTemplateDto>> GetTemplatesAsync(Guid currentUserId)
@@ -135,6 +138,15 @@ public class EmailService : IEmailService
 
         await _emailRepository.AddLogAsync(log);
         await _emailRepository.SaveChangesAsync();
+
+        if (log.Status == EmailLogStatus.Sent)
+        {
+            _logger.LogInformation("Email {EmailLogId} sent successfully to user {ToUserId} using template {TemplateId}", log.Id, request.ToUserId, request.TemplateId);
+        }
+        else
+        {
+            _logger.LogWarning("Email {EmailLogId} failed to send to user {ToUserId}. Reason: {ErrorMessage}", log.Id, request.ToUserId, log.ErrorMessage);
+        }
 
         var createdLog = await _emailRepository.GetLogByIdWithDetailsAsync(log.Id);
         return MapToDto(createdLog);

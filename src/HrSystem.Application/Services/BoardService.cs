@@ -7,6 +7,7 @@ using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
@@ -15,12 +16,14 @@ public class BoardService : IBoardService
     private readonly IBoardRepository _boardRepository;
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IUserRepository _userRepository;
+    private readonly Microsoft.Extensions.Logging.ILogger<BoardService> _logger;
 
-    public BoardService(IBoardRepository boardRepository, IDepartmentRepository departmentRepository, IUserRepository userRepository)
+    public BoardService(IBoardRepository boardRepository, IDepartmentRepository departmentRepository, IUserRepository userRepository, Microsoft.Extensions.Logging.ILogger<BoardService> logger)
     {
         _boardRepository = boardRepository;
         _departmentRepository = departmentRepository;
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     public async Task<List<BoardDto>> GetBoardsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
@@ -143,6 +146,8 @@ public class BoardService : IBoardService
 
         await _boardRepository.AddAsync(board);
         await _boardRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Board created successfully: {BoardId} with name '{BoardName}' in Department {DepartmentId}", board.Id, board.Name, board.DepartmentId);
 
         var owner = await _userRepository.GetUserByIdAsync(currentUserId);
 

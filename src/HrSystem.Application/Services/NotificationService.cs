@@ -4,16 +4,19 @@ using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
 
 public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
+    private readonly Microsoft.Extensions.Logging.ILogger<NotificationService> _logger;
 
-    public NotificationService(INotificationRepository notificationRepository)
+    public NotificationService(INotificationRepository notificationRepository, Microsoft.Extensions.Logging.ILogger<NotificationService> logger)
     {
         _notificationRepository = notificationRepository;
+        _logger = logger;
     }
 
     public async Task NotifyAsync(Guid recipientId, Guid? actorId, NotificationType type, string message, Guid? taskCardId = null, Guid? boardId = null)
@@ -40,5 +43,7 @@ public class NotificationService : INotificationService
         await _notificationRepository.AddAsync(notification);
 
         await _notificationRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Notification {NotificationId} created for User {RecipientId} of type {NotificationType}", notification.Id, recipientId, type);
     }
 }
