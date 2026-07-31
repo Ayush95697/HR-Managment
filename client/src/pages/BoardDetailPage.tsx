@@ -46,7 +46,6 @@ export default function BoardDetailPage() {
   const { user } = useAuthStore();
   const role = user?.role;
   const canEdit = role === 'Admin' || role === 'HR';
-  const isAdmin = role === 'Admin';
 
   // TanStack Query Hooks
   const { data: board, isLoading, error: boardError } = useBoard(id!);

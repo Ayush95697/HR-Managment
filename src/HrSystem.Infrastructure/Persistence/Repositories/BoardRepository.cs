@@ -129,6 +129,16 @@ public class BoardRepository : IBoardRepository
             .ToListAsync();
         _dbContext.Notifications.RemoveRange(notifications);
 
+        var activityLogs = await _dbContext.TaskActivityLogs
+            .Where(al => al.FromColumnId == column.Id || al.ToColumnId == column.Id)
+            .ToListAsync();
+            
+        foreach (var log in activityLogs)
+        {
+            if (log.FromColumnId == column.Id) log.FromColumnId = null;
+            if (log.ToColumnId == column.Id) log.ToColumnId = null;
+        }
+
         _dbContext.BoardColumns.Remove(column);
     }
 
