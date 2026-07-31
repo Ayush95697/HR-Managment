@@ -86,3 +86,9 @@ publish/
 *.Publish.xml
 *.pubxml
 *.pubxml.user
+
+# Node.js
+node_modules/
+package.json
+package-lock.json
+test_nvidia.js
