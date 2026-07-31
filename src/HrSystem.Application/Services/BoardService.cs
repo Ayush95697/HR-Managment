@@ -189,12 +189,17 @@ public class BoardService : IBoardService
         );
     }
 
-    public async Task DeleteBoardAsync(Guid boardId)
+    public async Task DeleteBoardAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId)
     {
         var board = await _boardRepository.GetBoardByIdAsync(boardId);
         if (board == null)
         {
             throw new HrSystem.Application.Exceptions.AppNotFoundException($"Board with ID {boardId} not found.");
+        }
+
+        if (currentUserRole == RoleType.HR.ToString() && (board.OwnerId != currentUserId || board.DepartmentId != currentUserDeptId))
+        {
+            throw new HrSystem.Application.Exceptions.AppUnauthorizedException("HR users can only delete boards they own in their department.");
         }
 
         await _boardRepository.DeleteAsync(board);

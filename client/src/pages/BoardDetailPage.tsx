@@ -297,7 +297,7 @@ export default function BoardDetailPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          {isAdmin && (
+          {canEdit && (
             <Button variant="danger" size="sm" leftIcon={<Trash2 size={14} />} onClick={() => setDeleteBoardConfirm(true)}>
               Delete Board
             </Button>

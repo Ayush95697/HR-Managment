@@ -11,7 +11,7 @@ public interface IBoardService
     Task<BoardDetailDto> GetBoardByIdAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task<BoardDto> CreateBoardAsync(CreateBoardRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task<BoardDto> UpdateBoardAsync(Guid boardId, UpdateBoardRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
-    Task DeleteBoardAsync(Guid boardId);
+    Task DeleteBoardAsync(Guid boardId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
 
     // Columns
     Task<BoardColumnDto> CreateColumnAsync(Guid boardId, CreateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);

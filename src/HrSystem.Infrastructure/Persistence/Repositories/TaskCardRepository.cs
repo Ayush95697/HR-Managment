@@ -82,10 +82,14 @@ public class TaskCardRepository : ITaskCardRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(TaskCard card)
+    public async Task DeleteAsync(TaskCard card)
     {
+        var notifications = await _dbContext.Notifications
+            .Where(n => n.TaskCardId == card.Id)
+            .ToListAsync();
+        _dbContext.Notifications.RemoveRange(notifications);
+
         _dbContext.TaskCards.Remove(card);
-        return Task.CompletedTask;
     }
 
     public async Task<bool> IsAssignedToBoardAsync(Guid boardId, Guid userId)
