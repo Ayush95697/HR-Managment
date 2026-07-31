@@ -40,8 +40,8 @@ export default function ChangePasswordForm() {
         newPassword: data.newPassword,
       });
       // Force logout — all refresh tokens are now revoked server-side
-      logout();
-      navigate('/login', { state: { message: 'Password changed successfully. Please log in again.' } });
+      sessionStorage.removeItem('accessToken');
+      window.location.href = '/login';
     } catch (err: any) {
       const msg = err?.response?.data?.message || 'An error occurred.';
       const field = err?.response?.data?.field;

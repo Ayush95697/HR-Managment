@@ -13,6 +13,9 @@ export default function ProtectedRoute({ roles, children }: ProtectedRouteProps)
   const location = useLocation();
 
   if (!isAuthenticated || !user) {
+    if (location.pathname === '/') {
+      return <Navigate to="/landing" replace />;
+    }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
