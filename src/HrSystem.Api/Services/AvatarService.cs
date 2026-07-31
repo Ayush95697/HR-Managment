@@ -46,10 +46,10 @@ public class AvatarService : IAvatarService
         var ext = file.ContentType.ToLower() switch
         {
             "image/jpeg" => ".jpg",
-            "image/jpg"  => ".jpg",
-            "image/png"  => ".png",
+            "image/jpg" => ".jpg",
+            "image/png" => ".png",
             "image/webp" => ".webp",
-            _            => ".jpg"
+            _ => ".jpg"
         };
 
         var fileName = $"{userId}{ext}";
@@ -82,7 +82,7 @@ public class AvatarService : IAvatarService
         var blobClient = containerClient.GetBlobClient(fileName);
 
         using var memoryStream = new MemoryStream();
-        
+
         // Save to memory stream with appropriate encoder
         if (ext == ".png")
             await image.SaveAsPngAsync(memoryStream);
@@ -95,7 +95,7 @@ public class AvatarService : IAvatarService
 
         var blobHttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType };
         await blobClient.UploadAsync(memoryStream, new BlobUploadOptions { HttpHeaders = blobHttpHeaders });
-        
+
         image.Dispose();
 
         return $"{blobClient.Uri}?t={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
@@ -104,7 +104,7 @@ public class AvatarService : IAvatarService
     public async Task DeleteAvatarAsync(Guid userId)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        
+
         foreach (var ext in AllowedExtensions)
         {
             var fileName = $"{userId}{ext}";

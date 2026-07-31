@@ -42,7 +42,7 @@ namespace HrSystem.Application.Assistant.Services
         {
             // 1. Determine Context Builder based on Role
             var builder = _contextBuilders.FirstOrDefault(b => b.CanHandle(user.Role));
-            
+
             ChatContext context;
             if (builder != null)
             {
@@ -56,7 +56,7 @@ namespace HrSystem.Application.Assistant.Services
 
             // 2. Capability Resolution via Intent Routing
             var intent = _intentRouter.Route(request.Message);
-            
+
             CapabilityResult? capabilityResult = null;
             if (intent != AssistantIntent.GeneralConversation && intent != AssistantIntent.Unknown)
             {
@@ -64,7 +64,7 @@ namespace HrSystem.Application.Assistant.Services
                 if (capability != null)
                 {
                     var capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
-                    
+
                     try
                     {
                         capabilityResult = await capability.ExecuteAsync(capabilityRequest, cancellationToken);

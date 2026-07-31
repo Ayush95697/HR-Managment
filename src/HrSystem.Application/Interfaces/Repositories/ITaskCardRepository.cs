@@ -21,7 +21,7 @@ public interface ITaskCardRepository
     Task<List<TaskActivityLog>> GetActivityLogsByCardIdAsync(Guid cardId);
     Task<TaskCard> GetCardWithDetailsInternalAsync(Guid cardId);
     Task SaveChangesAsync();
-    
+
     Task<List<TaskCard>> GetAssignedTasksAsync(Guid assignedToId, HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery? query = null);
     Task<List<TaskCard>> GetCriticalTasksAsync(Guid? departmentId = null);
 }

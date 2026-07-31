@@ -25,7 +25,7 @@ public class EmailController : BaseApiController
     private readonly IBackgroundJobClient _backgroundJobClient;
 
     public EmailController(
-        IEmailService emailService, 
+        IEmailService emailService,
         HrDbContext dbContext,
         IBackgroundJobClient backgroundJobClient)
     {
@@ -87,7 +87,7 @@ public class EmailController : BaseApiController
         var existing = await _dbContext.EmailLogs
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.IdempotencyKey == request.IdempotencyKey);
-        
+
         if (existing != null)
             return Accepted(await _emailService.GetLogByIdAsync(existing.Id));
 

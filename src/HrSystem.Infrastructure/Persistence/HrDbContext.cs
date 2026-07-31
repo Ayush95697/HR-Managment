@@ -250,7 +250,7 @@ public class HrDbContext : DbContext
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.HasKey(n => n.Id);
-            
+
             // Composite index for fast querying of unread items and dropdown list
             entity.HasIndex(n => new { n.RecipientId, n.IsRead, n.CreatedAt });
 

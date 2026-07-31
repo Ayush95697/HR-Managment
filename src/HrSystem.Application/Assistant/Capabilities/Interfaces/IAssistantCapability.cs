@@ -9,9 +9,9 @@ namespace HrSystem.Application.Assistant.Capabilities.Interfaces
     {
         string Name { get; }
         string Description { get; }
-        
+
         AssistantIntent SupportedIntent { get; }
-        
+
         Task<CapabilityResult> ExecuteAsync(CapabilityRequest request, CancellationToken cancellationToken);
     }
 }

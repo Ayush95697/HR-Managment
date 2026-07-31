@@ -15,12 +15,12 @@ namespace HrSystem.Application.Assistant.Services
             var question = promptContext.Question;
             var role = context.User.Role?.ToLower() ?? "employee";
             var promptPath = Path.Combine(System.AppContext.BaseDirectory, "Assistant", "Prompts", $"{role}.txt");
-            
+
             if (!File.Exists(promptPath))
             {
                 promptPath = Path.Combine(System.AppContext.BaseDirectory, "Assistant", "Prompts", "employee.txt");
             }
-            
+
             string systemPrompt = "You are a helpful assistant.";
             if (File.Exists(promptPath))
             {
@@ -45,14 +45,14 @@ namespace HrSystem.Application.Assistant.Services
                 sb.AppendLine("=== CAPABILITY RESULT ===");
                 sb.AppendLine($"Capability Executed: {promptContext.CapabilityResult.CapabilityName}");
                 sb.AppendLine($"Summary: {promptContext.CapabilityResult.Summary}");
-                
+
                 if (promptContext.CapabilityResult.StructuredData != null)
                 {
                     string json = JsonSerializer.Serialize(promptContext.CapabilityResult.StructuredData, new JsonSerializerOptions { WriteIndented = true });
                     sb.AppendLine("Structured Data:");
                     sb.AppendLine(json);
                 }
-                
+
                 sb.AppendLine();
                 sb.AppendLine("=== STRICT INSTRUCTIONS FOR USING STRUCTURED DATA ===");
                 sb.AppendLine("- Use ONLY the provided structured data to answer the question.");
@@ -66,7 +66,7 @@ namespace HrSystem.Application.Assistant.Services
 
             sb.AppendLine("=== USER QUESTION ===");
             sb.AppendLine(question);
-            
+
             return sb.ToString();
         }
     }

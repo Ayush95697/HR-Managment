@@ -53,9 +53,9 @@ public class DashboardRepository : IDashboardRepository
     {
         var query = _dbContext.TaskCards
             .Include(c => c.AssignedTo)
-            .Where(c => c.CompletedAt == null 
-                     && c.AssignedToId != null 
-                     && c.AssignedTo != null 
+            .Where(c => c.CompletedAt == null
+                     && c.AssignedToId != null
+                     && c.AssignedTo != null
                      && (c.Priority == TaskPriority.High || c.Priority == TaskPriority.Critical));
 
         if (currentUserRole == RoleType.HR.ToString())

@@ -55,7 +55,7 @@ public class NotificationController : BaseApiController
         var userId = CurrentUserId;
         var count = await _dbContext.Notifications
             .CountAsync(n => n.RecipientId == userId && !n.IsRead);
-        
+
         return Ok(new { count });
     }
 
@@ -84,7 +84,7 @@ public class NotificationController : BaseApiController
     public async Task<IActionResult> MarkAllAsRead()
     {
         var userId = CurrentUserId;
-        
+
         // ExecuteUpdate is highly efficient for this case in EF Core 7+
         await _dbContext.Notifications
             .Where(n => n.RecipientId == userId && !n.IsRead)

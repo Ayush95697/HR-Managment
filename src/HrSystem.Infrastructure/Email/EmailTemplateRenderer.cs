@@ -8,8 +8,8 @@ public class EmailTemplateRenderer : IEmailTemplateRenderer
 {
     public (string subject, string bodyHtml) Render(EmailTemplate template, Dictionary<string, string>? values)
     {
-        var ignoreCaseValues = values != null 
-            ? new Dictionary<string, string>(values, StringComparer.OrdinalIgnoreCase) 
+        var ignoreCaseValues = values != null
+            ? new Dictionary<string, string>(values, StringComparer.OrdinalIgnoreCase)
             : null;
 
         string Replace(string input) => Regex.Replace(input, @"\{\{(\w+)\}\}", m =>

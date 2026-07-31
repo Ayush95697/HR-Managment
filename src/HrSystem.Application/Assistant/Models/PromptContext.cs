@@ -9,7 +9,7 @@ namespace HrSystem.Application.Assistant.Models
         public IEnumerable<KnowledgeDocument> Documents { get; set; } = new List<KnowledgeDocument>();
         public IEnumerable<ChatMessage> History { get; set; } = new List<ChatMessage>();
         public string Question { get; set; } = string.Empty;
-        
+
         // Context from capability execution
         public CapabilityResult? CapabilityResult { get; set; }
     }

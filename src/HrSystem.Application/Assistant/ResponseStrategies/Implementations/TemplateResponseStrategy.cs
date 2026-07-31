@@ -20,10 +20,10 @@ namespace HrSystem.Application.Assistant.ResponseStrategies.Implementations
         }
 
         public Task<ChatResponse> ExecuteAsync(
-            CapabilityResult capabilityResult, 
-            ChatRequest request, 
-            ChatContext context, 
-            IEnumerable<KnowledgeDocument> retrievedDocuments, 
+            CapabilityResult capabilityResult,
+            ChatRequest request,
+            ChatContext context,
+            IEnumerable<KnowledgeDocument> retrievedDocuments,
             CancellationToken cancellationToken)
         {
             var responseText = GenerateResponse(capabilityResult.StructuredData);

@@ -22,7 +22,7 @@ public class AuthController : BaseApiController
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
         var response = await _authService.LoginAsync(request);
-        if (response == null) 
+        if (response == null)
         {
             return Unauthorized(new { message = "Invalid email or password" });
         }
@@ -36,7 +36,7 @@ public class AuthController : BaseApiController
     public async Task<ActionResult<LoginResponse>> Refresh([FromBody] RefreshTokenRequest request)
     {
         var response = await _authService.RefreshTokenAsync(request);
-        if (response == null) 
+        if (response == null)
         {
             return Unauthorized(new { message = "Invalid or expired refresh token" });
         }

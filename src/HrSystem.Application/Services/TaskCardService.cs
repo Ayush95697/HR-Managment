@@ -21,9 +21,9 @@ public class TaskCardService : ITaskCardService
     private readonly INotificationService _notificationService;
 
     public TaskCardService(
-        ITaskCardRepository taskCardRepository, 
-        IBoardRepository boardRepository, 
-        IUserRepository userRepository, 
+        ITaskCardRepository taskCardRepository,
+        IBoardRepository boardRepository,
+        IUserRepository userRepository,
         INotificationService notificationService)
     {
         _taskCardRepository = taskCardRepository;

@@ -89,12 +89,18 @@ builder.Services.AddDbContext<HrDbContext>(options =>
 });
 
 // Hangfire
-builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddHangfireServer();
+// Hangfire (Disabled during Integration Tests)
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(
+            builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    builder.Services.AddHangfireServer();
+}
 
 // Gmail SMTP email provider
 builder.Services.AddScoped<IEmailSender, GmailSmtpEmailSender>();
@@ -201,10 +207,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 // 7. Controllers & Validation
-builder.Services.AddControllers(options => 
+builder.Services.AddControllers(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
-}).AddJsonOptions(options => 
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
@@ -287,10 +293,16 @@ app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    Authorization = new[] { new HangfireAdminAuthorizationFilter() }
-});
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[]
+        {
+            new HangfireAdminAuthorizationFilter()
+        }
+    });
+}
 
 app.MapControllers();
 

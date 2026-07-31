@@ -55,7 +55,16 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             // Add StartupFilter to fix .NET 9 TestHost PipeWriter issue
             services.AddTransient<IStartupFilter, TestHostFixStartupFilter>();
+
+            // Add dummy Hangfire IBackgroundJobClient since Hangfire is disabled in Testing
+            services.AddSingleton<Hangfire.IBackgroundJobClient, DummyBackgroundJobClient>();
         });
+    }
+
+    private class DummyBackgroundJobClient : Hangfire.IBackgroundJobClient
+    {
+        public bool ChangeState(string jobId, Hangfire.States.IState state, string expectedState) => true;
+        public string Create(Hangfire.Common.Job job, Hangfire.States.IState state) => Guid.NewGuid().ToString();
     }
 
     private class TestHostFixStartupFilter : IStartupFilter

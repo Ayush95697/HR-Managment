@@ -34,8 +34,8 @@ public class EmailService : IEmailService
                 t.Name,
                 t.Subject,
                 t.BodyHtml,
-                string.IsNullOrEmpty(t.PlaceholderSchemaJson) 
-                    ? null 
+                string.IsNullOrEmpty(t.PlaceholderSchemaJson)
+                    ? null
                     : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(t.PlaceholderSchemaJson, (System.Text.Json.JsonSerializerOptions?)null),
                 t.IsQuickAccess,
                 t.CreatedByUserId

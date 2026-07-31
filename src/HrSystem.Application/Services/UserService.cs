@@ -100,7 +100,7 @@ public class UserService : IUserService
         }
 
         Guid? managerId = request.ManagerId;
-        
+
         if (request.RoleId == (int)RoleType.HR && request.DepartmentId.HasValue)
         {
             bool hrExists = await _userRepository.HrExistsInDepartmentAsync(request.DepartmentId.Value);
@@ -317,7 +317,7 @@ public class UserService : IUserService
         }
 
         var users = await _userRepository.GetUsersAsync(currentUserId, currentUserRole, currentUserDeptId, query);
-        
+
         var deptDict = users
             .Where(u => u.IsActive && u.Department != null)
             .GroupBy(u => u.Department!.Name)

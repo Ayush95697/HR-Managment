@@ -24,8 +24,8 @@ namespace HrSystem.Application.Assistant.ResponseStrategies.Implementations
             var q = question.ToLowerInvariant();
 
             // If question explicitly asks for analytical processing
-            if (q.Contains("summarize") || q.Contains("summary") || 
-                q.Contains("explain") || q.Contains("why") || 
+            if (q.Contains("summarize") || q.Contains("summary") ||
+                q.Contains("explain") || q.Contains("why") ||
                 q.Contains("compare") || q.Contains("trend") ||
                 q.Contains("recommend") || q.Contains("analysis"))
             {

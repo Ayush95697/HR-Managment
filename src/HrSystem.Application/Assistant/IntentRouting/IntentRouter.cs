@@ -34,7 +34,7 @@ namespace HrSystem.Application.Assistant.IntentRouting
             {
                 return AssistantIntent.EmailInformation;
             }
-            
+
             // If it doesn't match any deterministic rules, it's a general question or unknown.
             // Currently falling back to GeneralConversation for anything not explicitly matched.
             return AssistantIntent.GeneralConversation;

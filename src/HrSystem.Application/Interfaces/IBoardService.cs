@@ -17,6 +17,6 @@ public interface IBoardService
     Task<BoardColumnDto> CreateColumnAsync(Guid boardId, CreateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task<BoardColumnDto> UpdateColumnAsync(Guid columnId, UpdateColumnRequest request, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
     Task DeleteColumnAsync(Guid columnId, Guid currentUserId, string currentUserRole, Guid? currentUserDeptId);
-    
+
     Task<List<BoardStatisticsDto>> GetBoardStatisticsAsync(Guid currentUserId, string currentUserRole, Guid? currentUserDeptId, HrSystem.Application.Assistant.Capabilities.Queries.BoardQuery? query = null);
 }

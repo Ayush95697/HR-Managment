@@ -62,7 +62,7 @@ public class SeedController : ControllerBase
 
             // Fetch Akshay Pal to assign him some new cards
             var akshay = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower().Contains("akshay"));
-            
+
             // 3. Get or Create Boards
             var board1 = await GetOrCreateBoard("Marketing Campaign Q3", charlie.Id, mktDept.Id);
             var board2 = await GetOrCreateBoard("Backend Refactoring", charlie.Id, engDept.Id);
@@ -73,7 +73,7 @@ public class SeedController : ControllerBase
             // 4. Get or Create Columns
             var b1c1 = await GetOrCreateColumn(board1.Id, "Planning", 0);
             var b1c2 = await GetOrCreateColumn(board1.Id, "Execution", 1);
-            
+
             var b2c1 = await GetOrCreateColumn(board2.Id, "Backlog", 0);
             var b2c2 = await GetOrCreateColumn(board2.Id, "In Review", 1);
 
@@ -85,7 +85,7 @@ public class SeedController : ControllerBase
             // 5. Get or Create Cards
             await GetOrCreateCard(board1.Id, b1c1.Id, bob.Id, charlie.Id, "Draft Email Copy", "Write copy for Q3 launch", TaskPriority.Medium, 1000);
             await GetOrCreateCard(board1.Id, b1c2.Id, bob.Id, charlie.Id, "Design Assets", "Create banners", TaskPriority.High, 2000);
-            
+
             await GetOrCreateCard(board2.Id, b2c1.Id, alice.Id, charlie.Id, "Update Entity Framework", "Upgrade to EF Core 8", TaskPriority.Low, 1000);
             await GetOrCreateCard(board2.Id, b2c1.Id, akshay?.Id ?? diana.Id, charlie.Id, "Optimize SQL Queries", "Fix N+1 query issues in Boards", TaskPriority.High, 2000);
             await GetOrCreateCard(board2.Id, b2c2.Id, diana.Id, charlie.Id, "Fix auth bug", "Token expiration issue", TaskPriority.High, 3000);

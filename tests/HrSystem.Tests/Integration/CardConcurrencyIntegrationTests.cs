@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,10 @@ public class CardConcurrencyIntegrationTests : IClassFixture<CustomWebApplicatio
         Guid cardId = Guid.Parse("d1111111-1111-1111-1111-111111111111");
         var cardResponse = await client.GetAsync($"/api/cards/{cardId}");
         Assert.Equal(HttpStatusCode.OK, cardResponse.StatusCode);
-        var cardDetail = await cardResponse.Content.ReadFromJsonAsync<TaskCardDetailDto>();
+        var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        jsonOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+
+        var cardDetail = await cardResponse.Content.ReadFromJsonAsync<TaskCardDetailDto>(jsonOptions);
         Assert.NotNull(cardDetail);
 
         // 1. Valid PATCH using actual RowVersion

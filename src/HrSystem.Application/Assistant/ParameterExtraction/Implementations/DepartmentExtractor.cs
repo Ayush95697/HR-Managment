@@ -18,14 +18,14 @@ namespace HrSystem.Application.Assistant.ParameterExtraction.Implementations
         public async Task<DepartmentQuery> ExtractAsync(string question)
         {
             var query = new DepartmentQuery();
-            
+
             var match = Regex.Match(question, @"(?:in|for) \b([a-zA-Z]+)\b", RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 var name = match.Groups[1].Value;
                 query.DepartmentId = await _departmentRepository.FindIdByNameAsync(name);
             }
-            
+
             if (query.DepartmentId == null)
             {
                 match = Regex.Match(question, @"\b([a-zA-Z]+)\b department", RegexOptions.IgnoreCase);

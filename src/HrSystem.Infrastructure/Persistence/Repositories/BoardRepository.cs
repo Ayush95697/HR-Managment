@@ -132,7 +132,7 @@ public class BoardRepository : IBoardRepository
         var activityLogs = await _dbContext.TaskActivityLogs
             .Where(al => al.FromColumnId == column.Id || al.ToColumnId == column.Id)
             .ToListAsync();
-            
+
         foreach (var log in activityLogs)
         {
             if (log.FromColumnId == column.Id) log.FromColumnId = null;

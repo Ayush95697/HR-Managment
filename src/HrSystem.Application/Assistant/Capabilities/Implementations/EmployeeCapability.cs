@@ -27,7 +27,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
             {
                 var userId = Guid.Parse(request.CurrentUser.UserId);
                 Guid? deptId = !string.IsNullOrEmpty(request.CurrentUser.DepartmentId) ? Guid.Parse(request.CurrentUser.DepartmentId) : null;
-                
+
                 var query = request.Query as HrSystem.Application.Assistant.Capabilities.Queries.EmployeeQuery;
                 var stats = await _userService.GetEmployeeStatisticsAsync(userId, request.CurrentUser.Role, deptId, query);
 

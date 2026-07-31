@@ -27,10 +27,10 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
             {
                 var userId = Guid.Parse(request.CurrentUser.UserId);
                 Guid? deptId = !string.IsNullOrEmpty(request.CurrentUser.DepartmentId) ? Guid.Parse(request.CurrentUser.DepartmentId) : null;
-                
+
                 var query = request.Query as HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery;
                 var assignedTasks = await _taskCardService.GetAssignedTasksAsync(userId, userId, request.CurrentUser.Role, deptId, query);
-                
+
                 object criticalTasksStats = null;
                 // Regular employees can't query critical tasks stats (it throws AppUnauthorizedException in service)
                 if (request.CurrentUser.Role != "Employee")

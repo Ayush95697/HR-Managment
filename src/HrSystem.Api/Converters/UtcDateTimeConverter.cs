@@ -16,7 +16,7 @@ public class UtcDateTimeConverter : JsonConverter<DateTime>
         var utcValue = value.Kind == DateTimeKind.Unspecified
             ? DateTime.SpecifyKind(value, DateTimeKind.Utc)
             : value.ToUniversalTime();
-        
+
         writer.WriteStringValue(utcValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
     }
 }
@@ -36,12 +36,12 @@ public class NullableUtcDateTimeConverter : JsonConverter<DateTime?>
             writer.WriteNullValue();
             return;
         }
-        
+
         var date = value.Value;
         var utcValue = date.Kind == DateTimeKind.Unspecified
             ? DateTime.SpecifyKind(date, DateTimeKind.Utc)
             : date.ToUniversalTime();
-        
+
         writer.WriteStringValue(utcValue.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
     }
 }

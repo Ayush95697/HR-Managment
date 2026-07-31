@@ -11,10 +11,10 @@ namespace HrSystem.Application.Assistant.ResponseStrategies.Interfaces
     {
         bool CanHandle(ResponseMode mode);
         Task<ChatResponse> ExecuteAsync(
-            CapabilityResult capabilityResult, 
-            ChatRequest request, 
-            ChatContext context, 
-            IEnumerable<KnowledgeDocument> retrievedDocuments, 
+            CapabilityResult capabilityResult,
+            ChatRequest request,
+            ChatContext context,
+            IEnumerable<KnowledgeDocument> retrievedDocuments,
             CancellationToken cancellationToken);
     }
 }

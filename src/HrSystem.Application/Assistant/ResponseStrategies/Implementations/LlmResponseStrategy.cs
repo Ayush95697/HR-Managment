@@ -28,14 +28,14 @@ namespace HrSystem.Application.Assistant.ResponseStrategies.Implementations
         }
 
         public async Task<ChatResponse> ExecuteAsync(
-            CapabilityResult capabilityResult, 
-            ChatRequest request, 
-            ChatContext context, 
-            IEnumerable<KnowledgeDocument> retrievedDocuments, 
+            CapabilityResult capabilityResult,
+            ChatRequest request,
+            ChatContext context,
+            IEnumerable<KnowledgeDocument> retrievedDocuments,
             CancellationToken cancellationToken)
         {
             var history = new List<ChatMessage>();
-            
+
             var promptContext = new PromptContext
             {
                 ChatContext = context,

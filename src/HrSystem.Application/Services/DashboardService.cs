@@ -21,7 +21,7 @@ public class DashboardService : IDashboardService
     {
         var since = DateTime.UtcNow.Date.AddDays(-range);
         var resultsDict = await _dashboardRepository.GetTaskVelocityCountsAsync(range, currentUserId, currentUserRole, currentUserDeptId);
-        
+
         var finalResults = new List<TaskVelocityDto>();
         for (int i = 0; i <= range; i++)
         {
