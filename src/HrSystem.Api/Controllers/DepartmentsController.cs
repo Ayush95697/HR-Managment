@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +37,7 @@ public class DepartmentsController : BaseApiController
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanManageDepartments)]
     public async Task<ActionResult<DepartmentDto>> CreateDepartment([FromBody] CreateDepartmentRequest request)
     {
         var department = await _departmentService.CreateDepartmentAsync(request);
@@ -45,7 +46,7 @@ public class DepartmentsController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanManageDepartments)]
     public async Task<ActionResult> DeleteDepartment(Guid id)
     {
         await _departmentService.DeleteDepartmentAsync(id);

@@ -10,6 +10,7 @@ using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using HrSystem.Infrastructure.Jobs;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpPost("templates")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<ActionResult<EmailTemplateDto>> CreateTemplate([FromBody] CreateEmailTemplateRequest request)
     {
         var template = await _emailService.CreateTemplateAsync(request, CurrentUserId);
@@ -50,7 +51,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpDelete("templates/{id}")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<IActionResult> DeleteTemplate(Guid id)
     {
         await _emailService.DeleteTemplateAsync(id);
@@ -58,7 +59,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpPut("templates/{id}/toggle-quick-access")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<IActionResult> ToggleQuickAccess(Guid id, [FromQuery] bool isQuickAccess)
     {
         try
@@ -73,7 +74,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpPost("send")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
     {
         // 1. Dept scope check (inline — HR can only email users in own dept)
@@ -129,7 +130,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpGet("logs")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<ActionResult<List<EmailLogDto>>> GetLogs()
     {
         var logs = await _emailService.GetLogsAsync(CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -137,7 +138,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpDelete("logs/clear")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanClearEmailLogs)]
     public async Task<IActionResult> ClearLogs()
     {
         await _emailService.ClearLogsAsync();

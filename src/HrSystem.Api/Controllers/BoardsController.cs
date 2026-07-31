@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,7 @@ public class BoardsController : BaseApiController
     }
 
     [HttpPost]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageBoards)]
     public async Task<ActionResult<BoardDto>> CreateBoard([FromBody] CreateBoardRequest request)
     {
         var board = await _boardService.CreateBoardAsync(request, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -41,7 +42,7 @@ public class BoardsController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageBoards)]
     public async Task<ActionResult<BoardDto>> UpdateBoard(Guid id, [FromBody] UpdateBoardRequest request)
     {
         var board = await _boardService.UpdateBoardAsync(id, request, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -49,7 +50,7 @@ public class BoardsController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageBoards)]
     public async Task<IActionResult> DeleteBoard(Guid id)
     {
         await _boardService.DeleteBoardAsync(id, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -57,7 +58,7 @@ public class BoardsController : BaseApiController
     }
 
     [HttpPost("{boardId:guid}/columns")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageBoards)]
     public async Task<ActionResult<BoardColumnDto>> CreateColumn(Guid boardId, [FromBody] CreateColumnRequest request)
     {
         var column = await _boardService.CreateColumnAsync(boardId, request, CurrentUserId, CurrentUserRole, CurrentUserDeptId);

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ namespace HrSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/dashboard")]
-[Authorize(Roles = "Admin,HR")]
+[Authorize(Policy = Permissions.CanViewDashboard)]
 public class DashboardController : BaseApiController
 {
     private readonly IDashboardService _dashboardService;
@@ -27,7 +28,7 @@ public class DashboardController : BaseApiController
     }
 
     [HttpGet("department-distribution")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanViewGlobalDashboard)]
     [ResponseCache(Duration = 60)]
     public async Task<IActionResult> GetDepartmentDistribution()
     {

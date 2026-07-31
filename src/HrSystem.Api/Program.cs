@@ -179,10 +179,21 @@ builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Int
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("HrSameDepartment", policy =>
         policy.Requirements.Add(new HrSameDepartmentRequirement()));
+
+    // Permission Policies
+    foreach (var field in typeof(Permissions).GetFields())
+    {
+        var permission = field.GetValue(null)?.ToString();
+        if (!string.IsNullOrEmpty(permission))
+        {
+            options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
+        }
+    }
 });
 
 // 6. Jwt Authentication

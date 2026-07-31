@@ -2,12 +2,13 @@ using System;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HrSystem.Api.Controllers;
 
-[Authorize(Roles = "HR,Admin")]
+[Authorize(Policy = Permissions.CanManageBoards)]
 public class ColumnsController : BaseApiController
 {
     private readonly IBoardService _boardService;

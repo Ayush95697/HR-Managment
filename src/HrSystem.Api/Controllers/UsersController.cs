@@ -7,6 +7,7 @@ using HrSystem.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HrSystem.Application.Security;
 
 namespace HrSystem.Api.Controllers;
 
@@ -39,7 +40,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanManageUsers)]
     public async Task<ActionResult<UserSummaryDto>> CreateUser([FromBody] CreateUserRequest request)
     {
         var user = await _userService.CreateUserAsync(request);
@@ -47,7 +48,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanManageUsers)]
     public async Task<ActionResult<UserSummaryDto>> UpdateUser(Guid id, [FromBody] UpdateUserRequest request)
     {
         var user = await _userService.UpdateUserAsync(id, request);
@@ -55,7 +56,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanManageUsers)]
     public async Task<IActionResult> SoftDeleteUser(Guid id)
     {
         await _userService.SoftDeleteUserAsync(id);

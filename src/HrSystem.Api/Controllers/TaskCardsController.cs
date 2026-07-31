@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,7 @@ public class TaskCardsController : BaseApiController
     }
 
     [HttpPost("boards/{boardId:guid}/cards")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageTasks)]
     public async Task<ActionResult<TaskCardDto>> CreateCard(Guid boardId, [FromBody] CreateTaskCardRequest request)
     {
         var card = await _cardService.CreateCardAsync(boardId, request, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -42,7 +43,7 @@ public class TaskCardsController : BaseApiController
     }
 
     [HttpPatch("cards/{id:guid}")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageTasks)]
     public async Task<ActionResult<TaskCardDto>> PatchCard(Guid id, [FromBody] PatchTaskCardRequest request)
     {
         var card = await _cardService.PatchCardAsync(id, request, CurrentUserId, CurrentUserRole, CurrentUserDeptId);
@@ -50,7 +51,7 @@ public class TaskCardsController : BaseApiController
     }
 
     [HttpDelete("cards/{id:guid}")]
-    [Authorize(Roles = "HR,Admin")]
+    [Authorize(Policy = Permissions.CanManageTasks)]
     public async Task<IActionResult> DeleteCard(Guid id)
     {
         await _cardService.DeleteCardAsync(id, CurrentUserId, CurrentUserRole, CurrentUserDeptId);

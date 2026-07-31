@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+using HrSystem.Application.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HrSystem.Api.Controllers;
 
-[Authorize(Roles = "HR,Admin")]
+[Authorize(Policy = Permissions.CanViewAudit)]
 [Route("api/audit")]
 public class AuditController : BaseApiController
 {
@@ -26,7 +27,7 @@ public class AuditController : BaseApiController
     }
 
     [HttpDelete("clear")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = Permissions.CanClearAuditLogs)]
     public async Task<IActionResult> ClearLogs()
     {
         await _auditService.ClearLogsAsync();
