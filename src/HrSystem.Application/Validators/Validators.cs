@@ -5,14 +5,7 @@ namespace HrSystem.Application.Validators;
 
 
 
-public class CreateBoardRequestValidator : AbstractValidator<CreateBoardRequest>
-{
-    public CreateBoardRequestValidator()
-    {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.DepartmentId).NotEmpty();
-    }
-}
+
 
 public class CreateTaskCardRequestValidator : AbstractValidator<CreateTaskCardRequest>
 {
