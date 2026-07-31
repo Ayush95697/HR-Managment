@@ -249,7 +249,10 @@ public class BoardService : IBoardService
         }
 
         column.Name = request.Name;
-        column.Order = request.Order;
+        if (request.Order.HasValue)
+        {
+            column.Order = request.Order.Value;
+        }
         if (request.IsDoneColumn.HasValue && request.IsDoneColumn.Value != column.IsDoneColumn)
         {
             column.IsDoneColumn = request.IsDoneColumn.Value;

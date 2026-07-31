@@ -34,7 +34,7 @@ public record BoardColumnDto(
 
 public record CreateColumnRequest(string Name, int Order);
 
-public record UpdateColumnRequest(string Name, int Order, bool? IsDoneColumn);
+public record UpdateColumnRequest(string Name, int? Order, bool? IsDoneColumn);
 
 public record BoardDetailDto(
     Guid Id,
