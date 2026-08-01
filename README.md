@@ -653,7 +653,7 @@ The published binary files will be generated in `src/HrSystem.Api/publish/`.
 
 ## 🤝 Contributors
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Ayush95697/HR-Managment/issues).
+Contributions, issues, and feature requests are welcome!! Feel free to check the [issues page](https://github.com/Ayush95697/HR-Managment/issues).
 
 
 * **Soni Sharma**
