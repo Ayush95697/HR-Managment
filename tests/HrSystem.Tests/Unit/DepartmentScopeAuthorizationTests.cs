@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Security;
 using HrSystem.Domain.Enums;
+
 using Microsoft.AspNetCore.Authorization;
+
 using Xunit;
 
 namespace HrSystem.Tests.Unit;

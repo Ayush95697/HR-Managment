@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;

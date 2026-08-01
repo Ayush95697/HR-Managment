@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
@@ -54,7 +56,7 @@ public class EmailService : IEmailService
             Name = request.Name,
             Subject = request.Subject,
             BodyHtml = request.BodyHtml,
-            PlaceholderSchemaJson = request.PlaceholderSchema != null ? System.Text.Json.JsonSerializer.Serialize(request.PlaceholderSchema, (System.Text.Json.JsonSerializerOptions?)null) : null,
+            PlaceholderSchemaJson = request.PlaceholderSchema != null ? System.Text.Json.JsonSerializer.Serialize(request.PlaceholderSchema, (System.Text.Json.JsonSerializerOptions?)null) : "{}",
             CreatedByUserId = currentUserId,
             IsQuickAccess = true
         };

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using HrSystem.Application.Assistant.Models;
 
 namespace HrSystem.Application.Assistant.Interfaces

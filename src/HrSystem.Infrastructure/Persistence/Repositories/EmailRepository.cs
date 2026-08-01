@@ -6,6 +6,7 @@ using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Persistence.Repositories;
@@ -80,6 +81,24 @@ public class EmailRepository : IEmailRepository
     {
         await _dbContext.EmailLogs.AddAsync(log);
     }
+
+    public async Task SaveEmailLogAsync(EmailLog log)
+    {
+        try
+        {
+            await _dbContext.EmailLogs.AddAsync(log);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new DuplicateIdempotencyKeyException("A log with this idempotency key already exists.");
+        }
+    }
+
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+        => ex.InnerException?.Message.Contains("UNIQUE") == true
+        || ex.InnerException?.Message.Contains("unique") == true
+        || ex.InnerException?.Message.Contains("duplicate") == true;
 
     public void RemoveTemplate(EmailTemplate template)
     {

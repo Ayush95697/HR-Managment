@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Application.Security;
 using HrSystem.Domain.Entities;
+
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
@@ -31,7 +33,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
-    public async Task<LoginResponse> LoginAsync(LoginRequest request)
+    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
         {
@@ -93,7 +95,7 @@ public class AuthService : IAuthService
         return new LoginResponse(accessToken, rawRefreshToken, expiresAt, userSummary);
     }
 
-    public async Task<LoginResponse> RefreshTokenAsync(RefreshTokenRequest request)
+    public async Task<LoginResponse?> RefreshTokenAsync(RefreshTokenRequest request)
     {
         var hashedToken = _jwtTokenGenerator.HashRefreshToken(request.RefreshToken);
 

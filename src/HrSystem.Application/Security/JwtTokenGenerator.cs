@@ -4,7 +4,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+
 using HrSystem.Domain.Entities;
+
 using Microsoft.IdentityModel.Tokens;
 
 namespace HrSystem.Application.Security;
@@ -68,7 +70,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
         return (tokenHandler.WriteToken(token), expiresAt);
     }
@@ -85,7 +87,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     {
         using var sha256 = SHA256.Create();
         var bytes = Encoding.UTF8.GetBytes(refreshToken);
-        var hash = sha256.ComputeHash(bytes);
+        byte[] hash = sha256.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
     }
 }

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Common;
 using HrSystem.Application.DTOs;
+using HrSystem.Application.Exceptions;
 using HrSystem.Application.Interfaces;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
-using Microsoft.EntityFrameworkCore; // For DbUpdateConcurrencyException
+
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Services;
@@ -239,7 +241,7 @@ public class TaskCardService : ITaskCardService
         // and EF will also verify it in the WHERE clause during SaveChangesAsync.
         if (request.RowVersion == null || request.RowVersion.Length == 0 || !card.RowVersion.SequenceEqual(request.RowVersion))
         {
-            throw new DbUpdateConcurrencyException("Stale write detected. The card has been modified by another user.");
+            throw new AppConflictException("Stale write detected. The card has been modified by another user.");
         }
 
         Guid? oldColumnId = card.ColumnId;

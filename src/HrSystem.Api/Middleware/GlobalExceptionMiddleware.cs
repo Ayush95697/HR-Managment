@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Exceptions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -97,7 +99,7 @@ public class GlobalExceptionMiddleware
         }
 
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        var json = JsonSerializer.Serialize(problemDetails, jsonOptions);
+        string json = JsonSerializer.Serialize(problemDetails, jsonOptions);
 
         return context.Response.WriteAsync(json);
     }

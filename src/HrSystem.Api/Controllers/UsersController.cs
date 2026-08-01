@@ -113,6 +113,7 @@ public class UsersController : BaseApiController
     }
 
     [HttpPost("me/change-password")]
+    [HttpPatch("me/password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         try

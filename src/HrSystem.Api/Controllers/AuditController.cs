@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
 using HrSystem.Application.Security;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +29,7 @@ public class AuditController : BaseApiController
     }
 
     [HttpDelete("clear")]
+    [HttpDelete("logs")]
     [Authorize(Policy = Permissions.CanClearAuditLogs)]
     public async Task<IActionResult> ClearLogs()
     {

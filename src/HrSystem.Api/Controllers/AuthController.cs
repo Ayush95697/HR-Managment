@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

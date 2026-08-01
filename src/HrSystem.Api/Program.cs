@@ -13,6 +13,7 @@ using HrSystem.Application.Security;
 using HrSystem.Application.Services;
 using HrSystem.Application.Validators.Auth;
 using HrSystem.Infrastructure.Persistence;
+using HrSystem.Infrastructure.Services;
 using HrSystem.Infrastructure.Persistence.Repositories;
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Services;
@@ -36,7 +37,7 @@ using HrSystem.Infrastructure.Email;
 using System.IO;
 using HrSystem.Api.Extensions;
 
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+string envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 if (!File.Exists(envPath))
 {
     envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".env");
@@ -45,13 +46,13 @@ if (File.Exists(envPath))
 {
     foreach (var line in File.ReadAllLines(envPath))
     {
-        var trimmed = line.Trim();
+        string trimmed = line.Trim();
         if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith("#")) continue;
-        var index = trimmed.IndexOf('=');
+        int index = trimmed.IndexOf('=');
         if (index > 0)
         {
-            var key = trimmed.Substring(0, index).Trim();
-            var value = trimmed.Substring(index + 1).Trim().Trim('"');
+            string key = trimmed.Substring(0, index).Trim();
+            string value = trimmed.Substring(index + 1).Trim().Trim('"');
             Environment.SetEnvironmentVariable(key, value);
         }
     }
@@ -148,6 +149,9 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<ITaskCardService, TaskCardService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailDispatchService, EmailDispatchService>();
+builder.Services.AddScoped<IEmailDispatchQueue, HangfireEmailDispatchQueue>();
+builder.Services.AddScoped<HrSystem.Infrastructure.Interfaces.ITestDataSeeder, TestDataSeeder>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<HrSystem.Api.Services.IAvatarService, HrSystem.Api.Services.AvatarService>();

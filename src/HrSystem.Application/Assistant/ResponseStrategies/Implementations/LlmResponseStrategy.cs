@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Models;

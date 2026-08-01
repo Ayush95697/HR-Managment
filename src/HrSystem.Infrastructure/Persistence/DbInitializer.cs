@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Persistence;

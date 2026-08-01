@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 using HrSystem.Domain.Entities;
 
 namespace HrSystem.Infrastructure.Email;

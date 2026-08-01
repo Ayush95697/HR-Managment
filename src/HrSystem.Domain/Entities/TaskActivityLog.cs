@@ -1,4 +1,5 @@
 using System;
+
 using HrSystem.Domain.Enums;
 
 namespace HrSystem.Domain.Entities;

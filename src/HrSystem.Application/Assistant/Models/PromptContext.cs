@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using HrSystem.Application.Assistant.Capabilities.Models;
 
 namespace HrSystem.Application.Assistant.Models
