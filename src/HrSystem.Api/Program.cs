@@ -252,14 +252,24 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
 // 8. CORS
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        }
+        else
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
@@ -318,8 +328,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseHttpsRedirection();
+
 app.UseCors("CorsPolicy");
 
+app.UseDefaultFiles();
 app.UseStaticFiles(); // Serves wwwroot/avatars/ and other static files
 
 app.UseResponseCaching();
@@ -341,6 +354,7 @@ if (!app.Environment.IsEnvironment("Testing"))
 
 app.MapControllers();
 app.MapAppHealthChecks();
+app.MapFallbackToFile("index.html");
 
 // Seed Database
 using (var scope = app.Services.CreateScope())
