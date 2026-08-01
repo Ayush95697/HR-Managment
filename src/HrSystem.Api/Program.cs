@@ -362,6 +362,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<HrDbContext>();
+        await db.Database.MigrateAsync();
         await DbInitializer.SeedAsync(db);
     }
     catch (Exception ex)
