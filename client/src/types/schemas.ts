@@ -20,7 +20,7 @@ export type CardFormData = z.infer<typeof cardSchema>;
 export const userSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
   email: z.string().min(1, 'Email is required').email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum(['Admin', 'HR', 'Employee']),
   departmentId: z.string().nullable().optional(),
   managerId: z.string().nullable().optional(),

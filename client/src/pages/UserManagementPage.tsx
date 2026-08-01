@@ -72,6 +72,7 @@ export default function UserManagementPage() {
     setValue('email', u.email);
     setValue('role', u.role);
     setValue('departmentId', u.departmentId || '');
+    setValue('password', '********');
   };
 
   const handleConfirmDeactivate = async () => {
