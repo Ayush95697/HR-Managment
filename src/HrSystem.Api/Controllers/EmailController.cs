@@ -53,6 +53,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpPut("templates/{id}/toggle-quick-access")]
+    [HttpPatch("templates/{id}/quick-access")]
     [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<IActionResult> ToggleQuickAccess(Guid id, [FromQuery] bool isQuickAccess)
     {
@@ -68,6 +69,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpPost("send")]
+    [HttpPost("outbox")]
     [Authorize(Policy = Permissions.CanManageEmails)]
     public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
     {
@@ -84,6 +86,7 @@ public class EmailController : BaseApiController
     }
 
     [HttpDelete("logs/clear")]
+    [HttpDelete("logs")]
     [Authorize(Policy = Permissions.CanClearEmailLogs)]
     public async Task<IActionResult> ClearLogs()
     {

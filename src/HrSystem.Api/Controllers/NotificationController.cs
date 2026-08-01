@@ -35,6 +35,7 @@ public class NotificationController : BaseApiController
     }
 
     [HttpPatch("{id}/read")]
+    [HttpPatch("{id}/read-status")]
     public async Task<IActionResult> MarkAsRead(Guid id)
     {
         await _notificationService.MarkAsReadAsync(id, CurrentUserId);
@@ -42,6 +43,7 @@ public class NotificationController : BaseApiController
     }
 
     [HttpPost("mark-all-read")]
+    [HttpPatch]
     public async Task<IActionResult> MarkAllAsRead()
     {
         await _notificationService.MarkAllAsReadAsync(CurrentUserId);

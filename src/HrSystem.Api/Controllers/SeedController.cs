@@ -17,6 +17,7 @@ public class SeedController : ControllerBase
     }
 
     [HttpPost("generate")]
+    [HttpPost]
     public async Task<IActionResult> GenerateTestData()
     {
         try

@@ -27,6 +27,7 @@ public class AuditController : BaseApiController
     }
 
     [HttpDelete("clear")]
+    [HttpDelete("logs")]
     [Authorize(Policy = Permissions.CanClearAuditLogs)]
     public async Task<IActionResult> ClearLogs()
     {
