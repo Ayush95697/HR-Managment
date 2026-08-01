@@ -1,4 +1,5 @@
 using System;
+
 using HrSystem.Application.Exceptions;
 
 namespace HrSystem.Application.Exceptions;

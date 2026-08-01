@@ -2,9 +2,11 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+
 using HrSystem.Application.Security;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
+
 using Xunit;
 
 namespace HrSystem.Tests.Unit;

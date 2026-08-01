@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using HrSystem.Infrastructure.Interfaces;
 using HrSystem.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Services;

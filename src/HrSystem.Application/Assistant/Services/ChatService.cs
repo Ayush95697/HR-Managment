@@ -59,17 +59,17 @@ namespace HrSystem.Application.Assistant.Services
             }
 
             // 2. Capability Resolution via Intent Routing
-            var intent = _intentRouter.Route(request.Message);
+            AssistantIntent intent = _intentRouter.Route(request.Message);
             _logger.LogInformation("AI Assistant request processed for User {UserId}. Intent determined: {Intent}", user.UserId, intent);
 
             // 3. Capability Execution
             CapabilityResult? capabilityResult = null;
             if (intent != AssistantIntent.GeneralConversation && intent != AssistantIntent.Unknown)
             {
-                var capability = _capabilityResolver.Resolve(intent);
+                ICapability? capability = _capabilityResolver.Resolve(intent);
                 if (capability != null)
                 {
-                    var capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
+                    CapabilityRequest capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
 
                     try
                     {
@@ -95,8 +95,8 @@ namespace HrSystem.Application.Assistant.Services
             context.RetrievedDocuments = documents;
 
             // 4. Resolve Response Strategy
-            var mode = _strategyResolver.DetermineMode(request.Message, intent, capabilityResult?.StructuredData);
-            var strategy = _strategyResolver.Resolve(mode);
+            LlmMode mode = _strategyResolver.DetermineMode(request.Message, intent, capabilityResult?.StructuredData);
+            IResponseStrategy strategy = _strategyResolver.Resolve(mode);
 
             // 5. Generate and Return Final Response
             // (CapabilityResult can be null if no capability handled it, Strategy will still handle it)

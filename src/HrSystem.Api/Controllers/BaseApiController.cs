@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace HrSystem.Api.Controllers;
@@ -12,7 +13,7 @@ public abstract class BaseApiController : ControllerBase
     {
         get
         {
-            var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Guid.TryParse(claim, out var id) ? id : Guid.Empty;
         }
     }
@@ -23,7 +24,7 @@ public abstract class BaseApiController : ControllerBase
     {
         get
         {
-            var claim = User.FindFirst("departmentId")?.Value;
+            string? claim = User.FindFirst("departmentId")?.Value;
             return Guid.TryParse(claim, out var id) ? id : null;
         }
     }

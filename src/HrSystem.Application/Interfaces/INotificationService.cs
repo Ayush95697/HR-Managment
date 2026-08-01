@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+
 using HrSystem.Domain.Enums;
 
 namespace HrSystem.Application.Interfaces;

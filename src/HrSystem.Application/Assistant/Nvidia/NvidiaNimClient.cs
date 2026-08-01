@@ -4,8 +4,10 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Models;
+
 using Microsoft.Extensions.Options;
 
 namespace HrSystem.Application.Assistant.Nvidia

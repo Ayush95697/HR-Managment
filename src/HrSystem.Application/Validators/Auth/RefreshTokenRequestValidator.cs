@@ -1,4 +1,5 @@
 using FluentValidation;
+
 using HrSystem.Application.DTOs;
 
 namespace HrSystem.Application.Validators.Auth;

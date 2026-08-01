@@ -1,4 +1,5 @@
 using HrSystem.Application.Common;
+
 using Xunit;
 
 namespace HrSystem.Tests.Unit;

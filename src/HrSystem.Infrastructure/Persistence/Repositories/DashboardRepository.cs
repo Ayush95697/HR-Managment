@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using HrSystem.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Persistence.Repositories;

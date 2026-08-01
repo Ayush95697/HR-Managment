@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
+
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations
@@ -34,7 +36,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 var query = request.Query as HrSystem.Application.Assistant.Capabilities.Queries.TaskQuery;
                 var assignedTasks = await _taskCardService.GetAssignedTasksAsync(userId, userId, request.CurrentUser.Role, deptId, query);
 
-                object criticalTasksStats = null;
+                object? criticalTasksStats = null;
                 // Regular employees can't query critical tasks stats (it throws AppUnauthorizedException in service)
                 if (request.CurrentUser.Role != "Employee")
                 {

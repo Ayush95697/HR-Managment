@@ -25,7 +25,7 @@ public static class ValidationExtensions
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(100).WithMessage("Name must not exceed 100 characters.");
     }
-    
+
     public static IRuleBuilderOptions<T, string> ValidTitle<T>(this IRuleBuilder<T, string> ruleBuilder)
     {
         return ruleBuilder

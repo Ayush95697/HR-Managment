@@ -3,8 +3,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,13 +36,13 @@ namespace HrSystem.Api.Controllers
                 DepartmentName = User.FindFirst("DepartmentName")?.Value ?? string.Empty
             };
 
-            var deptIdClaim = User.FindFirst("DepartmentId")?.Value;
+            string? deptIdClaim = User.FindFirst("DepartmentId")?.Value;
             if (!string.IsNullOrEmpty(deptIdClaim))
             {
                 userContext.DepartmentId = deptIdClaim;
             }
 
-            var permissions = User.FindAll("Permission").Select(c => c.Value);
+            IEnumerable<string> permissions = User.FindAll("Permission").Select(c => c.Value);
             userContext.Permissions = permissions;
 
             var response = await _chatService.ProcessChatAsync(userContext, request, cancellationToken);

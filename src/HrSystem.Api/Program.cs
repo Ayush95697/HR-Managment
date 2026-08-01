@@ -36,7 +36,7 @@ using HrSystem.Infrastructure.Email;
 
 using System.IO;
 
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+string envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 if (!File.Exists(envPath))
 {
     envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".env");
@@ -45,13 +45,13 @@ if (File.Exists(envPath))
 {
     foreach (var line in File.ReadAllLines(envPath))
     {
-        var trimmed = line.Trim();
+        string trimmed = line.Trim();
         if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith("#")) continue;
-        var index = trimmed.IndexOf('=');
+        int index = trimmed.IndexOf('=');
         if (index > 0)
         {
-            var key = trimmed.Substring(0, index).Trim();
-            var value = trimmed.Substring(index + 1).Trim().Trim('"');
+            string key = trimmed.Substring(0, index).Trim();
+            string value = trimmed.Substring(index + 1).Trim().Trim('"');
             Environment.SetEnvironmentVariable(key, value);
         }
     }

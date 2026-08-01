@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 using HrSystem.Domain.Enums;
 
 namespace HrSystem.Application.DTOs;

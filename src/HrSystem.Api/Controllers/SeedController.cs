@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
+
 using HrSystem.Infrastructure.Interfaces;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace HrSystem.Api.Controllers;

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Capabilities.Queries;
 
 namespace HrSystem.Application.Assistant.ParameterExtraction.Interfaces

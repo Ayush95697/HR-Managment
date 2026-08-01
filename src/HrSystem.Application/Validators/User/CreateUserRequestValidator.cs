@@ -1,4 +1,5 @@
 using FluentValidation;
+
 using HrSystem.Application.DTOs;
 using HrSystem.Application.Validators.Common;
 

@@ -1,4 +1,5 @@
 using HrSystem.Domain.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Persistence;

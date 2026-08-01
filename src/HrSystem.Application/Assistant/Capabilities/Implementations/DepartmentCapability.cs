@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Capabilities.Interfaces;
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Interfaces;
+
 using Microsoft.Extensions.Logging;
 
 namespace HrSystem.Application.Assistant.Capabilities.Implementations

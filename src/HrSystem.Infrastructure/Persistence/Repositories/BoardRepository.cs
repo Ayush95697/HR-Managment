@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using HrSystem.Application.Interfaces.Repositories;
 using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using HrSystem.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HrSystem.Infrastructure.Persistence.Repositories;
@@ -91,7 +93,7 @@ public class BoardRepository : IBoardRepository
     public async Task DeleteAsync(Board board)
     {
         var notifications = await _dbContext.Notifications
-            .Where(n => n.BoardId == board.Id || (n.TaskCardId != null && n.TaskCard.BoardId == board.Id))
+            .Where(n => n.BoardId == board.Id || (n.TaskCardId != null && n.TaskCard!.BoardId == board.Id))
             .ToListAsync();
         _dbContext.Notifications.RemoveRange(notifications);
 
@@ -125,7 +127,7 @@ public class BoardRepository : IBoardRepository
     public async Task DeleteColumnAsync(BoardColumn column)
     {
         var notifications = await _dbContext.Notifications
-            .Where(n => n.TaskCardId != null && n.TaskCard.ColumnId == column.Id)
+            .Where(n => n.TaskCardId != null && n.TaskCard!.ColumnId == column.Id)
             .ToListAsync();
         _dbContext.Notifications.RemoveRange(notifications);
 

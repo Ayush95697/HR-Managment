@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using HrSystem.Domain.Entities;
 
 namespace HrSystem.Infrastructure.Email;

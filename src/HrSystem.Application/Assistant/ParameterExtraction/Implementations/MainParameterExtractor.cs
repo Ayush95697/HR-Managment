@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+
 using HrSystem.Application.Assistant.Capabilities.Models;
 using HrSystem.Application.Assistant.IntentRouting;
 using HrSystem.Application.Assistant.Models;
