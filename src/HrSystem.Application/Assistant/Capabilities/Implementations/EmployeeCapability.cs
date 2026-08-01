@@ -51,7 +51,7 @@ namespace HrSystem.Application.Assistant.Capabilities.Implementations
                 {
                     Success = false,
                     CapabilityName = Name,
-                    Summary = "I couldn't retrieve the requested employee information.",
+                    Summary = "Unable to retrieve the requested employee information.",
                     StructuredData = null
                 };
             }

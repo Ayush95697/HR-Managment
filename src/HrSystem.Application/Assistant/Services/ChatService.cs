@@ -44,7 +44,6 @@ namespace HrSystem.Application.Assistant.Services
 
         public async Task<ChatResponse> ProcessChatAsync(CurrentUserContext user, ChatRequest request, CancellationToken cancellationToken)
         {
-            // 1. Determine Context Builder based on Role
             var builder = _contextBuilders.FirstOrDefault(b => b.CanHandle(user.Role));
 
             ChatContext context;
@@ -58,18 +57,16 @@ namespace HrSystem.Application.Assistant.Services
                 context = new ChatContext { User = user };
             }
 
-            // 2. Capability Resolution via Intent Routing
             AssistantIntent intent = _intentRouter.Route(request.Message);
             _logger.LogInformation("AI Assistant request processed for User {UserId}. Intent determined: {Intent}", user.UserId, intent);
 
-            // 3. Capability Execution
             CapabilityResult? capabilityResult = null;
             if (intent != AssistantIntent.GeneralConversation && intent != AssistantIntent.Unknown)
             {
-                ICapability? capability = _capabilityResolver.Resolve(intent);
+                var capability = _capabilityResolver.Resolve(intent);
                 if (capability != null)
                 {
-                    CapabilityRequest capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
+                    var capabilityRequest = await _parameterExtractor.ExtractAsync(user, request.Message, intent);
 
                     try
                     {
@@ -83,25 +80,19 @@ namespace HrSystem.Application.Assistant.Services
                         {
                             Success = false,
                             CapabilityName = capability.Name,
-                            Summary = "I couldn't retrieve the requested information.",
+                            Summary = "Unable to retrieve the requested information.",
                             StructuredData = null
                         };
                     }
                 }
             }
 
-            // 3. Call Retriever (placeholder)
             var documents = await _retriever.RetrieveAsync(request.Message, context, cancellationToken);
             context.RetrievedDocuments = documents;
 
-            // 4. Resolve Response Strategy
-            LlmMode mode = _strategyResolver.DetermineMode(request.Message, intent, capabilityResult?.StructuredData);
-            IResponseStrategy strategy = _strategyResolver.Resolve(mode);
+            var mode = _strategyResolver.DetermineMode(request.Message, intent, capabilityResult?.StructuredData);
+            var strategy = _strategyResolver.Resolve(mode);
 
-            // 5. Generate and Return Final Response
-            // (CapabilityResult can be null if no capability handled it, Strategy will still handle it)
-            // If capabilityResult is null, we create a default empty one just to prevent passing null, or we can pass null. 
-            // The signature requires CapabilityResult, so we pass an empty one if null.
             return await strategy.ExecuteAsync(capabilityResult ?? new CapabilityResult(), request, context, documents, cancellationToken);
         }
     }

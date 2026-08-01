@@ -19,6 +19,14 @@ using HrSystem.Application.Assistant.Interfaces;
 using HrSystem.Application.Assistant.Services;
 using HrSystem.Application.Assistant.Builders;
 using HrSystem.Application.Assistant.Nvidia;
+using HrSystem.Application.Assistant.IntentRouting;
+using HrSystem.Application.Assistant.Capabilities;
+using HrSystem.Application.Assistant.Capabilities.Interfaces;
+using HrSystem.Application.Assistant.Capabilities.Implementations;
+using HrSystem.Application.Assistant.ParameterExtraction.Interfaces;
+using HrSystem.Application.Assistant.ParameterExtraction.Implementations;
+using HrSystem.Application.Assistant.ResponseStrategies.Interfaces;
+using HrSystem.Application.Assistant.ResponseStrategies.Implementations;
 using HrSystem.Infrastructure.Assistant.Retrieval;
 using HrSystem.Api.Converters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -162,7 +170,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPromptBuilder, PromptBuilder>();
 builder.Services.AddHttpClient("NvidiaNimClient");
-builder.Services.AddScoped<ILLMClient, HrSystem.Application.Assistant.Nvidia.NvidiaNimClient>();
+builder.Services.AddScoped<ILLMClient, NvidiaNimClient>();
 builder.Services.AddScoped<IRetriever, SyntheticRetriever>();
 
 builder.Services.AddScoped<IContextBuilder, EmployeeContextBuilder>();
@@ -170,24 +178,24 @@ builder.Services.AddScoped<IContextBuilder, HrContextBuilder>();
 builder.Services.AddScoped<IContextBuilder, AdminContextBuilder>();
 
 // Capability System
-builder.Services.AddScoped<HrSystem.Application.Assistant.IntentRouting.IIntentRouter, HrSystem.Application.Assistant.IntentRouting.IntentRouter>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.ICapabilityResolver, HrSystem.Application.Assistant.Capabilities.CapabilityResolver>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.TaskCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.DepartmentCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.EmployeeCapability>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.Capabilities.Interfaces.IAssistantCapability, HrSystem.Application.Assistant.Capabilities.Implementations.BoardCapability>();
+builder.Services.AddScoped<IIntentRouter, IntentRouter>();
+builder.Services.AddScoped<ICapabilityResolver, CapabilityResolver>();
+builder.Services.AddScoped<IAssistantCapability, TaskCapability>();
+builder.Services.AddScoped<IAssistantCapability, DepartmentCapability>();
+builder.Services.AddScoped<IAssistantCapability, EmployeeCapability>();
+builder.Services.AddScoped<IAssistantCapability, BoardCapability>();
 
 // Parameter Extractors
-builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IParameterExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.MainParameterExtractor>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IDepartmentExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.DepartmentExtractor>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.ITaskExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.TaskExtractor>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IEmployeeExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.EmployeeExtractor>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ParameterExtraction.Interfaces.IBoardExtractor, HrSystem.Application.Assistant.ParameterExtraction.Implementations.BoardExtractor>();
+builder.Services.AddScoped<IParameterExtractor, MainParameterExtractor>();
+builder.Services.AddScoped<IDepartmentExtractor, DepartmentExtractor>();
+builder.Services.AddScoped<ITaskExtractor, TaskExtractor>();
+builder.Services.AddScoped<IEmployeeExtractor, EmployeeExtractor>();
+builder.Services.AddScoped<IBoardExtractor, BoardExtractor>();
 
 // Response Strategies
-builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategyResolver, HrSystem.Application.Assistant.ResponseStrategies.Implementations.ResponseStrategyResolver>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.TemplateResponseStrategy>();
-builder.Services.AddScoped<HrSystem.Application.Assistant.ResponseStrategies.Interfaces.IResponseStrategy, HrSystem.Application.Assistant.ResponseStrategies.Implementations.LlmResponseStrategy>();
+builder.Services.AddScoped<IResponseStrategyResolver, ResponseStrategyResolver>();
+builder.Services.AddScoped<IResponseStrategy, TemplateResponseStrategy>();
+builder.Services.AddScoped<IResponseStrategy, LlmResponseStrategy>();
 
 // 5. Authorization
 builder.Services.AddScoped<IAuthorizationHandler, HrSameDepartmentHandler>();
