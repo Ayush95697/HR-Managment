@@ -658,6 +658,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 * **Ayush Pal** ([@Ayush95697](https://github.com/Ayush95697)) - *Lead Architecture & Full Stack Engineering*
 * **Akshay Pal**
 * **Ayush Mishra**
+* **Lakshya Choudhary**
 
 ---
 
