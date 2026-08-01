@@ -179,7 +179,8 @@ HR-Managment/
 ├── client/                             # Frontend React Application
 │   ├── public/                         # Public static web assets
 │   ├── src/
-│   │   ├── api/                        # Axios HTTP client & API service calls
+│   │   ├── api/                        # Axios H
+TTP client & API service calls
 │   │   │   ├── audit.api.ts
 │   │   │   ├── auth.api.ts
 │   │   │   ├── axios.ts                # Interceptors for JWT & token refresh
