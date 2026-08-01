@@ -35,6 +35,7 @@ using HrSystem.Infrastructure.Jobs;
 using HrSystem.Infrastructure.Email;
 
 using System.IO;
+using HrSystem.Api.Extensions;
 
 string envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 if (!File.Exists(envPath))
@@ -58,7 +59,14 @@ if (File.Exists(envPath))
 }
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddSerilogLogging();
 builder.Configuration.AddEnvironmentVariables();
+
+// Global ProblemDetails
+builder.Services.AddProblemDetails();
+
+// Health Checks
+builder.Services.AddAppHealthChecks(builder.Configuration);
 
 // 1. Jwt Settings
 var jwtSettings = new JwtSettings();
@@ -286,6 +294,9 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLoggingWithContext();
+app.UseCorrelationId();
+
 // Global Exception Handler
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
@@ -307,6 +318,7 @@ app.UseResponseCaching();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseUserEnrichment();
 
 if (!app.Environment.IsEnvironment("Testing"))
 {
@@ -320,6 +332,7 @@ if (!app.Environment.IsEnvironment("Testing"))
 }
 
 app.MapControllers();
+app.MapAppHealthChecks();
 
 // Seed Database
 using (var scope = app.Services.CreateScope())
