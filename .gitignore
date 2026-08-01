@@ -40,6 +40,10 @@ binPublic/
 *.ipdb
 *.iobj
 
+# Logs
+logs/
+**/logs/
+
 # SpecFlow Generated Files
 *.feature.cs
 
