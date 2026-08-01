@@ -138,15 +138,17 @@ export default function LoginPage() {
 
       {/* ── FOREGROUND CONTENT LAYER ────────────────────────────────────── */}
       <div className={styles.contentLayer}>
-        
-        {/* ── LEFT SIDE: Login form ───────────────────────────────────── */}
-        <div className={styles.formSection}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className={styles.formWrap}
-          >
+        <div className={styles.glowContainer}>
+          <div className={styles.mainContainer}>
+            
+            {/* ── LEFT SIDE: Login form ───────────────────────────────────── */}
+            <div className={styles.formSection}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className={styles.formWrap}
+              >
             {/* Title */}
             <div style={{ textAlign: 'center', marginBottom: '28px', marginTop: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
@@ -285,16 +287,19 @@ export default function LoginPage() {
               </div>
             </div>
           </motion.div>
-        </div>
+            </div>
 
-        {/* ── RIGHT SIDE: Info panel ──────────────────────────────────── */}
-        <div className={styles.infoSection}>
-          <motion.div
-            className={styles.glassPanel}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3 }}
-          >
+            {/* ── DIVIDER ─────────────────────────────────────────────────── */}
+            <div className={styles.divider}></div>
+
+            {/* ── RIGHT SIDE: Info panel ──────────────────────────────────── */}
+            <div className={styles.infoSection}>
+              <motion.div
+                className={styles.infoWrap}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, delay: 0.3 }}
+              >
             <Logo size="md" showText={false} />
             <h2 className={styles.glassHeadline}>
               Everything your team needs, in one trail.
@@ -315,8 +320,10 @@ export default function LoginPage() {
                   </div>
                 </div>
               ))}
+              </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

@@ -99,42 +99,79 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8vw; /* Gap ~8-10% of viewport */
   width: 100%;
-  max-width: 1400px;
-  padding: 0 40px;
+  padding: 24px;
+}
+
+.glowContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.glowContainer::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(139, 124, 246, 0.15) 0%, transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.mainContainer {
+  display: flex;
+  background: rgba(22, 24, 34, 0.82);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 124, 246, 0.1);
+  width: 100%;
+  overflow: hidden;
 }
 
 /* ─── Left side: login form ──────────────────────────────────────────────────── */
 .formSection {
   flex: 1;
   display: flex;
-  justify-content: flex-end;
-  max-width: 480px;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 48px;
 }
 
 .formWrap {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
+}
+
+/* ─── Divider ────────────────────────────────────────────────────────────────── */
+.divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 64px 0;
 }
 
 /* ─── Right side: info panel ─────────────────────────────────────────────────── */
 .infoSection {
   flex: 1;
   display: flex;
-  justify-content: flex-start;
-  max-width: 520px;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 48px;
 }
 
-/* ─── Glass panel ────────────────────────────────────────────────────────────── */
-.glassPanel {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 40px;
+.infoWrap {
   width: 100%;
+  max-width: 380px;
 }
 
 .glassHeadline {
@@ -197,9 +234,16 @@
 
 /* ─── Responsive: collapse below 900px ───────────────────────────────────────── */
 @media (max-width: 900px) {
-  .contentLayer {
+  .mainContainer {
     flex-direction: column;
-    gap: 0;
+    max-width: 500px;
+    border-radius: 24px;
+  }
+
+  .divider {
+    width: auto;
+    height: 1px;
+    margin: 0 48px;
   }
 
   .infoSection {

@@ -179,7 +179,8 @@ HR-Managment/
 ├── client/                             # Frontend React Application
 │   ├── public/                         # Public static web assets
 │   ├── src/
-│   │   ├── api/                        # Axios HTTP client & API service calls
+│   │   ├── api/                        # Axios H
+TTP client & API service calls
 │   │   │   ├── audit.api.ts
 │   │   │   ├── auth.api.ts
 │   │   │   ├── axios.ts                # Interceptors for JWT & token refresh
@@ -654,7 +655,11 @@ The published binary files will be generated in `src/HrSystem.Api/publish/`.
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Ayush95697/HR-Managment/issues).
 
-* **Ayush Pal** ([@Ayush95697](https://github.com/Ayush95697)) - *Lead Architecture & Full Stack Engineering*
+
+* **Soni Sharma**
+* **Ayush Mishra**
+* **Lakshya Choudhary**
+* **Akshay Pal**
 
 ---
 
